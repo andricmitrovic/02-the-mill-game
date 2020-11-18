@@ -9,18 +9,23 @@ Board::Board(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_scene.setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
+    /* Postavlja scenu da bude preko celog pogleda, vrlo je cudno ponasanje kad se ovo ne postavi
+     * ili neke druge dimenzije, bas nemam ideju sta su mu radili.
+     * Ovo prvo bolje sljaka, sa drugim izadju scrollbarovi iz nekog razloga.
+     * */
+    m_scene.setSceneRect(m_scene.itemsBoundingRect());
+    //m_scene.setSceneRect(0, 0, ui->graphicsView->width(), ui->graphicsView->height());
 
+    // Allocate player pieces and add them to the scene
     m_pieces.reserve(23*sizeof(PlayerPiece*));
-
     for( int i=0; i<=23; i++)
     {
         m_pieces[i] = new PlayerPiece();
         m_scene.addItem(m_pieces[i]);
-
-        m_pieces[0]->setPos(0, 0);
     }
 
+    // Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku
+    ////////////////////////////////////////////////////
     m_pieces[0]->setPos(0, 1*30);
     m_pieces[1]->setPos(0, 7*30);
     m_pieces[2]->setPos(0, 13*30);
@@ -51,16 +56,19 @@ Board::Board(QWidget *parent)
     m_pieces[21]->setPos(12*30, 1*30);
     m_pieces[22]->setPos(12*30, 7*30);
     m_pieces[23]->setPos(12*30, 13*30);
+    //////////////////////////////////////////////////////
 
-
-
+    // Connect scene to the view
     ui->graphicsView->setScene(&m_scene);
+
+    /* treba pokusati da stavimo view da bude fullscreen, prvo sto nece manuelno iz designa da ode skroz desno,
+     *  a ima i u prozoru neko glupost dole sto blokira deo viewa vrv moze da se iskljuci negde.*/
+
     m_scene.setBackgroundBrush(Qt::gray);
 
-    ui->graphicsView->show();       // ne treba vrv
+    ui->graphicsView->show();       // nije potrebno vrv, radi bez ovoga
 
-
-  }
+}
 
 
 Board::~Board()

@@ -3,6 +3,10 @@
 
 #include "QGraphicsItem"
 
+/*
+Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne metode boundingRect i paint.
+*/
+
 class PlayerPiece : public QGraphicsItem {
     public:
         PlayerPiece(QGraphicsItem* parent = nullptr);
