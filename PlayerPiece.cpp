@@ -2,8 +2,9 @@
 
 #include "QPainter"
 #include "QStyleOptionGraphicsItem"
+#include "QtGui"
 
-PlayerPiece::PlayerPiece(QGraphicsItem* parent) : QGraphicsItem(parent)
+PlayerPiece::PlayerPiece(QGraphicsItem* parent) : QGraphicsItem(parent), m_color(true)
 {}
 
 QRectF PlayerPiece::boundingRect() const
@@ -15,5 +16,9 @@ void PlayerPiece::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-    painter->fillRect(boundingRect(), Qt::black);
+
+    if(m_color)
+        painter->fillRect(boundingRect(), Qt::black);
+    else
+        painter->fillRect(boundingRect(), Qt::white);
 }

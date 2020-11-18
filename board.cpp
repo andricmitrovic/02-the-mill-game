@@ -21,7 +21,11 @@ Board::Board(QWidget *parent)
     for( int i=0; i<=23; i++)
     {
         m_pieces[i] = new PlayerPiece();
+
         m_scene.addItem(m_pieces[i]);
+
+        m_pieces[i]->setFlag(QGraphicsItem::ItemIsMovable);
+        m_pieces[i]->setFlag(QGraphicsItem::ItemIsSelectable);
     }
 
     // Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku
@@ -67,7 +71,6 @@ Board::Board(QWidget *parent)
     m_scene.setBackgroundBrush(Qt::gray);
 
     ui->graphicsView->show();       // nije potrebno vrv, radi bez ovoga
-
 }
 
 

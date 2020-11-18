@@ -15,6 +15,8 @@ class PlayerPiece : public QGraphicsItem {
 
         void paint(QPainter *painter , const QStyleOptionGraphicsItem *option , QWidget *widget) override;
 
+    private:
+        bool m_color;
 };
 
 #endif // PLAYER_PIECE_H
