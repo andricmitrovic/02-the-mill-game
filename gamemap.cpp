@@ -103,13 +103,15 @@ char GameMap::strPlayer(unsigned pos)
     return 'X';
 }
 
-/* MAIN ZA TESTIRANJE
+// MAIN ZA TESTIRANJE
+
+/*
 int main()
 {
     GameMap gm = GameMap();
     gm.printMap();
     return 0;
 }
-
 */
+
 

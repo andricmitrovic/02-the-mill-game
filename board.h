@@ -12,6 +12,9 @@
 #include <QHBoxLayout>
 #include <QPixmap>
 
+#include <vector>
+
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class Board; }
 QT_END_NAMESPACE
@@ -28,5 +31,7 @@ public:
 
 private:
     Ui::Board *ui;
+    std::vector<QGraphicsItem*> m_pieces;
+    QGraphicsScene m_scene;
 };
 #endif // BOARD_H
