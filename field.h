@@ -25,6 +25,7 @@ public:
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3);
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3, unsigned p4);
 
+    // sluzi za iscrtavanje kockice
     GraphicPiece *piece;              // geter seter i private da bude, a iskreno i ne mora jer se koristi u okviru druge klase samo
 
 private:

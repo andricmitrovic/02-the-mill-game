@@ -75,10 +75,13 @@ GameMap::GameMap():
 }
 void GameMap::printMap(QGraphicsScene &scene)
 {
+    // !!!!!!!!!!!!!!!!!!!  vestacki sam stavio samo da proverim kako izgleda
     boardFields[0].occupy(VALUE::PLAYER_1);
     boardFields[1].occupy(VALUE::PLAYER_2);
 
 
+    // Dodajemo na scenu svaku piece i u slucaju da je igracev onda moze da se pomera, vestacki isto samo da vidimo da radi
+    // !!!!!!!!!!!!!!!! Treba ovo izmeniti da ne ostane rupa u tabli i eventove da ugrabimo i da ne moze player1 da menja player2 figure i obratno !!!!!!!!!!!!!!!!!!!!!
     for( int i=0; i<=23; i++)
     {
         scene.addItem(boardFields[i].piece);
@@ -89,7 +92,7 @@ void GameMap::printMap(QGraphicsScene &scene)
         }
     }
 
-    // Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku
+    // !!!!!! Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku !!!!!!
     boardFields[0].piece->setPos(0, 1*30);
     boardFields[1].piece->setPos(0, 7*30);
     boardFields[2].piece->setPos(0, 13*30);

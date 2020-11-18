@@ -10,14 +10,15 @@
 void Field::occupy(VALUE v)
 {
     this->occupied = true;
-    this->player = v;
+    this->player = v;                   // ovo moze pametnije da nemamo dva ista polja, u piece-u nam treba da bi znali koje boje paintujemo
     this->piece->set_player(v);
 }
 /* uklanja vrednost sa polja*/
 void Field::deoccupy()
 {
     this->occupied = false;
-    this->player = VALUE::EMPTY;
+    this->player = VALUE::EMPTY;        // isto kao iznad
+    this->piece->set_player(VALUE::EMPTY);
 }
 
 /*proverava da li je zauzeto*/
