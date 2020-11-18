@@ -13,6 +13,7 @@
 #include <QPixmap>
 
 #include <vector>
+#include "gamemap.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -31,9 +32,7 @@ public:
 
 private:
     Ui::Board *ui;
-    std::vector<QGraphicsItem*> m_field;
-    std::vector<QGraphicsItem*> m_player1_pieces;            // ovo moze u player klasi da stoji, prototip za sad samo
-    std::vector<QGraphicsItem*> m_player2_pieces;            // ovo moze u player klasi da stoji, prototip za sad samo
+    GameMap *gm;
     QGraphicsScene m_scene;
 };
 #endif // BOARD_H

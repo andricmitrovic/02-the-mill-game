@@ -1,5 +1,6 @@
 #include "gamemap.h"
 #include "field.h"
+#include "QGraphicsScene"
 
 #include <vector>
 #include <string>
@@ -72,46 +73,52 @@ GameMap::GameMap():
         boardFields[23].addNeighboursIndices(14,22);
 
 }
-void GameMap::printMap() {
-        std::cout << strPlayer(0)<< " - - - - - " << strPlayer(1) << " - - - - - "<< strPlayer(2)<< std::endl;
-        std::cout <<"|           |           |" <<std::endl;
-        std::cout <<"|     "<<strPlayer(3)<<" - - "<<strPlayer(4)<<" - - "<<strPlayer(5)<<"     |"<<std::endl;
-        std::cout <<"|     |     |     |     |"<<std::endl;
-        std::cout <<"|     | "<<strPlayer(6)<<" - "<<strPlayer(7)<<" - "<<strPlayer(8)<<" |     |" <<std::endl;
-        std::cout <<"|     | |       | |     |"<<std::endl;
-        std::cout <<strPlayer(9)<<" - - "<<strPlayer(10)<<"-"<<strPlayer(11)<<"       "<<strPlayer(12)<<"-"<<strPlayer(13)<<" - - "<<strPlayer(14)<<std::endl;
-        std::cout <<"|     | |       | |     |"<<std::endl;
-        std::cout <<"|     | "<<strPlayer(15)<<" - "<<strPlayer(16)<<" - "<<strPlayer(17)<<" |     |" <<std::endl;
-        std::cout <<"|     |     |     |     |"<<std::endl;
-        std::cout <<"|     "<<strPlayer(18)<<" - - "<<strPlayer(19)<<" - - "<<strPlayer(20)<<"     |"<<std::endl;
-        std::cout <<"|           |           |"<<std::endl;
-        std::cout <<strPlayer(21)<<" - - - - - "<<strPlayer(22)<<" - - - - - "<<strPlayer(23)<<std::endl;
-}
-
-char GameMap::strPlayer(unsigned pos)
+void GameMap::printMap(QGraphicsScene &scene)
 {
-    VALUE v = boardFields[pos].getPlayerID();
-    switch(v){
-    case VALUE::EMPTY :
-        return 'X';
-    case VALUE::PLAYER_1:
-        return '1';
-    case VALUE::PLAYER_2:
-        return '2';
+    boardFields[0].occupy(VALUE::PLAYER_1);
+    boardFields[1].occupy(VALUE::PLAYER_2);
 
+
+    for( int i=0; i<=23; i++)
+    {
+        scene.addItem(boardFields[i].piece);
+        if(boardFields[i].getPlayerID()!=VALUE::EMPTY)
+        {
+                boardFields[i].piece->setFlag(QGraphicsItem::ItemIsMovable);
+                boardFields[i].piece->setFlag(QGraphicsItem::ItemIsSelectable);
+        }
     }
-    return 'X';
+
+    // Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku
+    boardFields[0].piece->setPos(0, 1*30);
+    boardFields[1].piece->setPos(0, 7*30);
+    boardFields[2].piece->setPos(0, 13*30);
+
+    boardFields[3].piece->setPos(2*30, 3*30);
+    boardFields[4].piece->setPos(2*30, 7*30);
+    boardFields[5].piece->setPos(2*30, 11*30);
+
+    boardFields[6].piece->setPos(4*30, 5*30);
+    boardFields[7].piece->setPos(4*30, 7*30);
+    boardFields[8].piece->setPos(4*30, 9*30);
+
+    boardFields[9].piece->setPos(6*30, 1*30);
+    boardFields[10].piece->setPos(6*30, 3*30);
+    boardFields[11].piece->setPos(6*30, 5*30);
+    boardFields[12].piece->setPos(6*30, 9*30);
+    boardFields[13].piece->setPos(6*30, 11*30);
+    boardFields[14].piece->setPos(6*30, 13*30);
+
+    boardFields[15].piece->setPos(8*30, 5*30);
+    boardFields[16].piece->setPos(8*30, 7*30);
+    boardFields[17].piece->setPos(8*30, 9*30);
+
+    boardFields[18].piece->setPos(10*30, 3*30);
+    boardFields[19].piece->setPos(10*30, 7*30);
+    boardFields[20].piece->setPos(10*30, 11*30);
+
+    boardFields[21].piece->setPos(12*30, 1*30);
+    boardFields[22].piece->setPos(12*30, 7*30);
+    boardFields[23].piece->setPos(12*30, 13*30);
+
 }
-
-// MAIN ZA TESTIRANJE
-
-/*
-int main()
-{
-    GameMap gm = GameMap();
-    gm.printMap();
-    return 0;
-}
-*/
-
-

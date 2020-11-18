@@ -3,12 +3,8 @@
 
 #include <vector>
 
-enum class VALUE
-{
-    EMPTY,
-    PLAYER_1,
-    PLAYER_2
-};
+#include "GraphicPiece.h"
+
 
 class Field
 {
@@ -17,6 +13,7 @@ public:
         :player(VALUE::EMPTY), occupied(false),positionIndex(position)
     {
     //neighboursIndices = std::vector<unsigned>();
+        piece = new GraphicPiece();
     }
 
     void deoccupy();
@@ -27,12 +24,16 @@ public:
     void addNeighboursIndices(unsigned p1, unsigned p2);
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3);
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3, unsigned p4);
+
+    GraphicPiece *piece;              // geter seter i private da bude, a iskreno i ne mora jer se koristi u okviru druge klase samo
+
 private:
 
     VALUE player;
     bool occupied;
     unsigned positionIndex;
     std::vector<unsigned> neighboursIndices;
+
 
 };
 

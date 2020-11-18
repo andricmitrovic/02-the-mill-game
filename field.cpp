@@ -11,6 +11,7 @@ void Field::occupy(VALUE v)
 {
     this->occupied = true;
     this->player = v;
+    this->piece->set_player(v);
 }
 /* uklanja vrednost sa polja*/
 void Field::deoccupy()

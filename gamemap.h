@@ -8,7 +8,7 @@ class GameMap
 public:
     GameMap();
     // printMap i strPlayer za ispisivanje u terminalu
-    void printMap();
+    void printMap(QGraphicsScene &scene);
     char strPlayer(unsigned p);
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
     void initilizeMills();
