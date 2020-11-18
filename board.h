@@ -31,7 +31,9 @@ public:
 
 private:
     Ui::Board *ui;
-    std::vector<QGraphicsItem*> m_pieces;
+    std::vector<QGraphicsItem*> m_field;
+    std::vector<QGraphicsItem*> m_player1_pieces;            // ovo moze u player klasi da stoji, prototip za sad samo
+    std::vector<QGraphicsItem*> m_player2_pieces;            // ovo moze u player klasi da stoji, prototip za sad samo
     QGraphicsScene m_scene;
 };
 #endif // BOARD_H

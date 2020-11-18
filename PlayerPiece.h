@@ -3,20 +3,27 @@
 
 #include "QGraphicsItem"
 
+enum class VALUE
+{
+    EMPTY,
+    PLAYER_1,
+    PLAYER_2
+};
+
 /*
 Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne metode boundingRect i paint.
 */
 
 class PlayerPiece : public QGraphicsItem {
     public:
-        PlayerPiece(QGraphicsItem* parent = nullptr);
+        PlayerPiece(VALUE player, QGraphicsItem* parent = nullptr);
 
         QRectF boundingRect () const override;
 
         void paint(QPainter *painter , const QStyleOptionGraphicsItem *option , QWidget *widget) override;
 
     private:
-        bool m_color;
+        VALUE m_player;
 };
 
 #endif // PLAYER_PIECE_H

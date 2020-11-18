@@ -4,12 +4,12 @@
 #include "QStyleOptionGraphicsItem"
 #include "QtGui"
 
-PlayerPiece::PlayerPiece(QGraphicsItem* parent) : QGraphicsItem(parent), m_color(true)
+PlayerPiece::PlayerPiece(VALUE player, QGraphicsItem* parent) : QGraphicsItem(parent), m_player(player)
 {}
 
 QRectF PlayerPiece::boundingRect() const
 {
-    return QRectF(0, 0, 10, 10);
+    return QRectF(0, 0, 30, 30);
 }
 
 void PlayerPiece::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -17,8 +17,10 @@ void PlayerPiece::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if(m_color)
+    if(m_player == VALUE::EMPTY)
         painter->fillRect(boundingRect(), Qt::black);
-    else
+    else if(m_player == VALUE::PLAYER_1)
         painter->fillRect(boundingRect(), Qt::white);
+    else if(m_player == VALUE::PLAYER_2)
+        painter->fillRect(boundingRect(), Qt::blue);
 }
