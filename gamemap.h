@@ -9,6 +9,8 @@ public:
     GameMap();
     // printMap i strPlayer za ispisivanje u terminalu
     void printMap(QGraphicsScene &scene);
+    void printFieldTerminal(int index, bool lettersOnly);
+    void printMapTerminal();
     char strPlayer(unsigned p);
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
     void initilizeMills();

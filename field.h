@@ -20,7 +20,9 @@ public:
     void occupy(VALUE p);
     bool isOccupied() const;
     VALUE getPlayerID() const;
-    unsigned getFiledPosition() const;
+    unsigned getFieldPosition() const;
+    std::pair<std::pair<unsigned, unsigned>, std::pair<unsigned, unsigned>> getMills() const;
+    void addMills(unsigned a1, unsigned a2, unsigned b1, unsigned b2);
     void addNeighboursIndices(unsigned p1, unsigned p2);
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3);
     void addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3, unsigned p4);
@@ -34,7 +36,7 @@ private:
     bool occupied;
     unsigned positionIndex;
     std::vector<unsigned> neighboursIndices;
-
+    std::pair<std::pair<unsigned, unsigned>, std::pair<unsigned, unsigned>> mills; //Every field has only two mills, which consist of 3 fields.
 
 };
 

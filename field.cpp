@@ -34,10 +34,27 @@ VALUE Field::getPlayerID() const
 }
 
 /* vraca redni broj na tabeli*/
-unsigned Field::getFiledPosition() const
+unsigned Field::getFieldPosition() const
 {
     return this->positionIndex;
 }
+
+std::pair<std::pair<unsigned, unsigned>, std::pair<unsigned, unsigned>> Field::getMills() const{
+    return this->mills;
+}
+
+void Field::addMills(unsigned a1, unsigned a2, unsigned b1, unsigned b2){
+    std::pair<unsigned, unsigned> mill1;
+    mill1.first = a1;
+    mill1.second = a2;
+    this->mills.first = mill1;
+
+    std::pair<unsigned, unsigned> mill2;
+    mill2.first = b1;
+    mill2.second = b2;
+    this->mills.second = mill2;
+}
+
 /* dodaje susede --- mozda zameniti Variadic metodom, a mozda i ne, jer se koristi samo u konstruktoru*/
 void Field::addNeighboursIndices(unsigned p1, unsigned p2)
 {
