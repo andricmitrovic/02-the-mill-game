@@ -11,7 +11,9 @@ CONFIG += c++17
 SOURCES += \
     GraphicPiece.cpp \
     field.cpp \
+    game.cpp \
     gamemap.cpp \
+    humanplayer.cpp \
     main.cpp \
     board.cpp
 
@@ -19,7 +21,9 @@ HEADERS += \
     GraphicPiece.h \
     board.h \
     field.h \
-    gamemap.h
+    game.h \
+    gamemap.h \
+    humanplayer.h
 
 FORMS += \
     board.ui

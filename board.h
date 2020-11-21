@@ -23,12 +23,16 @@ QT_END_NAMESPACE
 class Board : public QMainWindow
 {
     Q_OBJECT
-    QPushButton *buttons[24];
+    //QPushButton *buttons[24];
 
 
 public:
     Board(QWidget *parent = nullptr);
     ~Board();
+
+// slotovi za registrovanje selekcija odnosno klika na kvadrate
+public slots:
+    void onFieldSelection();
 
 private:
     Ui::Board *ui;

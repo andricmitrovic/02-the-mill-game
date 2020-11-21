@@ -59,3 +59,4 @@ void Field::addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3, unsigned
     this->neighboursIndices.push_back(p3);
     this->neighboursIndices.push_back(p4);
 }
+

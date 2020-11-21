@@ -12,6 +12,9 @@ public:
     char strPlayer(unsigned p);
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
     void initilizeMills();
+    // vraca indeks polja na osnovu pozicije kvadrata
+    int indexByPos(QPointF position);
+
 
 
 public:
