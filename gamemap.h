@@ -18,13 +18,10 @@ public:
     int indexByPos(QPointF position);
 
 
-
+    /* napraviti da bude private + getter*/
 public:
 // niz polja
 std::vector<Field> boardFields;
-// broj postavljenih pakova za svakog igrace
-int numofpieces1;
-int numofpieces2;
 };
 
 #endif // GAMEMAP_H

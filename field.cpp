@@ -1,5 +1,5 @@
 #include "field.h"
-#include <iostream>
+
 /*
  * IMPLEMENTACIJA FIELD klase
  * predstavlja jedno polje na tabeli
@@ -7,7 +7,7 @@
  *
  **/
 /* postavljanje vrednosti na polje*/
-void Field::occupy(VALUE v)
+void Field::occupy(FIELDSTATE v)
 {
     this->occupied = true;
     this->player = v;                   // ovo moze pametnije da nemamo dva ista polja, u piece-u nam treba da bi znali koje boje paintujemo
@@ -17,8 +17,8 @@ void Field::occupy(VALUE v)
 void Field::deoccupy()
 {
     this->occupied = false;
-    this->player = VALUE::EMPTY;        // isto kao iznad
-    this->piece->set_player(VALUE::EMPTY);
+    this->player = FIELDSTATE::EMPTY;        // isto kao iznad
+    this->piece->set_player(FIELDSTATE::EMPTY);
 }
 
 /*proverava da li je zauzeto*/
@@ -27,8 +27,9 @@ bool Field::isOccupied() const
     return occupied;
 }
 
+
 /* vraca id (nije dobro ime jer vraca i EMPTY*/
-VALUE Field::getPlayerID() const
+FIELDSTATE Field::getPlayerID() const
 {
     return player;
 }
@@ -76,4 +77,10 @@ void Field::addNeighboursIndices(unsigned p1, unsigned p2, unsigned p3, unsigned
     this->neighboursIndices.push_back(p3);
     this->neighboursIndices.push_back(p4);
 }
+
+std::vector<unsigned> Field::getNeighboursIndices() const
+{
+    return neighboursIndices;
+}
+
 

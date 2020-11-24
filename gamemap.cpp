@@ -2,11 +2,7 @@
 #include "field.h"
 #include "QGraphicsScene"
 
-#include <vector>
-#include <string>
-#include <iostream>
 
-#define NUM_OF_FIELDS 24
 
 /* GameMap klasa koja implementira mapu igre
  *
@@ -26,8 +22,9 @@
  *  |     18 - -19 - -20    |
  *  |           |           |
  *  21 - - - - -22 - - - - - 23*/
-GameMap::GameMap() :
-        numofpieces1(0), numofpieces2(0) {
+GameMap::GameMap()
+
+    {
     // Inicijalizacija polja na tabeli
     for (int i = 0; i < NUM_OF_FIELDS; i++) {
         boardFields.push_back(Field(i));
@@ -130,13 +127,13 @@ void GameMap::printFieldTerminal(int index, bool lettersOnly) {
         printf("%c", 97 + index);
         return;
     }
-    if (boardFields[index].getPlayerID() == VALUE::PLAYER_1) {
+    if (boardFields[index].getPlayerID() == FIELDSTATE::PLAYER_1) {
         printf("\033[0;31m");
         printf("0");
         printf("\033[0m");
         return;
     }
-    if (boardFields[index].getPlayerID() == VALUE::PLAYER_2) {
+    if (boardFields[index].getPlayerID() == FIELDSTATE::PLAYER_2) {
         printf("\033[0;32m");
         printf("0");
         printf("\033[0m");

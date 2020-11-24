@@ -1,6 +1,5 @@
 #include "board.h"
 #include "ui_board.h"
-#include <iostream>
 
 //TODO: remove later
 #include <QDebug>
@@ -55,7 +54,7 @@ void Board::onFieldSelection()
     for (auto item : m_scene.selectedItems()) {
         int index = gm->indexByPos(item->pos());
         if (!gm->boardFields[index].isOccupied()){
-            gm->boardFields[index].occupy(VALUE::PLAYER_1);
+            gm->boardFields[index].occupy(FIELDSTATE::PLAYER_1);
             qDebug() << index;
         }
 

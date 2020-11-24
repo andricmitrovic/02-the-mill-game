@@ -4,10 +4,10 @@
 #include "QStyleOptionGraphicsItem"
 #include "QtGui"
 
-GraphicPiece::GraphicPiece(VALUE player, QGraphicsItem* parent) : QGraphicsItem(parent), m_player(player)
+GraphicPiece::GraphicPiece(FIELDSTATE player, QGraphicsItem* parent) : QGraphicsItem(parent), m_player(player)
 {}
 
-GraphicPiece::GraphicPiece(QGraphicsItem* parent) : QGraphicsItem(parent), m_player(VALUE::EMPTY)
+GraphicPiece::GraphicPiece(QGraphicsItem* parent) : QGraphicsItem(parent), m_player(FIELDSTATE::EMPTY)
 {}
 
 QRectF GraphicPiece::boundingRect() const
@@ -20,15 +20,15 @@ void GraphicPiece::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    if(m_player == VALUE::EMPTY)
+    if(m_player == FIELDSTATE::EMPTY)
         painter->fillRect(boundingRect(), Qt::black);
-    else if(m_player == VALUE::PLAYER_1)
+    else if(m_player == FIELDSTATE::PLAYER_1)
         painter->fillRect(boundingRect(), Qt::white);
-    else if(m_player == VALUE::PLAYER_2)
+    else if(m_player == FIELDSTATE::PLAYER_2)
         painter->fillRect(boundingRect(), Qt::blue);
 }
 
-void GraphicPiece::set_player(VALUE p)
+void GraphicPiece::set_player(FIELDSTATE p)
 {
     m_player = p;
 }

@@ -1,24 +1,25 @@
 #include "board.h"
 #include "game.h"
-
 #include <QApplication>
 
 
 int main(int argc, char *argv[])
 {
     // Sluzi za iscrtavanje, iskomentarisano radi testiranja
-//    QApplication a(argc, argv);
-//    Board w;
-//    w.show();
-//    return a.exec();
-
+   /* QApplication a(argc, argv);
+    Board w;
+    w.show();
+    return a.exec();
+    */
   // Testiranje prve faze igre
-    const HumanPlayer p1(VALUE::PLAYER_1);
-    const HumanPlayer p2(VALUE::PLAYER_2);
+    HumanPlayer p1(FIELDSTATE::PLAYER_1, std::string("Marija"));
+    HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mrc"));
 
-    Game g = Game();
+    std::cout << p1.getName()<< std::endl;
+    Game g = Game(p1, p2);
     g.setup(); //prva faza
-    //g.play(); //druga faza
+    g.play(); //druga faza
+
 
 }
 

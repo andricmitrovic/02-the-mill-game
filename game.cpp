@@ -1,23 +1,20 @@
 #include "game.h"
-
-#include "humanplayer.h"
 #include "gamemap.h"
+#include "humanplayer.h"
 
 
-#include <iostream>
+Game::Game(HumanPlayer &p1, HumanPlayer &p2)
+    :gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT), winner(FIELDSTATE::EMPTY)
+{}
 
-#define NUM_OF_PIECES (9) //broj figura po igracu
-
-Game::Game()
-    : gameMap(new GameMap()),
-      m_p1(HumanPlayer(VALUE::PLAYER_1)),
-      m_p2(HumanPlayer(VALUE::PLAYER_2)),
-      gameState(GAMESTATE::INIT)
+Game::~Game()
 {
+    delete gameMap;
 }
 
-bool Game::checkMills(unsigned index){
-    VALUE curPlayer = gameMap->boardFields[index].getPlayerID();
+
+bool Game::checkMills(unsigned index) const{
+    FIELDSTATE curPlayer = gameMap->boardFields[index].getPlayerID();
     unsigned checkIndex1 = gameMap->boardFields[index].getMills().first.first;
     unsigned checkIndex2 = gameMap->boardFields[index].getMills().first.second;
     if(gameMap->boardFields[checkIndex1].getPlayerID() == curPlayer && gameMap->boardFields[checkIndex2].getPlayerID() == curPlayer){
@@ -32,38 +29,191 @@ bool Game::checkMills(unsigned index){
     return false;
 }
 
-void Game::removeOpponentsPiece(){
-    std::cout << "MILL!" << std::endl;
+
+
+bool Game::makeSetupMove(HumanPlayer &player){
     int i;
     char input;
-    while(true){
-        if(m_p1.turn()){
-            std::cout <<"Player 1 turn: Choose an oppnents piece to remove [a-x]" << std::endl;
-            std::cin >> input;
-            i = input - 97;
-            if(i >= 0 && i <= 23 && gameMap->boardFields[i].isOccupied() && gameMap->boardFields[i].getPlayerID() == VALUE::PLAYER_2){
-                gameMap->boardFields[i].deoccupy();
-                std::cout << "Player 2 has lost one piece at the field " << input << std::endl;
-                gameMap->printMapTerminal();
-                break;
-            } else {
-                std::cout << "Invalid choice! Try again..." << std::endl;
-            }
-        } else if(m_p2.turn()){
-            std::cout << "Player 2 turn: Choose an oppnents piece to remove [a-x]" << std::endl;
-            std::cin >> input;
-            i = input - 97;
-            if(i >= 0 && i <= 23 && gameMap->boardFields[i].isOccupied() && gameMap->boardFields[i].getPlayerID() == VALUE::PLAYER_1){
-                gameMap->boardFields[i].deoccupy();
-                std::cout << "Player 1 has lost one piece at the field " << input << std::endl;
-                gameMap->printMapTerminal();
-                break;
-            } else {
-                std::cout << "Invalid choice! Try again..." << std::endl;
-            }
+
+    std::cout << player.getName() <<"'s turn:  Choose a field [a-x]: " << std::endl;
+
+    std::cin >> input;
+    i = input - 'a';
+
+    if(!isValidIndex(i) || gameMap->boardFields[i].isOccupied()) {
+        std::cout << "Error: Invalid index or occupied field." << std::endl;
+        return false;
+    }
+    else{
+        gameMap->boardFields[i].occupy(player.id());
+        player.incNumOfPieces();
+
+        std::cout << player.getName() << " occupied field " << input << std::endl;
+
+        gameMap->printMapTerminal();
+
+        if(checkMills(i))
+            removeOpponentsPiece(player);
+
+
+    }
+    return true;
+}
+
+bool Game::makePlayMove(HumanPlayer &player)
+{
+    char input;
+    int i;
+    std::cout <<player.getName() <<"'s turn: Choose a piece to move: [a-x]: " << std::endl;
+    std::cin >> input;
+    i = input - 'a';
+
+    if(isValidToSelect(i, player)){
+
+        std::cout << player.getName()<<"'s turn: Choose field you want to move to selected piece: [a-x]: " << std::endl;
+        std::cin >> input;
+        const int j = input-'a';
+
+        // Ukoliko je izabrano polje prazno i sused je polja i
+        if (isValidToMove(i, j)){
+            gameMap->boardFields[i].deoccupy();
+            gameMap->boardFields[j].occupy(player.id() == FIELDSTATE::PLAYER_1? FIELDSTATE::PLAYER_2 : FIELDSTATE::PLAYER_1);
+            std::cout << "Piece moved from " << input << " to "<< input<< std::endl;
+
+            if (checkMills(j))
+                removeOpponentsPiece(player);
+
+        }else if(gameMap->boardFields[j].isOccupied()) {
+            std::cout<< "Error: field "<< input << "is already occupied! Try again!"<< std::endl;
+            return false;
+
+        }else{
+            std::cout<< "Error : You can only move piece to neighbour field"<<std::endl;
+            return false;
         }
+       gameMap->printMapTerminal();
+
+    } else {
+        std::cout << "Invalid choice! Try again..." << std::endl;
+        return false;
+    }
+    return true;
+}
+
+/*
+    Izmenjeno ponavljanje koda u while petlji
+*/
+
+void Game::removeOpponentsPiece(HumanPlayer& player){
+    std::cout << "MILL!" << std::endl;
+    int index;
+    char input_index;
+
+    while(true){
+            std::cout <<player.getName()<<"'s turn: Choose an oppnents piece to remove [a-x]:" << std::endl;
+            std::cin >> input_index;
+            index = input_index - 'a';
+
+            if(isValidToRemove(index, player)){
+                gameMap->boardFields[index].deoccupy();
+                player.id() == FIELDSTATE::PLAYER_1? m_p2.decNumOfPieces() : m_p1.decNumOfPieces();
+                std::cout << "Player has lost one piece at the field " << input_index << std::endl;
+                gameMap->printMapTerminal();
+                break;
+            } else {
+                std::cout << "Invalid choice! Try again..." << std::endl;
+            }
     }
 }
+/*
+    Implementacija metoda koji proverava da li je igra zavrsena
+    Igra nije gotova sve dok jedan od igraca ne ostane sa dve figurice
+*/
+
+bool Game::gameOver()
+{
+    if (m_p1.getNumOfPieces() == 2)
+    {
+        setWinner(FIELDSTATE::PLAYER_2);
+        return true;
+    }else if(m_p2.getNumOfPieces() == 2)
+    {
+        setWinner(FIELDSTATE::PLAYER_1);
+        return true;
+    }
+    return false;
+}
+
+/*
+    setter za winnera
+*/
+void Game::setWinner(FIELDSTATE winner){
+    this->winner = winner;
+}
+
+
+bool Game::isValidIndex(int i) const{
+    return (i>=0 && i<NUM_OF_FIELDS);
+}
+
+FIELDSTATE Game::getWinner() const{
+    return winner;
+}
+
+/*
+ *  Implementacija meotde isValidToRemove: provera da li player sme da ukloni figuru sa polja i
+ *  Metoda se poziva kada player napravil Mill
+ *
+ */
+bool Game::isValidToRemove(int i, HumanPlayer &player) const{
+
+
+    // Slucaj kada nije unet dobar indeks
+    if (!isValidIndex(i))
+    {
+        std::cout << "Error in index" << std::endl;
+        return false;
+    }
+    // ako polje nije prazno i ne zauzima ga player
+    if(gameMap->boardFields[i].isOccupied() && gameMap->boardFields[i].getPlayerID() != player.id())
+    {
+        // Slucaj u kome je izabrano polje suprotnog igraca, polje je dozvoljeno da se ukloni ako:
+        // 1. Ne pripada Millu
+        // 2. Pripada Millu, ali igrac ima jos samo 3 figurice u igri
+        int numOfPieces = player.id() == FIELDSTATE::PLAYER_1? m_p2.getNumOfPieces() : m_p1.getNumOfPieces();
+
+        if (!checkMills(i) || numOfPieces == 3)
+        {
+            return true;
+        }else{
+            std::cout<< "You can't remove piece from the Mill just yet!" << std::endl;
+            return false;
+        }
+
+    }
+    return false;
+}
+
+bool Game::isValidToMove(int from, int to) const{
+
+    if (!isValidIndex(from) || !isValidIndex(to)){
+        return false;
+    }
+
+    auto neighbours = gameMap->boardFields[from].getNeighboursIndices();
+    bool contains = (std::find(neighbours.begin(), neighbours.end(), to) != neighbours.end());
+
+    // Ukoliko je izabrano polje prazno i sused je polja i
+
+    return (!gameMap->boardFields[to].isOccupied() && contains);
+}
+
+bool Game::isValidToSelect(int i, HumanPlayer &player) const{
+
+    return isValidIndex(i) && gameMap->boardFields[i].isOccupied() && gameMap->boardFields[i].getPlayerID() == player.id();
+
+}
+
 
 void Game::setup(){
     if(gameState != GAMESTATE::INIT){
@@ -74,56 +224,28 @@ void Game::setup(){
     m_p1.changeTurn(); //prvi je na potezu igrac 1
     gameMap->printMapTerminal();
 
-    int i;
-    char input;
-    while (gameMap->numofpieces2 < NUM_OF_PIECES){
+    int i=0;
+    while (i <= 2* NUM_OF_PIECES ){
         if (m_p1.turn()){
-            std::cout << "Player 1 turn: Choose a field [a-x]" << std::endl;
-            std::cin >> input;
-            i = input - 97;
-            if(i < 0 || i >23 || gameMap->boardFields[i].isOccupied()){
-                std::cout << "Invalid move! Try again..." << std::endl;
-            }
-            else{
-                gameMap->boardFields[i].occupy(m_p1.id());
-                gameMap->numofpieces1++;
-                std::cout << "Player 1 occupied field " << input << std::endl;
-                gameMap->printMapTerminal();
-                if(checkMills(i)){
-                    removeOpponentsPiece();
-                }
+                while(!makeSetupMove(m_p1)) ;
                 m_p1.changeTurn();
                 m_p2.changeTurn();
-            }
-
+        }else{
+            while(!makeSetupMove(m_p2));
+            m_p1.changeTurn();
+            m_p2.changeTurn();
         }
-        else if (m_p2.turn()){
-            std::cout << "Player 2 turn: Choose a field [a-x]" << std::endl;
-            std::cin >> input;
-            i = input - 97;
-            if(i < 0 || i >23 || gameMap->boardFields[i].isOccupied()){
-                std::cout << "Invalid move! Try again..." << std::endl;
-            }
-            else{
-                gameMap->boardFields[i].occupy(m_p2.id());
-                gameMap->numofpieces2++;
-                std::cout << "Player 2 occupied field " << i << std::endl;
-                gameMap->printMapTerminal();
-                if(checkMills(i)){
-                    removeOpponentsPiece();
-                }
-                m_p2.changeTurn();
-                m_p1.changeTurn();
-            }
-        }
+        i++;
 
     } //end while
     std::cout << "The game has been set up!" << std::endl;
-    std::cout << "Player 1 No. of pieces: " << gameMap->numofpieces1 << std::endl;
-    std::cout << "Player 2 No. of pieces: " << gameMap->numofpieces2 << std::endl;
+    std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
+    std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
 
     gameMap->printMapTerminal();
     gameState = GAMESTATE::PLAY;
+
+
 }
 
 void Game::play(){
@@ -131,4 +253,36 @@ void Game::play(){
         std::cout << "The game is not initialized" << std::endl;
         return;
     }
+    std::cout << "PLAY PART" << std::endl;
+
+    while(!gameOver())
+    {
+
+        if (m_p1.turn())
+        {
+            while(!makePlayMove(m_p1));
+            gameMap->printMapTerminal();
+            m_p1.changeTurn();
+            m_p2.changeTurn();
+
+        }else
+        {
+            while(!makePlayMove(m_p2));
+            gameMap->printMapTerminal();
+            m_p1.changeTurn();
+            m_p2.changeTurn();
+        }
+
+    }// end while
+    std:: cout << "The game is over"<< std::endl;
+    if (getWinner() == FIELDSTATE::PLAYER_1)
+    {
+        std::cout << "PLAYER 1 is the winner" << std::endl;
+    }else if (getWinner() == FIELDSTATE:: PLAYER_2)
+    {
+        std::cout << "PLAYER 1 is the winner" << std::endl;
+    }else{
+        std::cout << "Error"<< std::endl;
+    }
+
 }

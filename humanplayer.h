@@ -2,7 +2,7 @@
 #define HUMANPLAYER_H
 
 #include "GraphicPiece.h"
-
+#include <string>
 
 /*
  * Klasa HumanPlayer
@@ -13,17 +13,24 @@
 class HumanPlayer
 {
 public:
-    HumanPlayer(VALUE playerID);
+    HumanPlayer(FIELDSTATE playerID, std::string name);
+    HumanPlayer(const HumanPlayer& p);
     void changeTurn(); // invertuje bool za turn tog igraca
+    std::string getName() const;
 
     // geteri
     bool turn() const;
-    VALUE id() const;
+    FIELDSTATE id() const;
+    void incNumOfPieces();
+    void decNumOfPieces();
+    int getNumOfPieces() const;
 
 
 private:
-    VALUE m_id;
-    bool m_turn = false;
+    FIELDSTATE m_id;
+    bool m_turn;
+    int numOfPieces;
+    std::string name;
 };
 
 #endif // HUMANPLAYER_H

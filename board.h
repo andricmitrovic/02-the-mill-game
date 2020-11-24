@@ -23,7 +23,6 @@ QT_END_NAMESPACE
 class Board : public QMainWindow
 {
     Q_OBJECT
-    //QPushButton *buttons[24];
 
 
 public:

@@ -23,7 +23,8 @@ HEADERS += \
     field.h \
     game.h \
     gamemap.h \
-    humanplayer.h
+    humanplayer.h \
+    lib.h
 
 FORMS += \
     board.ui

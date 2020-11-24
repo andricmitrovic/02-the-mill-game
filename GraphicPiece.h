@@ -2,13 +2,7 @@
 #define GRAPHIC_PIECE_H
 
 #include "QGraphicsItem"
-
-enum class VALUE
-{
-    EMPTY,
-    PLAYER_1,
-    PLAYER_2
-};
+#include "lib.h"
 
 /*
 Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne metode boundingRect i paint.
@@ -16,17 +10,17 @@ Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne me
 
 class GraphicPiece : public QGraphicsItem {
     public:
-        GraphicPiece(VALUE player, QGraphicsItem* parent = nullptr);
+        GraphicPiece(FIELDSTATE player, QGraphicsItem* parent = nullptr);
         GraphicPiece(QGraphicsItem* parent = nullptr);
 
         QRectF boundingRect () const override;
 
         void paint(QPainter *painter , const QStyleOptionGraphicsItem *option , QWidget *widget) override;
 
-        void set_player(VALUE p);
+        void set_player(FIELDSTATE p);
 
     private:
-        VALUE m_player;
+        FIELDSTATE m_player;
 };
 
 #endif // GRAPHIC_PIECE_H
