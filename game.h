@@ -20,6 +20,7 @@ public:
 
     bool checkMills(unsigned index) const;
     void removeOpponentsPiece(HumanPlayer& player);
+    void removeOpponentsPiece_graphic(HumanPlayer& player, unsigned index);
     bool makeSetupMove(HumanPlayer& player);
     bool makeSetupMove_graphical(HumanPlayer &player, unsigned i);
     bool makePlayMove(HumanPlayer& player);
@@ -34,7 +35,7 @@ public:
 
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();
-    void check_phase1_end();
+    void checkPhase1End();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
 
     // seteri i geteri za ovo sve
@@ -43,6 +44,7 @@ public:
     GameMap         *gameMap;               // i ovo mi treba public
     int             phase1_piece_counter;   // dodao ovo ovde da bi iz boarda znao kada da prekinem prvi deo igre
     GAMESTATE       gameState;
+    bool            mill_occured;
 
 private:  
     FIELDSTATE           winner;

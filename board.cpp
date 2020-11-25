@@ -53,40 +53,52 @@ Board::~Board()
     delete ui;
 }
 
-// Ova funkcija bi trebalo da oboji kvadrat kada se selektuje
-// stavio sam da boji samo u boju prvog igraca radi isprobavanja
+// sve se ovde oko igranja desava, poziva se na klik kvadrata
 
 void Board::onFieldSelection()
 {
-    if( g->gameState == GAMESTATE::INIT)
+    if( g->gameState == GAMESTATE::INIT)        // phase1
     {
-        for (auto item : m_scene.selectedItems()) {
+        for (auto item : m_scene.selectedItems())   // bice jedan item ali ovako treba
+        {
 
             int index = g->gameMap->indexByPos(item->pos());
 
-            if (!g->gameMap->boardFields[index].isOccupied()){
-
+            if(g->mill_occured && g->gameMap->boardFields[index].isOccupied()) // ako se mill desio onda polje mora da bude slobodno, mozda ne mora provera ovde jer ima posle
+            {
                 if (g->m_p1.turn())
                 {
-                    while(!g->makeSetupMove_graphical(g->m_p1, index));
-                    g->m_p1.changeTurn();
-                    g->m_p2.changeTurn();
+                    g->removeOpponentsPiece_graphic(g->m_p1, index);    // ne diramo poteze ovde jer ako dospemo ovde mill je napravio p2 i nakon ukljanja figure od p1, p1 treba da postavi svoju novu
                 }
                 else
                 {
-                    while(!g->makeSetupMove_graphical(g->m_p2, index));
-                    g->m_p1.changeTurn();
-                    g->m_p2.changeTurn();
+                    g->removeOpponentsPiece_graphic(g->m_p2, index);
                 }
+            }
+            else if (!g->mill_occured && !g->gameMap->boardFields[index].isOccupied())  // nema milla i validno je polje onda postavljamo novu figuricu i obrcemo poteze
+            {
 
-                g->check_phase1_end();
-                ui->graphicsView->viewport()->update();
-
-
+                if (g->m_p1.turn())
+                {
+                        while(!g->makeSetupMove_graphical(g->m_p1, index));
+                        g->m_p1.changeTurn();
+                        g->m_p2.changeTurn();
+                }
+                else
+                {
+                        while(!g->makeSetupMove_graphical(g->m_p2, index));
+                        g->m_p1.changeTurn();
+                        g->m_p2.changeTurn();
+                }
             }
 
-            qDebug() << index;
-            qDebug() << item->pos();
+
+                g->checkPhase1End();                  // provera da li smo dosli do kraja igre
+
+                ui->graphicsView->viewport()->update();
+
+                //qDebug() << index;
+                //qDebug() << item->pos();
         }
     }
     else

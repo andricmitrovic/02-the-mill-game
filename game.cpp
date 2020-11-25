@@ -4,7 +4,7 @@
 
 
 Game::Game(HumanPlayer &p1, HumanPlayer &p2)
-    :gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT), winner(FIELDSTATE::EMPTY)
+    :gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT), winner(FIELDSTATE::EMPTY), mill_occured(false)
 {}
 
 Game::~Game()
@@ -60,6 +60,7 @@ bool Game::makeSetupMove(HumanPlayer &player){
     return true;
 }
 
+// Postavlja figuricu na polje i, koje smo dobili iz klika
 bool Game::makeSetupMove_graphical(HumanPlayer &player, unsigned i){
 
     std::cout << player.getName() <<"'s turn:  Choose a field [a-x]: " << std::endl;
@@ -70,15 +71,15 @@ bool Game::makeSetupMove_graphical(HumanPlayer &player, unsigned i){
     }
     else{
         gameMap->boardFields[i].occupy(player.id());
+        phase1_piece_counter--;
         player.incNumOfPieces();
 
         //std::cout << player.getName() << " occupied field " << input << std::endl;
 
         gameMap->printMapTerminal();
 
-        /*if(checkMills(i))
-            removeOpponentsPiece(player);*/
-
+        if(checkMills(i))
+            mill_occured = true;
 
     }
     return true;
@@ -148,6 +149,33 @@ void Game::removeOpponentsPiece(HumanPlayer& player){
                 std::cout << "Invalid choice! Try again..." << std::endl;
             }
     }
+}
+
+// Popraviti ovu funkciju !!!!!!!!!!!!!!!!!!!!!!!!!
+// Kad se desi mill uklanja figuricu igraca na poziciji
+void Game::removeOpponentsPiece_graphic(HumanPlayer& player, unsigned index){
+
+    /*if(isValidToRemove(index, player))
+    {
+                gameMap->boardFields[index].deoccupy();
+                player.id() == FIELDSTATE::PLAYER_1? m_p1.decNumOfPieces() : m_p2.decNumOfPieces();     // ????? Da ne treba mozda ovde obrnuto
+                gameMap->printMapTerminal();
+                mill_occured = false;
+                std::cout << "Player has lost one piece" << std::endl;
+    }
+    else
+    {
+                    std::cout << "Invalid choice! Try again..." << std::endl;
+    }*/
+
+    // !!!!!!!!!!!!!!!!! ne prolazi if gore nz sto !!!!!!!!!!!!!!!!!
+
+    gameMap->boardFields[index].deoccupy();
+    player.id() == FIELDSTATE::PLAYER_1? m_p1.decNumOfPieces() : m_p2.decNumOfPieces();     // ????? Da ne treba mozda ovde obrnuto
+    gameMap->printMapTerminal();
+    mill_occured = false;
+    std::cout << "Player has lost one piece" << std::endl;
+
 }
 /*
     Implementacija metoda koji proverava da li je igra zavrsena
@@ -272,6 +300,7 @@ void Game::setup(){
 
 }
 
+// Inicijalizuje neke gluposti vrv mozemo i bez ovoga, da se stavi u konstruktor npr
 void Game::setup_graphical(){
 
 
@@ -282,13 +311,11 @@ void Game::setup_graphical(){
 
     m_p1.changeTurn(); //prvi je na potezu igrac 1
     phase1_piece_counter = 2* NUM_OF_PIECES;
-
 }
 
-void Game::check_phase1_end()
+// Proverava da li su sve figurice postavljene i ako jesu zavrsava phase1
+void Game::checkPhase1End()
 {
-    phase1_piece_counter--;
-
     if(phase1_piece_counter == 0)
     {
         std::cout << "The game has been set up!" << std::endl;
