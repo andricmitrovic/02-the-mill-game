@@ -60,6 +60,30 @@ bool Game::makeSetupMove(HumanPlayer &player){
     return true;
 }
 
+bool Game::makeSetupMove_graphical(HumanPlayer &player, unsigned i){
+
+    std::cout << player.getName() <<"'s turn:  Choose a field [a-x]: " << std::endl;
+
+    if(!isValidIndex(i) || gameMap->boardFields[i].isOccupied()) {
+        std::cout << "Error: Invalid index or occupied field." << std::endl;
+        return false;
+    }
+    else{
+        gameMap->boardFields[i].occupy(player.id());
+        player.incNumOfPieces();
+
+        //std::cout << player.getName() << " occupied field " << input << std::endl;
+
+        gameMap->printMapTerminal();
+
+        /*if(checkMills(i))
+            removeOpponentsPiece(player);*/
+
+
+    }
+    return true;
+}
+
 bool Game::makePlayMove(HumanPlayer &player)
 {
     char input;
@@ -246,6 +270,34 @@ void Game::setup(){
     gameState = GAMESTATE::PLAY;
 
 
+}
+
+void Game::setup_graphical(){
+
+
+    if(gameState != GAMESTATE::INIT){
+        std::cout << "The has already been initialized" << std::endl;
+        return;
+    }
+
+    m_p1.changeTurn(); //prvi je na potezu igrac 1
+    phase1_piece_counter = 2* NUM_OF_PIECES;
+
+}
+
+void Game::check_phase1_end()
+{
+    phase1_piece_counter--;
+
+    if(phase1_piece_counter == 0)
+    {
+        std::cout << "The game has been set up!" << std::endl;
+        std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
+        std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
+
+        gameMap->printMapTerminal();
+        gameState = GAMESTATE::PLAY;
+    }
 }
 
 void Game::play(){

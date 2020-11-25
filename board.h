@@ -14,6 +14,7 @@
 
 #include <vector>
 #include "gamemap.h"
+#include "game.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -34,8 +35,9 @@ public slots:
     void onFieldSelection();
 
 private:
-    Ui::Board *ui;
-    GameMap *gm;
-    QGraphicsScene m_scene;
+    Ui::Board       *ui;
+    //GameMap         *gm;
+    Game            *g;
+    QGraphicsScene  m_scene;
 };
 #endif // BOARD_H

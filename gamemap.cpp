@@ -68,21 +68,6 @@ GameMap::GameMap()
 }
 
 void GameMap::printMap(QGraphicsScene &scene) {
-//     !!!!!!!!!!!!!!!!!!!  vestacki sam stavio samo da proverim kako izgleda
-    //boardFields[0].occupy(VALUE::PLAYER_1);
-    //boardFields[1].occupy(VALUE::PLAYER_2);
-
-    // Dodajemo na scenu svaku piece i u slucaju da je igracev onda moze da se pomera, vestacki isto samo da vidimo da radi
-    // !!!!!!!!!!!!!!!! Treba ovo izmeniti da ne ostane rupa u tabli i eventove da ugrabimo i da ne moze player1 da menja player2 figure i obratno !!!!!!!!!!!!!!!!!!!!!
-//    for( int i=0; i<=23; i++)
-//    {
-//        scene.addItem(boardFields[i].piece);
-//        if(boardFields[i].getPlayerID()!=VALUE::EMPTY)
-//        {
-//                //boardFields[i].piece->setFlag(QGraphicsItem::ItemIsMovable);
-//                boardFields[i].piece->setFlag(QGraphicsItem::ItemIsSelectable);
-//        }
-//    }
 
     for (unsigned i = 0u; i < NUM_OF_FIELDS; i++) {
         scene.addItem(boardFields[i].piece);
@@ -91,34 +76,35 @@ void GameMap::printMap(QGraphicsScene &scene) {
 
     // !!!!!! Ovo ce morati pametnije nekako da bi bilo skalabilno u nekom trenutku !!!!!!
     boardFields[0].piece->setPos(0, 1 * 30);
-    boardFields[1].piece->setPos(0, 7 * 30);
-    boardFields[2].piece->setPos(0, 13 * 30);
+    boardFields[1].piece->setPos(6 * 30, 1 * 30);
+    boardFields[2].piece->setPos(12 * 30, 1 * 30);
 
     boardFields[3].piece->setPos(2 * 30, 3 * 30);
-    boardFields[4].piece->setPos(2 * 30, 7 * 30);
-    boardFields[5].piece->setPos(2 * 30, 11 * 30);
+    boardFields[4].piece->setPos(6 * 30, 3 * 30);
+    boardFields[5].piece->setPos(10 * 30, 3 * 30);
 
     boardFields[6].piece->setPos(4 * 30, 5 * 30);
-    boardFields[7].piece->setPos(4 * 30, 7 * 30);
-    boardFields[8].piece->setPos(4 * 30, 9 * 30);
+    boardFields[7].piece->setPos(6 * 30, 5 * 30);
+    boardFields[8].piece->setPos(8 * 30, 5 * 30);
 
-    boardFields[9].piece->setPos(6 * 30, 1 * 30);
-    boardFields[10].piece->setPos(6 * 30, 3 * 30);
-    boardFields[11].piece->setPos(6 * 30, 5 * 30);
-    boardFields[12].piece->setPos(6 * 30, 9 * 30);
-    boardFields[13].piece->setPos(6 * 30, 11 * 30);
-    boardFields[14].piece->setPos(6 * 30, 13 * 30);
 
-    boardFields[15].piece->setPos(8 * 30, 5 * 30);
-    boardFields[16].piece->setPos(8 * 30, 7 * 30);
+    boardFields[9].piece->setPos(0, 7 * 30);
+    boardFields[10].piece->setPos(2 * 30, 7 * 30);
+    boardFields[11].piece->setPos(4 * 30, 7 * 30);
+    boardFields[12].piece->setPos(8 * 30, 7 * 30);
+    boardFields[13].piece->setPos(10 * 30, 7 * 30);
+    boardFields[14].piece->setPos(12 * 30, 7 * 30);
+
+    boardFields[15].piece->setPos(4 * 30, 9 * 30);
+    boardFields[16].piece->setPos(6 * 30, 9 * 30);
     boardFields[17].piece->setPos(8 * 30, 9 * 30);
 
-    boardFields[18].piece->setPos(10 * 30, 3 * 30);
-    boardFields[19].piece->setPos(10 * 30, 7 * 30);
+    boardFields[18].piece->setPos(2 * 30, 11 * 30);
+    boardFields[19].piece->setPos(6 * 30, 11 * 30);
     boardFields[20].piece->setPos(10 * 30, 11 * 30);
 
-    boardFields[21].piece->setPos(12 * 30, 1 * 30);
-    boardFields[22].piece->setPos(12 * 30, 7 * 30);
+    boardFields[21].piece->setPos(0, 13 * 30);
+    boardFields[22].piece->setPos(6 * 30, 13 * 30);
     boardFields[23].piece->setPos(12 * 30, 13 * 30);
 }
 

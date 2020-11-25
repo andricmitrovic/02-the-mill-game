@@ -21,6 +21,7 @@ public:
     bool checkMills(unsigned index) const;
     void removeOpponentsPiece(HumanPlayer& player);
     bool makeSetupMove(HumanPlayer& player);
+    bool makeSetupMove_graphical(HumanPlayer &player, unsigned i);
     bool makePlayMove(HumanPlayer& player);
     bool gameOver();
     void setWinner(FIELDSTATE winner);
@@ -32,13 +33,18 @@ public:
     bool isValidToOccupy(int i, HumanPlayer& player) const;
 
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
+    void setup_graphical();
+    void check_phase1_end();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
 
-private:
-    GameMap         *gameMap;
-    HumanPlayer     m_p1;
-    HumanPlayer     m_p2;
+    // seteri i geteri za ovo sve
+    HumanPlayer     m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima
+    HumanPlayer     m_p2;                   // public
+    GameMap         *gameMap;               // i ovo mi treba public
+    int             phase1_piece_counter;   // dodao ovo ovde da bi iz boarda znao kada da prekinem prvi deo igre
     GAMESTATE       gameState;
+
+private:  
     FIELDSTATE           winner;
 };
 
