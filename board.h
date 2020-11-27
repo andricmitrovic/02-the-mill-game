@@ -33,6 +33,7 @@ public:
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
 public slots:
     void onFieldSelection();
+    void writeGameMessage();
 
 private:
     Ui::Board       *ui;

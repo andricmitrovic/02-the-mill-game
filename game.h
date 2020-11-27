@@ -24,6 +24,7 @@ public:
     bool makeSetupMove(HumanPlayer& player);
     bool makeSetupMove_graphical(HumanPlayer &player, unsigned i);
     bool makePlayMove(HumanPlayer& player);
+    bool makePlayMove_graphical(HumanPlayer &player, unsigned moveFrom, unsigned moveTo);
     bool gameOver();
     void setWinner(FIELDSTATE winner);
     bool isValidIndex(int i) const;
@@ -38,6 +39,10 @@ public:
     void checkPhase1End();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
 
+    QString getMessage() const; //getter za message
+    void setMesssage(const std::string &msg); //setter za message
+
+
     // seteri i geteri za ovo sve
     HumanPlayer     m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima
     HumanPlayer     m_p2;                   // public
@@ -46,8 +51,11 @@ public:
     GAMESTATE       gameState;
     bool            mill_occured;
 
+
+
 private:  
-    FIELDSTATE           winner;
+    FIELDSTATE      winner;
+    QString         message;
 };
 
 #endif // GAME_H

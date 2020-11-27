@@ -50,6 +50,7 @@ bool Game::makeSetupMove(HumanPlayer &player){
 
         std::cout << player.getName() << " occupied field " << input << std::endl;
 
+
         gameMap->printMapTerminal();
 
         if(checkMills(i))
@@ -64,9 +65,11 @@ bool Game::makeSetupMove(HumanPlayer &player){
 bool Game::makeSetupMove_graphical(HumanPlayer &player, unsigned i){
 
     std::cout << player.getName() <<"'s turn:  Choose a field [a-x]: " << std::endl;
+    setMesssage(player.getName() + "'s turn:  Choose a field [a-x]: ");
 
     if(!isValidIndex(i) || gameMap->boardFields[i].isOccupied()) {
         std::cout << "Error: Invalid index or occupied field." << std::endl;
+        setMesssage("Error: Invalid index or occupied field.");
         return false;
     }
     else{
@@ -75,6 +78,7 @@ bool Game::makeSetupMove_graphical(HumanPlayer &player, unsigned i){
         player.incNumOfPieces();
 
         //std::cout << player.getName() << " occupied field " << input << std::endl;
+        setMesssage(player.getName() + " occupied a field." );
 
         gameMap->printMapTerminal();
 
@@ -125,6 +129,35 @@ bool Game::makePlayMove(HumanPlayer &player)
     return true;
 }
 
+bool Game::makePlayMove_graphical(HumanPlayer &player, unsigned moveFrom, unsigned moveTo)
+{
+    setMesssage(player.getName() + "'s turn: Choose a piece to move!");
+
+    if(isValidToSelect(moveFrom, player)){
+        // Ukoliko je izabrano polje prazno i sused je polja i
+        if (isValidToMove(moveFrom, moveTo)){
+            gameMap->boardFields[moveFrom].deoccupy();
+            gameMap->boardFields[moveTo].occupy(player.id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
+
+            if (checkMills(moveTo))
+                removeOpponentsPiece_graphic(player, moveTo);
+
+        } else if(gameMap->boardFields[moveTo].isOccupied()) {
+            setMesssage("Error! Field is already occupied. Try again...");
+            return false;
+
+        } else{
+            setMesssage("You can only move piece to neighbour field ");
+            return false;
+        }
+
+    } else {
+        setMesssage("Invalid choice! Try again...");
+        return false;
+    }
+    return true;
+}
+
 /*
     Izmenjeno ponavljanje koda u while petlji
 */
@@ -170,11 +203,13 @@ void Game::removeOpponentsPiece_graphic(HumanPlayer& player, unsigned index){
 
     // !!!!!!!!!!!!!!!!! ne prolazi if gore nz sto !!!!!!!!!!!!!!!!!
 
+    setMesssage("MILL! Choose an opponent's piece to remove");
     gameMap->boardFields[index].deoccupy();
-    player.id() == FIELDSTATE::PLAYER_1? m_p1.decNumOfPieces() : m_p2.decNumOfPieces();     // ????? Da ne treba mozda ovde obrnuto
+    player.id() == FIELDSTATE::PLAYER_1? m_p2.decNumOfPieces() : m_p1.decNumOfPieces();     // ????? Da ne treba mozda ovde obrnuto
     gameMap->printMapTerminal();
     mill_occured = false;
     std::cout << "Player has lost one piece" << std::endl;
+    setMesssage("Player " + player.getName() + " has lost a piece!");
 
 }
 /*
@@ -306,6 +341,7 @@ void Game::setup_graphical(){
 
     if(gameState != GAMESTATE::INIT){
         std::cout << "The has already been initialized" << std::endl;
+        setMesssage("The game has already been initialized");
         return;
     }
 
@@ -319,6 +355,7 @@ void Game::checkPhase1End()
     if(phase1_piece_counter == 0)
     {
         std::cout << "The game has been set up!" << std::endl;
+        setMesssage("The game has been set up!");
         std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
         std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
 
@@ -364,4 +401,16 @@ void Game::play(){
         std::cout << "Error"<< std::endl;
     }
 
+}
+
+
+QString Game::getMessage() const
+{
+    return message;
+}
+
+void Game::setMesssage(const std::string &msg)
+{
+    message.clear();
+    message = message.fromStdString(msg);
 }

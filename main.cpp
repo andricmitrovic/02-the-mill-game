@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 /*
   // Testiranje prve faze igre
     HumanPlayer p1(FIELDSTATE::PLAYER_1, std::string("Marija"));
-    HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mrc"));
+    HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mr    c"));
 
     std::cout << p1.getName()<< std::endl;
     Game g = Game(p1, p2);

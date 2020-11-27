@@ -6,7 +6,8 @@
 
 #include "GraphicPiece.h"
 
-
+// indeksi za drugu fazu igre, za sad globalne
+int moveFrom = -1 , moveTo = -1;
 
 Board::Board(QWidget *parent)
     : QMainWindow(parent)
@@ -37,6 +38,9 @@ Board::Board(QWidget *parent)
 
     // povezivanje scene i glavnog prozora radi registrovanja selekcije kvadrata
     connect(&m_scene, &QGraphicsScene::selectionChanged, this, &Board::onFieldSelection);
+    // povezivanje za ispisivanje poruke
+    connect(&m_scene, &QGraphicsScene::selectionChanged, this, &Board::writeGameMessage);
+
 
 
     /* treba pokusati da stavimo view da bude fullscreen, prvo sto nece manuelno iz designa da ode skroz desno,
@@ -57,6 +61,7 @@ Board::~Board()
 
 void Board::onFieldSelection()
 {
+
     if( g->gameState == GAMESTATE::INIT)        // phase1
     {
         for (auto item : m_scene.selectedItems())   // bice jedan item ali ovako treba
@@ -99,12 +104,63 @@ void Board::onFieldSelection()
 
                 //qDebug() << index;
                 //qDebug() << item->pos();
+
+        }
+
+    }
+    else { // ovo je faza 2
+        // uzimamo indexe figure koju pomeramo
+        // i polja na koje je pomeramo
+
+        for (auto item : m_scene.selectedItems()){
+           if (moveFrom == -1){
+               moveFrom = g->gameMap->indexByPos(item->pos()); // uzimamo indeks pozicije sa koje pomeramo
+           } else if (moveFrom != -1 && moveTo == -1) {
+               moveTo = g->gameMap->indexByPos(item->pos()); //uzimamo indeks pozicije na koju pomeramo
+               if (g->m_p1.turn()){
+                               if(!g->makePlayMove_graphical(g->m_p1, moveFrom, moveTo)){
+                                   //ako potez nije validan moramo ponovo da pokupimo indekse
+                                   moveTo = -1;
+                                   moveFrom = -1;
+                               } else {
+                                   g->m_p1.changeTurn();
+                                   g->m_p2.changeTurn();
+                                   ui->graphicsView->viewport()->update();
+                               }
+               } else {
+                               if(!g->makePlayMove_graphical(g->m_p2, moveFrom, moveTo)){
+                                   moveTo = -1;
+                                   moveFrom = -1;
+                               } else {
+                                   g->m_p1.changeTurn();
+                                   g->m_p2.changeTurn();
+                                   ui->graphicsView->viewport()->update();
+                               }
+               }
+               if (g->gameOver()){
+                   if (g->getWinner() == FIELDSTATE::PLAYER_1){
+                               g->setMesssage("Game over! PLAYER 1 is the winner");
+                               return;
+                   } else if (g->getWinner() == FIELDSTATE:: PLAYER_2) {
+                               g->setMesssage("Game over! PLAYER 2 is the winner");
+                               return;
+                   }
+                }
+
+            }
+        } //for
+
+        // resetujemo indekse
+        if (moveFrom != -1 && moveTo != -1){
+            moveFrom = -1;
+            moveTo = -1;
         }
     }
-    else
-    {
-        // nece da mi ispise iz buffera pa sam morao da flushujem
-        std::cout<<"Phase2 to be implemented...."<<std::endl<<std::flush;
-    }
+}
+
+
+void Board::writeGameMessage()
+{
+    ui->leGameMessage->setText(g->getMessage());
 }
 
