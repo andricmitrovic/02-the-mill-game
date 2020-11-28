@@ -15,7 +15,8 @@ SOURCES += \
     gamemap.cpp \
     humanplayer.cpp \
     main.cpp \
-    board.cpp
+    board.cpp \
+    graphicline.cpp
 
 HEADERS += \
     GraphicPiece.h \
@@ -24,7 +25,8 @@ HEADERS += \
     game.h \
     gamemap.h \
     humanplayer.h \
-    lib.h
+    lib.h \
+    graphicline.h
 
 FORMS += \
     board.ui

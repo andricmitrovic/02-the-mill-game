@@ -5,8 +5,8 @@
 #include "GraphicPiece.h"
 
 
-class Field
-{
+class Field {
+
 public:
     Field(unsigned position)
         :player(FIELDSTATE::EMPTY), occupied(false),positionIndex(position)
@@ -30,13 +30,11 @@ public:
     GraphicPiece *piece;              // geter seter i private da bude, a iskreno i ne mora jer se koristi u okviru druge klase samo
 
 private:
-
     FIELDSTATE player;
     bool occupied;
     unsigned positionIndex;
     std::vector<unsigned> neighboursIndices;
     std::pair<std::pair<unsigned, unsigned>, std::pair<unsigned, unsigned>> mills; //Every field has only two mills, which consist of 3 fields.
-
 };
 
 #endif // FIELD_H

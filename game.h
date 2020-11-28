@@ -11,8 +11,7 @@
  *        dva igraca (za sada su oba HumanPlayer)
  */
 
-class Game
-{
+class Game {
 public:
 
     Game(HumanPlayer& p1, HumanPlayer& p2);
@@ -33,15 +32,15 @@ public:
     bool isValidToMove(int from, int to) const;
     bool isValidToSelect(int i, HumanPlayer& player) const;
     bool isValidToOccupy(int i, HumanPlayer& player) const;
+    void changeTurn();
 
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();
     void checkPhase1End();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
 
-    QString getMessage() const; //getter za message
-    void setMesssage(const std::string &msg); //setter za message
-
+    QString getMessage() const;
+    void setMesssage(const std::string &msg);
 
     // seteri i geteri za ovo sve
     HumanPlayer     m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima

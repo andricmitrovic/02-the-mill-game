@@ -21,14 +21,14 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Board; }
 QT_END_NAMESPACE
 
-class Board : public QMainWindow
-{
+class Board : public QMainWindow {
     Q_OBJECT
-
 
 public:
     Board(QWidget *parent = nullptr);
     ~Board();
+
+    Game* getGame();
 
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
 public slots:
@@ -38,7 +38,7 @@ public slots:
 private:
     Ui::Board       *ui;
     //GameMap         *gm;
-    Game            *g;
+    Game            *game;
     QGraphicsScene  m_scene;
 };
 #endif // BOARD_H
