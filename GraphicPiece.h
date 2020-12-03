@@ -1,6 +1,7 @@
 #ifndef GRAPHIC_PIECE_H
 #define GRAPHIC_PIECE_H
 
+#include <QCoreApplication>
 #include "QGraphicsItem"
 #include "lib.h"
 
@@ -10,14 +11,17 @@ Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne me
 
 class GraphicPiece : public QGraphicsItem {
     public:
-        GraphicPiece(FIELDSTATE player, QGraphicsItem* parent = nullptr);
-        GraphicPiece(QGraphicsItem* parent = nullptr);
+
+        void set_player(FIELDSTATE p);
 
         QRectF boundingRect () const override;
 
+        GraphicPiece(QGraphicsItem* parent = nullptr);
+
+        GraphicPiece(FIELDSTATE player, QGraphicsItem* parent = nullptr);
+
         void paint(QPainter *painter , const QStyleOptionGraphicsItem *option , QWidget *widget) override;
 
-        void set_player(FIELDSTATE p);
 
     private:
         FIELDSTATE m_player;

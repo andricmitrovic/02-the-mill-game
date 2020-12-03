@@ -10,9 +10,11 @@ Klasa za crtanje figurice, nasledjuje QGraphicsItem i ove dve cisto virtuelne me
 
 class GraphicLine : public QGraphicsItem {
     public:
-        GraphicLine(QGraphicsItem* parent = nullptr, float width = 3, float height = 3);
+
         QRectF boundingRect () const override;
+        GraphicLine(QGraphicsItem* parent = nullptr, float width = 3, float height = 3);
         void paint(QPainter *painter , const QStyleOptionGraphicsItem *option , QWidget *widget) override;
+
         float getWidth() const;
         float getHeight() const;
 

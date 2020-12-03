@@ -1,20 +1,19 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <QMainWindow>
 #include <QLabel>
 #include <QWidget>
+#include <QHBoxLayout>
+#include <QMainWindow>
 #include <QPushButton>
 #include <QGridLayout>
 #include <QSignalMapper>
 #include <QGraphicsScene>
 #include <QGraphicsTextItem>
-#include <QHBoxLayout>
-#include <QPixmap>
 
 #include <vector>
-#include "gamemap.h"
 #include "game.h"
+#include "gamemap.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -31,13 +30,14 @@ public:
     Game* getGame();
 
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
+
 public slots:
     void onFieldSelection();
     void writeGameMessage();
 
 private:
     Ui::Board       *ui;
-    //GameMap         *gm;
+
     Game            *game;
     QGraphicsScene  m_scene;
 };

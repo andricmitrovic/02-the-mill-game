@@ -8,20 +8,24 @@ class GameMap
 {
 public:
     GameMap();
-    // printMap i strPlayer za ispisivanje u terminalu
+    // metode za ispis
+    void printMapTerminal();
+    char strPlayer(unsigned p);
     void printMap(QGraphicsScene &scene);
     void printLines(QGraphicsScene &scene);
     void printFields(QGraphicsScene &scene);
     void printFieldTerminal(int index, bool lettersOnly);
-    void printMapTerminal();
-    char strPlayer(unsigned p);
+
+
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
     void initilizeMills();
     // vraca indeks polja na osnovu pozicije kvadrata
     int indexByPos(QPointF position);
-    std::vector<Field> &getBoardFields();
+
+    // getteri
     int getScale() const;
     int getOffset() const;
+    std::vector<Field> &getBoardFields();
 
 private:
     std::vector<Field> boardFields;
