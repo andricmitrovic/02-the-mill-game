@@ -14,6 +14,7 @@
 #include <vector>
 #include "game.h"
 #include "gamemap.h"
+#include "MyGraphicsScene.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -32,13 +33,15 @@ public:
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
 
 public slots:
-    void onFieldSelection();
+    void onFieldSelection(QPointF);
     void writeGameMessage();
+
+
 
 private:
     Ui::Board       *ui;
 
     Game            *game;
-    QGraphicsScene  m_scene;
+    MyGraphicsScene  m_scene;
 };
 #endif // BOARD_H

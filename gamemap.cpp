@@ -122,7 +122,7 @@ void GameMap::printLines(QGraphicsScene &scene){
 void GameMap::printFields(QGraphicsScene &scene){
     for (unsigned i = 0u; i < NUM_OF_FIELDS; i++) {
         scene.addItem(boardFields[i].piece);
-        boardFields[i].piece -> setFlag(QGraphicsItem::ItemIsSelectable);
+        //boardFields[i].piece -> setFlag(QGraphicsItem::ItemIsSelectable);
     }
 
     boardFields[0].piece -> setPos(0, 1 * scale);

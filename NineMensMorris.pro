@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     GraphicPiece.cpp \
+    MyGraphicsScene.cpp \
     field.cpp \
     game.cpp \
     gamemap.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     GraphicPiece.h \
+    MyGraphicsScene.h \
     board.h \
     field.h \
     game.h \
@@ -33,8 +35,8 @@ FORMS += \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/binq
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ../NineMensMoris/img/circle.png
+    ../NineMensMorris/images/circle.jpg

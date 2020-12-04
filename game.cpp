@@ -46,7 +46,7 @@ bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i) {
         //std::cout << player.getName() << " occupied field " << input << std::endl;
         setMessage(player.getName() + " occupied a field.");
 
-        gameMap -> printMapTerminal();
+        //gameMap -> printMapTerminal();
 
         if (checkMills(i))
             mill_occured = true;
@@ -244,7 +244,7 @@ bool Game::checkPhase1End() {
         std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
         std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
 
-        gameMap -> printMapTerminal();
+        //gameMap -> printMapTerminal();
         gameState = GAMESTATE::PLAY;
         return true;
     }

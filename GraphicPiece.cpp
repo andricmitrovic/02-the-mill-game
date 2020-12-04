@@ -22,13 +22,13 @@ void GraphicPiece::paint(QPainter * painter,
 
     if (m_player == FIELDSTATE::EMPTY){
 
-        QImage image = QImage(QString("../images/circle.jpg"));
+        QImage image = QImage(QString("../NineMensMorris/images/circle.jpg"));
         painter->drawImage(boundingRect(), image);
      }
     else if (m_player == FIELDSTATE::PLAYER_1)
-        painter->drawImage(boundingRect(), QImage(QString("../images/blue_circle.png")));
+        painter->drawImage(boundingRect(), QImage(QString("../NineMensMorris/images/blue_circle.png")));
     else if (m_player == FIELDSTATE::PLAYER_2)
-        painter->drawImage(boundingRect(), QImage(QString("../images/red_circle.png")));
+        painter->drawImage(boundingRect(), QImage(QString("../NineMensMorris/images/red_circle.png")));
 
 }
 
