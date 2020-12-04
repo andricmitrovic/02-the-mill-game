@@ -30,6 +30,8 @@ public:
 
     Game* getGame();
 
+    void resizeEvent(QResizeEvent* event);
+
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
 
 public slots:
