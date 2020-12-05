@@ -39,4 +39,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/binq
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ../NineMensMorris/images/circle.jpg
+    images/circle.jpg

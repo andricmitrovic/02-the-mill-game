@@ -21,26 +21,63 @@
  *  |           |           |
  *  21 - - - - -22 - - - - - 23*/
 GameMap::GameMap() {
-    // Inicijalizacija polja na tabeli
-    for (int i = 0; i < NUM_OF_FIELDS; i++) {
-        boardFields.push_back(Field(i));
-    }
-
     scale = 30;
     offset = scale / 2 - 1;
 
+    initializeFields();
+    initializeLines();
+    initilizeMills();
+}
+
+void GameMap::printMap(QGraphicsScene & scene) {
+    for (auto item: scene.items()) {
+        scene.removeItem(item);
+    }
+    initializeLines();
+    printLines(scene);
+    printFields(scene);
+}
+
+void GameMap::printLines(QGraphicsScene & scene) {
+    for (int i = 0; i < NUM_OF_LINES; i++) {
+        scene.addItem(lines[i]);
+    }
+
+    lines[0] -> setPos(offset, scale + offset);
+    lines[1] -> setPos(0 + offset, 13 * scale + offset);
+    lines[2] -> setPos(offset, scale + offset);
+    lines[3] -> setPos(12 * scale + offset, scale + offset);
+
+    lines[4] -> setPos(2 * scale + offset, 3 * scale + offset);
+    lines[5] -> setPos(2 * scale + offset, 11 * scale + offset);
+    lines[6] -> setPos(2 * scale + offset, 3 * scale + offset);
+    lines[7] -> setPos(10 * scale + offset, 3 * scale + offset);
+
+    lines[8] -> setPos(4 * scale + offset, 5 * scale + offset);
+    lines[9] -> setPos(4 * scale + offset, 9 * scale + offset);
+    lines[10] -> setPos(4 * scale + offset, 5 * scale + offset);
+    lines[11] -> setPos(8 * scale + offset, 5 * scale + offset);
+
+    lines[12] -> setPos(offset, 7 * scale + offset);
+    lines[13] -> setPos(8 * scale + offset, 7 * scale + offset);
+    lines[14] -> setPos(6 * scale + offset, scale + offset);
+    lines[15] -> setPos(6 * scale + offset, 9 * scale + offset);
+}
+
+void GameMap::initializeLines() {
+    lines.clear();
     lines.push_back(new GraphicLine(nullptr, 12 * scale, 3));
-    lines.push_back(new GraphicLine(nullptr, 12 * scale, 3));
+    lines.push_back(new GraphicLine(nullptr, 12 * scale + 3, 3));
     lines.push_back(new GraphicLine(nullptr, 3, 12 * scale));
     lines.push_back(new GraphicLine(nullptr, 3, 12 * scale));
 
     lines.push_back(new GraphicLine(nullptr, 8 * scale, 3));
-    lines.push_back(new GraphicLine(nullptr, 8 * scale, 3));
+    lines.push_back(new GraphicLine(nullptr, 8 * scale + 3, 3));
     lines.push_back(new GraphicLine(nullptr, 3, 8 * scale));
     lines.push_back(new GraphicLine(nullptr, 3, 8 * scale));
 
     lines.push_back(new GraphicLine(nullptr, 4 * scale, 3));
-    lines.push_back(new GraphicLine(nullptr, 4 * scale, 3));
+    lines.push_back(new GraphicLine(nullptr, 4 * scale + 3, 3));
     lines.push_back(new GraphicLine(nullptr, 3, 4 * scale));
     lines.push_back(new GraphicLine(nullptr, 3, 4 * scale));
 
@@ -48,9 +85,51 @@ GameMap::GameMap() {
     lines.push_back(new GraphicLine(nullptr, 4 * scale, 3));
     lines.push_back(new GraphicLine(nullptr, 3, 4 * scale));
     lines.push_back(new GraphicLine(nullptr, 3, 4 * scale));
+}
 
+void GameMap::printFields(QGraphicsScene & scene) {
+    for (int i = 0; i < NUM_OF_FIELDS; i++) {
+        scene.addItem(boardFields[i].piece);
+    }
 
+    float fieldOffset = offset - DEFAULT_SCALE / 2.0 + 1;
 
+    boardFields[0].piece -> setPos(0 + fieldOffset, 1 * scale + fieldOffset);
+    boardFields[1].piece -> setPos(6 * scale + fieldOffset, 1 * scale + fieldOffset);
+    boardFields[2].piece -> setPos(12 * scale + fieldOffset, 1 * scale + fieldOffset);
+
+    boardFields[3].piece -> setPos(2 * scale + fieldOffset, 3 * scale + fieldOffset);
+    boardFields[4].piece -> setPos(6 * scale + fieldOffset, 3 * scale + fieldOffset);
+    boardFields[5].piece -> setPos(10 * scale + fieldOffset, 3 * scale + fieldOffset);
+
+    boardFields[6].piece -> setPos(4 * scale + fieldOffset, 5 * scale + fieldOffset);
+    boardFields[7].piece -> setPos(6 * scale + fieldOffset, 5 * scale + fieldOffset);
+    boardFields[8].piece -> setPos(8 * scale + fieldOffset, 5 * scale + fieldOffset);
+
+    boardFields[9].piece -> setPos(0 + fieldOffset, 7 * scale + fieldOffset);
+    boardFields[10].piece -> setPos(2 * scale + fieldOffset, 7 * scale + fieldOffset);
+    boardFields[11].piece -> setPos(4 * scale + fieldOffset, 7 * scale + fieldOffset);
+    boardFields[12].piece -> setPos(8 * scale + fieldOffset, 7 * scale + fieldOffset);
+    boardFields[13].piece -> setPos(10 * scale + fieldOffset, 7 * scale + fieldOffset);
+    boardFields[14].piece -> setPos(12 * scale + fieldOffset, 7 * scale + fieldOffset);
+
+    boardFields[15].piece -> setPos(4 * scale + fieldOffset, 9 * scale + fieldOffset);
+    boardFields[16].piece -> setPos(6 * scale + fieldOffset, 9 * scale + fieldOffset);
+    boardFields[17].piece -> setPos(8 * scale + fieldOffset, 9 * scale + fieldOffset);
+
+    boardFields[18].piece -> setPos(2 * scale + fieldOffset, 11 * scale + fieldOffset);
+    boardFields[19].piece -> setPos(6 * scale + fieldOffset, 11 * scale + fieldOffset);
+    boardFields[20].piece -> setPos(10 * scale + fieldOffset, 11 * scale + fieldOffset);
+
+    boardFields[21].piece -> setPos(0 + fieldOffset, 13 * scale + fieldOffset);
+    boardFields[22].piece -> setPos(6 * scale + fieldOffset, 13 * scale + fieldOffset);
+    boardFields[23].piece -> setPos(12 * scale + fieldOffset, 13 * scale + fieldOffset);
+}
+
+void GameMap::initializeFields() {
+    for (int i = 0; i < NUM_OF_FIELDS; i++) {
+        boardFields.push_back(Field(i));
+    }
     // Azuriranje liste suseda za svako polje
 
     boardFields[0].addNeighboursIndices(1, 9);
@@ -84,77 +163,6 @@ GameMap::GameMap() {
     boardFields[21].addNeighboursIndices(9, 22);
     boardFields[22].addNeighboursIndices(19, 21, 23);
     boardFields[23].addNeighboursIndices(14, 22);
-
-    initilizeMills();
-}
-
-void GameMap::printMap(QGraphicsScene & scene) {
-    printLines(scene);
-    printFields(scene);
-}
-
-void GameMap::printLines(QGraphicsScene &scene){
-    for (int i = 0; i < NUM_OF_LINES; i++){
-        scene.addItem(lines[i]);
-    }
-
-    lines[0]->setPos(offset, scale + offset);
-    lines[1]->setPos(0 , 13 * scale + offset);
-    lines[2]->setPos(offset, scale + offset);
-    lines[3]->setPos(12 * scale + offset, scale + offset);
-
-    lines[4]->setPos(2 * scale + offset, 3 * scale + offset);
-    lines[5]->setPos(2 * scale + offset, 11 * scale + offset);
-    lines[6]->setPos(2 * scale + offset, 3 * scale + offset);
-    lines[7]->setPos(10 * scale + offset, 3 * scale + offset);
-
-    lines[8]->setPos(4 * scale + offset, 5 * scale + offset);
-    lines[9]->setPos(4 * scale + offset, 9 * scale + offset);
-    lines[10]->setPos(4 * scale + offset, 5 * scale + offset);
-    lines[11]->setPos(8 * scale + offset, 5 * scale + offset);
-
-    lines[12]->setPos(offset, 7 * scale + offset);
-    lines[13]->setPos(8 * scale + offset, 7 * scale + offset);
-    lines[14]->setPos(6 * scale + offset, scale + offset);
-    lines[15]->setPos(6 * scale + offset, 9 * scale + 14);
-}
-
-void GameMap::printFields(QGraphicsScene &scene){
-    for (unsigned i = 0u; i < NUM_OF_FIELDS; i++) {
-        scene.addItem(boardFields[i].piece);
-        //boardFields[i].piece -> setFlag(QGraphicsItem::ItemIsSelectable);
-    }
-
-    boardFields[0].piece -> setPos(0, 1 * scale);
-    boardFields[1].piece -> setPos(6 * scale, 1 * scale);
-    boardFields[2].piece -> setPos(12 * scale, 1 * scale);
-
-    boardFields[3].piece -> setPos(2 * scale, 3 * scale);
-    boardFields[4].piece -> setPos(6 * scale, 3 * scale);
-    boardFields[5].piece -> setPos(10 * scale, 3 * scale);
-
-    boardFields[6].piece -> setPos(4 * scale, 5 * scale);
-    boardFields[7].piece -> setPos(6 * scale, 5 * scale);
-    boardFields[8].piece -> setPos(8 * scale, 5 * scale);
-
-    boardFields[9].piece -> setPos(0, 7 * scale);
-    boardFields[10].piece -> setPos(2 * scale, 7 * scale);
-    boardFields[11].piece -> setPos(4 * scale, 7 * scale);
-    boardFields[12].piece -> setPos(8 * scale, 7 * scale);
-    boardFields[13].piece -> setPos(10 * scale, 7 * scale);
-    boardFields[14].piece -> setPos(12 * scale, 7 * scale);
-
-    boardFields[15].piece -> setPos(4 * scale, 9 * scale);
-    boardFields[16].piece -> setPos(6 * scale, 9 * scale);
-    boardFields[17].piece -> setPos(8 * scale, 9 * scale);
-
-    boardFields[18].piece -> setPos(2 * scale, 11 * scale);
-    boardFields[19].piece -> setPos(6 * scale, 11 * scale);
-    boardFields[20].piece -> setPos(10 * scale, 11 * scale);
-
-    boardFields[21].piece -> setPos(0, 13 * scale);
-    boardFields[22].piece -> setPos(6 * scale, 13 * scale);
-    boardFields[23].piece -> setPos(12 * scale, 13 * scale);
 }
 
 void GameMap::printFieldTerminal(int index, bool lettersOnly) {
@@ -437,68 +445,80 @@ na osnovu pozicije kvadrata
 za sada je hardkodovano, kada osmislimo bolje resenje za pozicije
 prenece se ovde*/
 int GameMap::indexByPos(QPointF position) {
-    if (position.rx() == 0 && position.ry() == scale)
+    if (inVicinity(position.rx(), 0) && inVicinity(position.ry(), scale))
         return 0;
-    if (position.rx() == 6 * scale && position.ry() == scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), scale))
         return 1;
-    if (position.rx() == 12 * scale && position.ry() == scale)
+    if (inVicinity(position.rx(), 12 * scale) && inVicinity(position.ry(), scale))
         return 2;
 
-    if (position.rx() == 2 * scale && position.ry() == 3 * scale)
+    if (inVicinity(position.rx(), 2 * scale) && inVicinity(position.ry(), 3 * scale))
         return 3;
-    if (position.rx() == 6 * scale && position.ry() == 3 * scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), 3 * scale))
         return 4;
-    if (position.rx() == 10 * scale && position.ry() == 3 * scale)
+    if (inVicinity(position.rx(), 10 * scale) && inVicinity(position.ry(), 3 * scale))
         return 5;
 
-    if (position.rx() == 4 * scale && position.ry() == 5 * scale)
+    if (inVicinity(position.rx(), 4 * scale) && inVicinity(position.ry(), 5 * scale))
         return 6;
-    if (position.rx() == 6 * scale && position.ry() == 5 * scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), 5 * scale))
         return 7;
-    if (position.rx() == 8 * scale && position.ry() == 5 * scale)
+    if (inVicinity(position.rx(), 8 * scale) && inVicinity(position.ry(), 5 * scale))
         return 8;
 
-    if (position.rx() == 0 && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 0) && inVicinity(position.ry(), 7 * scale))
         return 9;
-    if (position.rx() == 2 * scale && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 2 * scale) && inVicinity(position.ry(), 7 * scale))
         return 10;
-    if (position.rx() == 4 * scale && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 4 * scale) && inVicinity(position.ry(), 7 * scale))
         return 11;
-    if (position.rx() == 8 * scale && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 8 * scale) && inVicinity(position.ry(), 7 * scale))
         return 12;
-    if (position.rx() == 10 * scale && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 10 * scale) && inVicinity(position.ry(), 7 * scale))
         return 13;
-    if (position.rx() == 12 * scale && position.ry() == 7 * scale)
+    if (inVicinity(position.rx(), 12 * scale) && inVicinity(position.ry(), 7 * scale))
         return 14;
 
-    if (position.rx() == 4 * scale && position.ry() == 9 * scale)
+    if (inVicinity(position.rx(), 4 * scale) && inVicinity(position.ry(), 9 * scale))
         return 15;
-    if (position.rx() == 6 * scale && position.ry() == 9 * scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), 9 * scale))
         return 16;
-    if (position.rx() == 8 * scale && position.ry() == 9 * scale)
+    if (inVicinity(position.rx(), 8 * scale) && inVicinity(position.ry(), 9 * scale))
         return 17;
 
-    if (position.rx() == 2 * scale && position.ry() == 11 * scale)
+    if (inVicinity(position.rx(), 2 * scale) && inVicinity(position.ry(), 11 * scale))
         return 18;
-    if (position.rx() == 6 * scale && position.ry() == 11 * scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), 11 * scale))
         return 19;
-    if (position.rx() == 10 * scale && position.ry() == 11 * scale)
+    if (inVicinity(position.rx(), 10 * scale) && inVicinity(position.ry(), 11 * scale))
         return 20;
 
-    if (position.rx() == 0 && position.ry() == 13 * scale)
+    if (inVicinity(position.rx(), 0) && inVicinity(position.ry(), 13 * scale))
         return 21;
-    if (position.rx() == 6 * scale && position.ry() == 13 * scale)
+    if (inVicinity(position.rx(), 6 * scale) && inVicinity(position.ry(), 13 * scale))
         return 22;
-    if (position.rx() == 12 * scale && position.ry() == 13 * scale)
+    if (inVicinity(position.rx(), 12 * scale) && inVicinity(position.ry(), 13 * scale))
         return 23;
 
     return -1;
 }
 
-std::vector<Field> &GameMap::getBoardFields() {
+bool GameMap::inVicinity(float a, float b) {
+    return a > b - 20 && a < b + 20;
+}
+
+std::vector < Field > & GameMap::getBoardFields() {
     return this -> boardFields;
 }
 
-int GameMap::getScale() const {
+float GameMap::getScale() const {
     return this -> scale;
+}
+
+void GameMap::setScale(float scale) {
+    this -> scale = scale;
+}
+
+void GameMap::recalculateOffset() {
+    this -> offset = scale / 2.0;
 }

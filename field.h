@@ -4,7 +4,6 @@
 #include <vector>
 #include "GraphicPiece.h"
 
-
 class Field {
 
 public:

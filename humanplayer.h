@@ -10,10 +10,9 @@
  *        bool promenljivu turn - da li je taj igrac na redu ili ne
  */
 
-class HumanPlayer
-{
-public:
+class HumanPlayer {
 
+public:
     void changeTurn(); // invertuje bool za turn tog igraca
     std::string getName() const;
     HumanPlayer(const HumanPlayer& p);
@@ -26,12 +25,10 @@ public:
     void decNumOfPieces();
     int getNumOfPieces() const;
 
-
 private:
     bool m_turn;
     FIELDSTATE m_id;
     int numOfPieces;
     std::string name;
 };
-
 #endif // HUMANPLAYER_H
