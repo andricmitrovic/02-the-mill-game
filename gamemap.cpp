@@ -27,6 +27,7 @@ GameMap::GameMap() {
     initializeFields();
     initializeLines();
     initilizeMills();
+    initializePieces();
 }
 
 void GameMap::printMap(QGraphicsScene & scene) {
@@ -36,6 +37,7 @@ void GameMap::printMap(QGraphicsScene & scene) {
     initializeLines();
     printLines(scene);
     printFields(scene);
+    printPieces(scene);
 }
 
 void GameMap::printLines(QGraphicsScene & scene) {
@@ -126,6 +128,36 @@ void GameMap::printFields(QGraphicsScene & scene) {
     boardFields[23].piece -> setPos(12 * scale + fieldOffset, 13 * scale + fieldOffset);
 }
 
+void GameMap::printPieces(QGraphicsScene & scene) {
+  for (unsigned i = 0u; i < NUM_OF_PIECES * 2; i++) {
+    scene.addItem(pieces[i]);
+  }
+
+  float pieceOffset = offset - DEFAULT_SCALE / 2.0 + 1;
+  float xPlayer1 = -3 * scale;
+  float xPlayer2 = 15 * scale;
+
+  pieces[16] -> setPos(xPlayer1, 1 * scale + pieceOffset);
+  pieces[14] -> setPos(xPlayer1, 2 * scale + pieceOffset);
+  pieces[12] -> setPos(xPlayer1, 3 * scale + pieceOffset);
+  pieces[10] -> setPos(xPlayer1, 4 * scale + pieceOffset);
+  pieces[8] -> setPos(xPlayer1, 5 * scale + pieceOffset);
+  pieces[6] -> setPos(xPlayer1, 6 * scale + pieceOffset);
+  pieces[4] -> setPos(xPlayer1, 7 * scale + pieceOffset);
+  pieces[2] -> setPos(xPlayer1, 8 * scale + pieceOffset);
+  pieces[0] -> setPos(xPlayer1, 9 * scale + pieceOffset);
+
+  pieces[17] -> setPos(xPlayer2, 1 * scale + pieceOffset);
+  pieces[15] -> setPos(xPlayer2, 2 * scale + pieceOffset);
+  pieces[13] -> setPos(xPlayer2, 3 * scale + pieceOffset);
+  pieces[11] -> setPos(xPlayer2, 4 * scale + pieceOffset);
+  pieces[9] -> setPos(xPlayer2, 5 * scale + pieceOffset);
+  pieces[7] -> setPos(xPlayer2, 6 * scale + pieceOffset);
+  pieces[5] -> setPos(xPlayer2, 7 * scale + pieceOffset);
+  pieces[3] -> setPos(xPlayer2, 8 * scale + pieceOffset);
+  pieces[1] -> setPos(xPlayer2, 9 * scale + pieceOffset);
+}
+
 void GameMap::initializeFields() {
     for (int i = 0; i < NUM_OF_FIELDS; i++) {
         boardFields.push_back(Field(i));
@@ -163,6 +195,18 @@ void GameMap::initializeFields() {
     boardFields[21].addNeighboursIndices(9, 22);
     boardFields[22].addNeighboursIndices(19, 21, 23);
     boardFields[23].addNeighboursIndices(14, 22);
+}
+
+void GameMap::initializePieces() {
+  FIELDSTATE player = FIELDSTATE::PLAYER_1;
+  for (unsigned i = 0u; i < NUM_OF_PIECES * 2; i++) {
+    pieces.push_back(new Piece(player, nullptr));
+    player = player == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_2 : FIELDSTATE::PLAYER_1;
+  }
+}
+
+void GameMap::removePiece(QGraphicsScene & scene, int index) {
+  scene.removeItem(pieces[index]);
 }
 
 void GameMap::printFieldTerminal(int index, bool lettersOnly) {
@@ -511,8 +555,16 @@ std::vector < Field > & GameMap::getBoardFields() {
     return this -> boardFields;
 }
 
+std::vector<Piece*> &GameMap::getPieces() {
+    return this -> pieces;
+}
+
 float GameMap::getScale() const {
     return this -> scale;
+}
+
+int GameMap::getRemoveIndex() {
+  return this -> removeIndex;
 }
 
 void GameMap::setScale(float scale) {
@@ -521,4 +573,8 @@ void GameMap::setScale(float scale) {
 
 void GameMap::recalculateOffset() {
     this -> offset = scale / 2.0;
+}
+
+void GameMap::incRemoveIndex() {
+  this -> removeIndex++;
 }

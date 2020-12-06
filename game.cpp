@@ -1,7 +1,7 @@
 #include "game.h"
 #include "gamemap.h"
 #include "humanplayer.h"
-
+#include "QGraphicsScene"
 
 Game::Game(HumanPlayer & p1, HumanPlayer & p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
@@ -29,7 +29,7 @@ bool Game::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i) {
+bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsScene &scene) {
 
     //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
     setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
@@ -42,6 +42,8 @@ bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i) {
         gameMap -> getBoardFields()[i].occupy(player.id());
         boardPieces--;
         player.incNumOfPieces();
+        scene.removeItem(gameMap -> getPieces()[gameMap -> getRemoveIndex()]);
+        gameMap -> incRemoveIndex();
 
         //std::cout << player.getName() << " occupied field " << input << std::endl;
         setMessage(player.getName() + " occupied a field.");
@@ -176,7 +178,7 @@ void Game::changeTurn() {
     m_p2.changeTurn();
 }
 
-void Game::playMove(HumanPlayer &player, int index)
+void Game::playMove(HumanPlayer &player, int index, QGraphicsScene &scene)
 {
 
     if (this->mill_occured){
@@ -187,7 +189,7 @@ void Game::playMove(HumanPlayer &player, int index)
     }
 
     if (!checkPhase1End()){
-            if (makeSetupMove_graphical(player, index)){
+            if (makeSetupMove_graphical(player, index, scene)){
                 if (checkMills(index))
                     mill_occured = true;
                 else

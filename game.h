@@ -25,11 +25,10 @@ public:
     void changeTurn();
     bool makePlayMove(HumanPlayer& player);
     bool makeSetupMove(HumanPlayer& player);
-    void playMove(HumanPlayer& player, int index);
+    void playMove(HumanPlayer& player, int index, QGraphicsScene &scene);
     void removeOpponentsPiece(HumanPlayer& player);
 
-
-    bool makeSetupMove_graphical(HumanPlayer &player, unsigned i);
+    bool makeSetupMove_graphical(HumanPlayer &player, unsigned i, QGraphicsScene &scene);
     bool removeOpponentsPiece_graphic(HumanPlayer& player, unsigned index);
     bool makePlayMove_graphical(HumanPlayer &player, unsigned moveFrom, unsigned moveTo);
 

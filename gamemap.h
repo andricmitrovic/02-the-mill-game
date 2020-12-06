@@ -3,6 +3,7 @@
 
 #include "field.h"
 #include "graphicline.h"
+#include "piece.h"
 
 class GameMap {
 
@@ -14,8 +15,11 @@ public:
     void printMap(QGraphicsScene &scene);
     void printLines(QGraphicsScene &scene);
     void printFields(QGraphicsScene &scene);
+    void printPieces(QGraphicsScene &scene);
     void initializeLines();
     void initializeFields();
+    void initializePieces();
+    void removePiece(QGraphicsScene &scene, int index);
     void printFieldTerminal(int index, bool lettersOnly);
 
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
@@ -27,16 +31,22 @@ public:
     // getteri
     float getScale() const;
     float getOffset() const;
+    int getRemoveIndex();
     std::vector<Field> &getBoardFields();
+    std::vector<Piece*> &getPieces();
 
     void setScale(float scale);
     void recalculateOffset();
+    void incRemoveIndex();
+
 
 private:
     std::vector<Field> boardFields;
     std::vector<GraphicLine*> lines;
+    std::vector<Piece*> pieces;
     float scale; //distance between the closest two fields in pixels
     float offset;
+    int removeIndex = 0;
 };
 
 #endif // GAMEMAP_H

@@ -65,7 +65,7 @@ void Board::onFieldSelection(QPointF pos) {
 
     int index = game -> gameMap -> indexByPos(item -> pos());
 
-    game -> playMove(game -> getCurrentPlayer(), index);
+    game -> playMove(game -> getCurrentPlayer(), index, m_scene);
 
     ui -> graphicsView -> viewport() -> update();
 }
