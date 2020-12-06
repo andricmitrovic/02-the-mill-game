@@ -34,7 +34,7 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
     // povezivanje scene i glavnog prozora radi registrovanja selekcije kvadrata
     connect( & m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::onFieldSelection);
     // povezivanje za ispisivanje poruke
-    //connect( & m_scene, & MyGraphicsScene::selectionChanged, this, & Board::writeGameMessage);
+    connect( & m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeGameMessage);
 
     /* treba pokusati da stavimo view da bude fullscreen, prvo sto nece manuelno iz designa da ode skroz desno,
      *  a ima i u prozoru neko glupost dole sto blokira deo viewa vrv moze da se iskljuci negde.*/
@@ -58,12 +58,14 @@ Game * Board::getGame() {
 }
 
 void Board::onFieldSelection(QPointF pos) {
+
     auto item = m_scene.itemAt(pos, QTransform());
     if (item == nullptr)
         return;
+
     int index = game -> gameMap -> indexByPos(item -> pos());
 
-    while (!game -> playMove(game -> getCurrentPlayer(), index));
+    game -> playMove(game -> getCurrentPlayer(), index);
 
     ui -> graphicsView -> viewport() -> update();
 }

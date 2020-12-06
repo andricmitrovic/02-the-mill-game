@@ -52,7 +52,7 @@ bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i) {
             mill_occured = true;
         return true;
     }
-    return false;
+
 }
 
 
@@ -168,7 +168,6 @@ bool Game::isValidToSelect(int i, HumanPlayer & player) const {
 }
 
 bool Game::isValidToOccupy(int i, HumanPlayer & player) const {
-
     return false;
 }
 
@@ -177,18 +176,14 @@ void Game::changeTurn() {
     m_p2.changeTurn();
 }
 
-bool Game::playMove(HumanPlayer &player, int index)
+void Game::playMove(HumanPlayer &player, int index)
 {
 
     if (this->mill_occured){
-          std::cout<< "MILL in playGame"<<std::endl;
-          if (removeOpponentsPiece_graphic(player, index)){
+          std::cout<< "Mill in playGame"<<std::endl;
+          if (removeOpponentsPiece_graphic(player, index))
                 this->changeTurn();
-                return true;
-           }
-           else{
-               return false; // ukoliko je remove vratilo false
-           }
+          return ;
     }
 
     if (!checkPhase1End()){
@@ -197,9 +192,7 @@ bool Game::playMove(HumanPlayer &player, int index)
                     mill_occured = true;
                 else
                     this->changeTurn();
-                return true;
-             }else
-                return false;
+            }
     }else if (!gameOver()){
         if (moveFrom == -1){
             if (isValidToSelect(index, player))
@@ -207,16 +200,24 @@ bool Game::playMove(HumanPlayer &player, int index)
         }else{ // moveFrom != -1
             if (makePlayMove_graphical(player, moveFrom, index)){
                 moveFrom = -1;
-                return true;
+                if (checkMills(index))
+                    mill_occured = true;
+                else
+                    this->changeTurn();
+
+            }else{
+                if (gameMap->getBoardFields()[index].getPlayerID() == player.id()){
+                    moveFrom = index;
+
+                }
             }
 
         }
     }else {
         setMessage("Game over!");
         setWinner(m_p1.getNumOfPieces()<m_p2.getNumOfPieces()? FIELDSTATE::PLAYER_2: FIELDSTATE::PLAYER_1);
+        std::cout << "GAME OVER" << std:: endl;
     }
-    return true;
-
 }
 
 HumanPlayer &Game::getCurrentPlayer(){
@@ -239,10 +240,10 @@ void Game::setup_graphical() {
 
 bool Game::checkPhase1End() {
     if (boardPieces == 0) {
-        std::cout << "The game has been set up!" << std::endl;
+        //std::cout << "The game has been set up!" << std::endl;
         setMessage("The game has been set up!");
-        std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
-        std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
+        //std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
+        //std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
 
         //gameMap -> printMapTerminal();
         gameState = GAMESTATE::PLAY;

@@ -21,11 +21,14 @@ public:
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();
+
     void changeTurn();
     bool makePlayMove(HumanPlayer& player);
     bool makeSetupMove(HumanPlayer& player);
-    bool playMove(HumanPlayer& player, int index);
+    void playMove(HumanPlayer& player, int index);
     void removeOpponentsPiece(HumanPlayer& player);
+
+
     bool makeSetupMove_graphical(HumanPlayer &player, unsigned i);
     bool removeOpponentsPiece_graphic(HumanPlayer& player, unsigned index);
     bool makePlayMove_graphical(HumanPlayer &player, unsigned moveFrom, unsigned moveTo);
@@ -36,6 +39,7 @@ public:
     bool checkMills(unsigned index) const;
 
     //provera indeks
+
     bool isValidIndex(int i) const;
     bool isValidToMove(int from, int to) const;
     bool isValidToRemove(int i, HumanPlayer& player);
@@ -61,8 +65,12 @@ public:
     int             moveFrom;
     int             boardPieces;
 
+
+
 private:  
     FIELDSTATE      winner;
     QString         message;
+
 };
+
 #endif // GAME_H
