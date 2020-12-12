@@ -13,6 +13,7 @@ public:
     ~GameServer();
 
     // metode
+    QString serverTest();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();
@@ -52,7 +53,7 @@ public:
     // seteri i geteri za ovo sve
     GameMap         *gameMap;               // i ovo mi treba public
     TcpClient       m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima
-    TcpClient     m_p2;                   // public
+    TcpClient       m_p2;                   // public
     int             phase1_piece_counter;   // dodao ovo ovde da bi iz boarda znao kada da prekinem prvi deo igre
     GAMESTATE       gameState;
     bool            mill_occured;

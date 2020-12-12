@@ -9,6 +9,23 @@ GameServer::~GameServer() {
     delete gameMap;
 }
 
+QString GameServer::serverTest() {
+
+    if (m_p1.getSocket()->state() != QAbstractSocket::ConnectedState) {
+        m_p1.getSocket()->connectToHost("127.0.0.1", 12345);
+        QString message = m_p1.getPlayer().getName() + QString(": hello there") + QChar(23);
+        m_p1.getSocket()->write(message.toLocal8Bit());
+    }
+    if (m_p2.getSocket()->state() != QAbstractSocket::ConnectedState) {
+        m_p2.getSocket()->connectToHost("127.0.0.1", 12345);
+    }
+    while(m_p2.getReceivedData().isEmpty()){
+        m_p2.readMessage();
+    }
+
+    return m_p2.getReceivedData();
+}
+
 bool GameServer::checkMills(unsigned index) const {
     FIELDSTATE curPlayer = gameMap -> getBoardFields()[index].getPlayerID();
     unsigned checkIndex1 = gameMap -> getBoardFields()[index].getMills().first.first;

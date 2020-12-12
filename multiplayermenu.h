@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "board.h"
 #include "tcpclient.h"
+#include "tcpserver.h"
+
 namespace Ui {
 class MultiplayerMenu;
 }
@@ -23,7 +25,7 @@ private:
     Ui::MultiplayerMenu *ui;
     Board *board;
     TcpClient *tcp;
-
+    TcpServer *server;
 };
 
 #endif // MULTIPLAYERMENU_H

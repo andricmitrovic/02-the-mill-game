@@ -3,10 +3,9 @@
 
 #include <QWidget>
 #include <QAbstractSocket>
+#include <QTcpSocket>
 
 #include "humanplayer.h"
-
-class QTcpSocket;
 
 class TcpClient;
 
@@ -18,14 +17,18 @@ public:
     explicit TcpClient(FIELDSTATE playerId, QString playerName);
     ~TcpClient();
     HumanPlayer getPlayer();
+    QTcpSocket* getSocket();
+    QString getReceivedData() const;
 
-private slots:
+public slots:
 //    void on_text_returnPressed();
     void readMessage();
 //    void on_connect_clicked();
     void connectedToServer();
 //    void on_disconnect_clicked();
     void disconnectByServer();
+
+
 
 private:
     QTcpSocket *m_socket;

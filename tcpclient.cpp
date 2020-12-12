@@ -47,9 +47,9 @@ void TcpClient::readMessage()
 
     QStringList messages = m_receivedData.split(QChar(23));
     m_receivedData = messages.takeLast();
-    foreach (const QString &message, messages) {
-        //ui->chat->insertPlainText(message + "\n");
-    }
+//    foreach (const QString &message, messages) {
+//        ui->chat->insertPlainText(message + "\n");
+//    }
 }
 
 //void TcpClient::on_connect_clicked()
@@ -93,6 +93,15 @@ void TcpClient::disconnectByServer()
 HumanPlayer TcpClient::getPlayer()
 {
     return m_player;
+}
+
+QTcpSocket *TcpClient::getSocket(){
+    return m_socket;
+}
+
+QString TcpClient::getReceivedData() const
+{
+    return m_receivedData;
 }
 
 void TcpClient::updateGui(QAbstractSocket::SocketState state)
