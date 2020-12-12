@@ -1,13 +1,11 @@
 #include "mainmenu.h"
 #include "ui_mainmenu.h"
-#include "board.h"
 
-MainMenu::MainMenu(QWidget *parent, Board *board) :
+MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainMenu)
 {
     ui->setupUi(this);
-    this->board = board;
 }
 
 MainMenu::~MainMenu()
@@ -17,6 +15,7 @@ MainMenu::~MainMenu()
 
 void MainMenu::on_localPlayBtn_clicked()
 {
+    board = new Board(this);
+    board->show();
     this->hide();
-    this->board->show();
 }
