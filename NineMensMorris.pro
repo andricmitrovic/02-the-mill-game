@@ -19,7 +19,8 @@ SOURCES += \
     board.cpp \
     graphicline.cpp \
     piece.cpp \
-    gamelocal.cpp
+    gamelocal.cpp \
+    gameserver.cpp
 
 HEADERS += \
     GraphicPiece.h \
@@ -32,7 +33,8 @@ HEADERS += \
     lib.h \
     graphicline.h \
     piece.h \
-    gamelocal.h
+    gamelocal.h \
+    gameserver.h
 
 FORMS += \
     board.ui
