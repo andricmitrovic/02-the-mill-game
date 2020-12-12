@@ -20,7 +20,8 @@ SOURCES += \
     graphicline.cpp \
     piece.cpp \
     gamelocal.cpp \
-    gameserver.cpp
+    gameserver.cpp \
+    mainmenu.cpp
 
 HEADERS += \
     GraphicPiece.h \
@@ -34,10 +35,12 @@ HEADERS += \
     graphicline.h \
     piece.h \
     gamelocal.h \
-    gameserver.h
+    gameserver.h \
+    mainmenu.h
 
 FORMS += \
-    board.ui
+    board.ui \
+    mainmenu.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

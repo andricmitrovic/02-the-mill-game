@@ -34,6 +34,7 @@ public:
 public slots:
     void onFieldSelection(QPointF);
     void writeGameMessage();
+    void test();
 
 private:
     Ui::Board       *ui;

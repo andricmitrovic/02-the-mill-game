@@ -1,15 +1,23 @@
 #include "board.h"
 #include "game.h"
+#include "mainmenu.h"
 #include <QApplication>
 
 
 int main(int argc, char * argv[]) {
     // Sluzi za iscrtavanje, iskomentarisano radi testiranja
     QApplication a(argc, argv);
-    Board w;
+
+    Board board;
+    MainMenu menu(&board);
+
+    menu.show();
+    return a.exec();
+
+    /*Board w;
     w.show();
     return a.exec();
-    /*
+
         Testiranje prve faze igre
         HumanPlayer p1(FIELDSTATE::PLAYER_1, std::string("Marija"));
         HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mr    c"));

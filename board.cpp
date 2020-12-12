@@ -87,3 +87,7 @@ void Board::resizeEvent(QResizeEvent * event) {
 void Board::writeGameMessage() {
     ui -> leGameMessage -> setText(game -> getMessage());
 }
+
+void Board::test() {
+
+}
