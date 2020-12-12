@@ -18,7 +18,8 @@ SOURCES += \
     main.cpp \
     board.cpp \
     graphicline.cpp \
-    piece.cpp
+    piece.cpp \
+    gamelocal.cpp
 
 HEADERS += \
     GraphicPiece.h \
@@ -30,7 +31,8 @@ HEADERS += \
     humanplayer.h \
     lib.h \
     graphicline.h \
-    piece.h
+    piece.h \
+    gamelocal.h
 
 FORMS += \
     board.ui
