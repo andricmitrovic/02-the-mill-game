@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -18,10 +18,12 @@ SOURCES += \
     main.cpp \
     board.cpp \
     graphicline.cpp \
+    multiplayermenu.cpp \
     piece.cpp \
     gamelocal.cpp \
     gameserver.cpp \
-    mainmenu.cpp
+    mainmenu.cpp \
+    tcpclient.cpp
 
 HEADERS += \
     GraphicPiece.h \
@@ -33,14 +35,17 @@ HEADERS += \
     humanplayer.h \
     lib.h \
     graphicline.h \
+    multiplayermenu.h \
     piece.h \
     gamelocal.h \
     gameserver.h \
-    mainmenu.h
+    mainmenu.h \
+    tcpclient.h
 
 FORMS += \
     board.ui \
-    mainmenu.ui
+    mainmenu.ui \
+    multiplayermenu.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
