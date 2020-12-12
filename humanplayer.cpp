@@ -1,15 +1,19 @@
 #include "humanplayer.h"
 
-HumanPlayer::HumanPlayer(FIELDSTATE playerID, std::string name):m_turn(false),  m_id(playerID), numOfPieces(0), name(std::string(name)) {}
+HumanPlayer::HumanPlayer(FIELDSTATE playerID, QString name)
+    :m_turn(false),  m_id(playerID), numOfPieces(0), name(QString(name))
+{}
 
 // copy konstruktor
-HumanPlayer::HumanPlayer(const HumanPlayer & p): m_turn(p.turn()), m_id(p.id()), numOfPieces(p.getNumOfPieces()), name(p.getName()) {}
+HumanPlayer::HumanPlayer(const HumanPlayer & p)
+    :m_turn(p.turn()), m_id(p.id()), numOfPieces(p.getNumOfPieces()), name(p.getName())
+{}
 
 void HumanPlayer::changeTurn() {
     m_turn = !m_turn;
 }
 
-std::string HumanPlayer::getName() const {
+QString HumanPlayer::getName() const {
     return this -> name;
 }
 

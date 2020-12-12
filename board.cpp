@@ -11,10 +11,10 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
 {
     ui -> setupUi(this);
 
-    HumanPlayer p1(FIELDSTATE::PLAYER_1, std::string("Marija"));
-    HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mrc"));
+    HumanPlayer p1(FIELDSTATE::PLAYER_1, QString("Marija"));
+    HumanPlayer p2(FIELDSTATE::PLAYER_2, QString("Mrc"));
 
-    std::cout << p1.getName() << std::endl;
+    //std::cout << p1.getName() << std::endl;
     game = new Game(p1, p2);
     game -> setup_graphical(); //prva faza
 

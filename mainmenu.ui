@@ -27,21 +27,21 @@
      <item>
       <widget class="QPushButton" name="localPlayBtn">
        <property name="text">
-        <string>Local play</string>
+        <string>Multiplayer local</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="serverPlayBtn">
        <property name="text">
-        <string>PushButton</string>
+        <string>Multiplayer</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_3">
        <property name="text">
-        <string>PushButton</string>
+        <string>One player</string>
        </property>
       </widget>
      </item>
@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

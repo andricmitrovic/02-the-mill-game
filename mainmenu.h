@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "board.h"
-
+#include "multiplayermenu.h"
 namespace Ui {
 class MainMenu;
 }
@@ -19,9 +19,12 @@ public:
 private slots:
     void on_localPlayBtn_clicked();
 
+    void on_serverPlayBtn_clicked();
+
 private:
     Ui::MainMenu *ui;
     Board *board;
+    MultiplayerMenu *mp_menu;
 };
 
 #endif // MAINMENU_H

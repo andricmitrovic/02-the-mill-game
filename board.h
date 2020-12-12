@@ -38,7 +38,7 @@ public slots:
 
 private:
     Ui::Board       *ui;
-    Game            *game;
+    Game         *game;
     MyGraphicsScene  m_scene;
 };
 #endif // BOARD_H

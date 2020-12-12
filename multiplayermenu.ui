@@ -19,21 +19,41 @@
      <rect>
       <x>140</x>
       <y>90</y>
-      <width>261</width>
-      <height>69</height>
+      <width>351</width>
+      <height>271</height>
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string>Enter your name: </string>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLineEdit" name="leName"/>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string/>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="leName">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="connectBtn">
+          <property name="text">
+           <string>Connect</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="connectBtn">
+      <widget class="QLabel" name="laError">
        <property name="text">
-        <string>Connect</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -46,7 +66,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

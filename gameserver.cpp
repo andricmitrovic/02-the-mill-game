@@ -30,7 +30,7 @@ bool GameServer::checkMills(unsigned index) const {
 bool GameServer::makeSetupMove_graphical(TcpClient & player, unsigned i, QGraphicsScene &scene) {
 
     //std::cout << player.getPlayer().getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
-    setMessage(player.getPlayer().getName() + "'s turn:  Choose a field [a-x]: ");
+    //setMessage(player.getPlayer().getName() + "'s turn:  Choose a field [a-x]: ");
     setMessage("We are in makeSetupMove_graphical");
 
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
@@ -45,7 +45,7 @@ bool GameServer::makeSetupMove_graphical(TcpClient & player, unsigned i, QGraphi
         gameMap -> incRemoveIndex();
 
         //std::cout << player.getPlayer().getName() << " occupied field " << input << std::endl;
-        setMessage(player.getPlayer().getName() + " occupied a field.");
+        //setMessage(player.getPlayer().getName() + " occupied a field.");
 
         //gameMap -> printMapTerminal();
 
@@ -58,7 +58,7 @@ bool GameServer::makeSetupMove_graphical(TcpClient & player, unsigned i, QGraphi
 
 
 bool GameServer::makePlayMove_graphical(TcpClient & player, unsigned moveFrom, unsigned moveTo) {
-    setMessage(player.getPlayer().getName() + "'s turn: Choose a piece to move!");
+    //setMessage(player.getPlayer().getName() + "'s turn: Choose a piece to move!");
 
     if (isValidToMove(moveFrom, moveTo)){
         gameMap -> getBoardFields()[moveFrom].deoccupy();
@@ -89,7 +89,7 @@ bool GameServer::removeOpponentsPiece_graphic(TcpClient & player, unsigned index
 
     mill_occured = false;
 
-    setMessage("Player " + player.getPlayer().getName() + " has lost a piece!");
+    //setMessage("Player " + player.getPlayer().getName() + " has lost a piece!");
     return true;
 }
 /*

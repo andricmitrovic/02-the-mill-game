@@ -3,7 +3,7 @@
 #include <QtWidgets>
 #include <QtNetwork>
 
-TcpClient::TcpClient(FIELDSTATE playerId, std::string playerName) :
+TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) :
   m_socket(new QTcpSocket()),
   m_player(HumanPlayer(playerId, playerName))
 {
@@ -18,6 +18,7 @@ TcpClient::TcpClient(FIELDSTATE playerId, std::string playerName) :
     connect(m_socket, SIGNAL(connected()), this, SLOT(connectedToServer()));
     connect(m_socket, SIGNAL(disconnected()), this, SLOT(disconnectByServer()));
 }
+
 
 TcpClient::~TcpClient()
 {

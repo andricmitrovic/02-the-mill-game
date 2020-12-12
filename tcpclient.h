@@ -15,7 +15,7 @@ class TcpClient : public QWidget
     Q_OBJECT
 
 public:
-    explicit TcpClient(FIELDSTATE playerId, std::string playerName);
+    explicit TcpClient(FIELDSTATE playerId, QString playerName);
     ~TcpClient();
     HumanPlayer getPlayer();
 

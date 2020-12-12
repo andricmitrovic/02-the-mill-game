@@ -14,9 +14,9 @@ class HumanPlayer {
 
 public:
     void changeTurn(); // invertuje bool za turn tog igraca
-    std::string getName() const;
+    QString getName() const;
     HumanPlayer(const HumanPlayer& p);
-    HumanPlayer(FIELDSTATE playerID, std::string name);
+    HumanPlayer(FIELDSTATE playerID, QString name);
 
     // geteri
     bool turn() const;
@@ -29,6 +29,6 @@ private:
     bool m_turn;
     FIELDSTATE m_id;
     int numOfPieces;
-    std::string name;
+    QString name;
 };
 #endif // HUMANPLAYER_H

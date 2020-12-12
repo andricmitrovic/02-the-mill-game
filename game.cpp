@@ -32,7 +32,7 @@ bool Game::checkMills(unsigned index) const {
 bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsScene &scene) {
 
     //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
-    setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
+    //setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
     setMessage("We are in makeSetupMove_graphical");
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
         std::cout << "Error: Invalid index or occupied field." << std::endl;
@@ -46,7 +46,7 @@ bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsSc
         gameMap -> incRemoveIndex();
 
         //std::cout << player.getName() << " occupied field " << input << std::endl;
-        setMessage(player.getName() + " occupied a field.");
+        //setMessage(player.getName() + " occupied a field.");
 
         //gameMap -> printMapTerminal();
 
@@ -59,7 +59,7 @@ bool Game::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsSc
 
 
 bool Game::makePlayMove_graphical(HumanPlayer & player, unsigned moveFrom, unsigned moveTo) {
-    setMessage(player.getName() + "'s turn: Choose a piece to move!");
+    //setMessage(player.getName() + "'s turn: Choose a piece to move!");
 
     if (isValidToMove(moveFrom, moveTo)){
         gameMap -> getBoardFields()[moveFrom].deoccupy();
@@ -90,7 +90,7 @@ bool Game::removeOpponentsPiece_graphic(HumanPlayer & player, unsigned index) {
 
     mill_occured = false;
 
-    setMessage("Player " + player.getName() + " has lost a piece!");
+    //setMessage("Player " + player.getName() + " has lost a piece!");
     return true;
 }
 /*
