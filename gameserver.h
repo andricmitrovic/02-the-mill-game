@@ -13,7 +13,7 @@ public:
     ~GameServer();
 
     // metode
-    QString serverTest();
+    void serverTest();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
     void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();

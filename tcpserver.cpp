@@ -68,8 +68,8 @@ void TcpServer::newMessage()
             ui->log->insertPlainText("Sending message: " + message + "\n");
             message.append(QChar(23));
             foreach (QTcpSocket *socket, m_clients) {
-               /* if (socket == con)
-                    continue;*/
+                if (socket == con)
+                    continue;
                 if (socket->state() == QAbstractSocket::ConnectedState){
                     socket->write(message.toLocal8Bit());
                     ui->log->insertPlainText("Message sent \n" + message.toLocal8Bit());

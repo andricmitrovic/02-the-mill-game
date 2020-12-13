@@ -2,6 +2,7 @@
 
 #include <QtWidgets>
 #include <QtNetwork>
+#include <QDebug>
 
 TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) :
   m_socket(new QTcpSocket()),
@@ -17,6 +18,7 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) :
     connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
     connect(m_socket, SIGNAL(connected()), this, SLOT(connectedToServer()));
     connect(m_socket, SIGNAL(disconnected()), this, SLOT(disconnectByServer()));
+    connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()), Qt::DirectConnection);
 }
 
 
@@ -38,32 +40,20 @@ TcpClient::~TcpClient()
 
 void TcpClient::readMessage()
 {
-
     if (m_socket->state() != QAbstractSocket::ConnectedState){
         m_receivedData.append(QString("Not connected"));
         return;
     }
-
-   // m_socket->readyRead();
-
-
-     m_receivedData.append(QString(m_socket->readAll()));
+    m_receivedData.append(QString(m_socket->readAll()));
 
     if (!m_receivedData.contains(QChar(23))){
-        m_receivedData.append(QString("Not whole") + m_receivedData);
-
+        m_receivedData.append(QString("Not whole"));
+        emit readFinished();
         return;
     }else{
-        m_receivedData.append(QString("whole message is recieved"));
-
+        emit readFinished();
         return;
     }
-    QStringList messages = m_receivedData.split(QChar(23));
-    m_receivedData = messages.takeLast();
-    m_receivedData.append(QString("Still no complete message!") + QChar(23));
-//    foreach (const QString &message, messages) {
-//        ui->chat->insertPlainText(message + "\n");
-//    }
 }
 
 //void TcpClient::on_connect_clicked()
@@ -103,6 +93,11 @@ void TcpClient::disconnectByServer()
 {
     //ui->chat->insertPlainText("== Disconnected by server.\n");
     updateGui(QAbstractSocket::UnconnectedState);
+}
+
+void TcpClient::onReadFinished()
+{
+    qDebug() << m_receivedData;
 }
 
 HumanPlayer TcpClient::getPlayer()

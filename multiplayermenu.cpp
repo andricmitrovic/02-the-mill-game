@@ -31,7 +31,10 @@ void MultiplayerMenu::on_connectBtn_clicked()
     //board->show();
     GameServer *gameServer = new GameServer(*tcp, *new TcpClient(FIELDSTATE::PLAYER_2, QString("br2")));
     ui->laError->setText("Zdravo");
-    ui->laError->setText(gameServer->serverTest());
+    gameServer->serverTest();
+
+
+    ui->laError->setText(gameServer->m_p2.getReceivedData());
     //this->hide();
     //
 }

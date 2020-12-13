@@ -27,8 +27,10 @@ public slots:
     void connectedToServer();
 //    void on_disconnect_clicked();
     void disconnectByServer();
+    void onReadFinished();
 
-
+signals:
+    void readFinished();
 
 private:
     QTcpSocket *m_socket;

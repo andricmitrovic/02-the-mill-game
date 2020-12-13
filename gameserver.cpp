@@ -11,23 +11,18 @@ GameServer::~GameServer() {
     delete gameMap;
 }
 
-QString GameServer::serverTest() {
+void GameServer::serverTest() {
 
     if (m_p1.getSocket()->state() != QAbstractSocket::ConnectedState) {
         m_p1.getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
-        if (m_p1.getSocket()->waitForConnected()){
-            QString message = m_p1.getPlayer().getName() + QString(": hello there") + QChar(23);
-            m_p1.getSocket()->write(message.toLocal8Bit());
+        QString message = m_p1.getPlayer().getName() + QString(": hello there") + QChar(23);
+        m_p1.getSocket()->write(message.toLocal8Bit());
 
-        }
     }
-
-
-   if(!m_p1.getSocket()->waitForReadyRead(3000)){
-       m_p1.readMessage();
-   }
-
-    return m_p1.getReceivedData();
+    if (m_p2.getSocket()->state() != QAbstractSocket::ConnectedState) {
+        m_p2.getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
+        m_p2.getSocket()->waitForReadyRead(1000);
+    }
 }
 
 bool GameServer::checkMills(unsigned index) const {
