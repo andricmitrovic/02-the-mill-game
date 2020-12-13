@@ -13,6 +13,7 @@ SOURCES += \
     MyGraphicsScene.cpp \
     field.cpp \
     game.cpp \
+    gameai.cpp \
     gamemap.cpp \
     humanplayer.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     board.h \
     field.h \
     game.h \
+    gameai.h \
     gamemap.h \
     humanplayer.h \
     lib.h \

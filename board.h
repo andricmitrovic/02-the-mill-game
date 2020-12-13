@@ -13,6 +13,7 @@
 
 #include <vector>
 #include "game.h"
+#include "gameai.h"
 #include "gamemap.h"
 #include "MyGraphicsScene.h"
 
@@ -27,7 +28,7 @@ class Board : public QMainWindow {
 public:
     Board(QWidget *parent = nullptr);
     ~Board();
-    Game* getGame();
+    GameAI* getGame();
     void resizeEvent(QResizeEvent* event);
 
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
@@ -36,8 +37,8 @@ public slots:
     void writeGameMessage();
 
 private:
-    Ui::Board       *ui;
-    Game            *game;
-    MyGraphicsScene  m_scene;
+    Ui::Board         *ui;
+    GameAI            *game;
+    MyGraphicsScene   m_scene;
 };
 #endif // BOARD_H

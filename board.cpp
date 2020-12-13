@@ -7,7 +7,6 @@
 int moveFrom = -1, moveTo = -1;
 
 Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
-//, gm(new GameMap())
 {
     ui -> setupUi(this);
 
@@ -15,8 +14,14 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
     HumanPlayer p2(FIELDSTATE::PLAYER_2, std::string("Mrc"));
 
     std::cout << p1.getName() << std::endl;
-    game = new Game(p1, p2);
+    game = new GameAI(p1, p2);
     game -> setup_graphical(); //prva faza
+
+    std::pair<int,int> ret = game->max(game->maxDepthAI);
+    std::cout<<ret.first<<" "<<ret.second<<std::endl;
+    /*std::pair<int,int> ret = botina->max(maxDepthAI);
+    std::cout<<ret.first<<" "<<ret.second<<std::endl;*/
+
 
     /* Postavlja scenu da bude preko celog pogleda, vrlo je cudno ponasanje kad se ovo ne postavi
      * ili neke druge dimenzije, bas nemam ideju sta su mu radili.
@@ -53,7 +58,7 @@ Board::~Board() {
 
 // sve se ovde oko igranja desava, poziva se na klik kvadrata
 
-Game * Board::getGame() {
+GameAI * Board::getGame() {
     return game;
 }
 
@@ -66,6 +71,15 @@ void Board::onFieldSelection(QPointF pos) {
     int index = game -> gameMap -> indexByPos(item -> pos());
 
     game -> playMove(game -> getCurrentPlayer(), index, m_scene);
+
+    // ovde kad kliknem kao i kad pocne potez drugog igraca da nadjem najbolji potez za njega
+    if(game->m_p1.turn() && !game->mill_occured)
+    {
+        //zovi bota da uradi potez
+        int depth = std::min(game->maxDepthAI, game->boardPieces);
+        std::pair<int,int> ret = game->max(depth);
+        std::cout<<ret.first<<" "<<ret.second<<std::endl;
+    }
 
     ui -> graphicsView -> viewport() -> update();
 }
