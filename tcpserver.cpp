@@ -30,13 +30,16 @@ void TcpServer::newConnection()
     while (m_server->hasPendingConnections()) {
         QTcpSocket *con = m_server->nextPendingConnection();
         m_clients << con;
+
         ui->disconnectClients->setEnabled(true);
         connect(con, SIGNAL(disconnected()), this, SLOT(removeConnection()));
         connect(con, SIGNAL(readyRead()), this, SLOT(newMessage()));
 
-        ui->log->insertPlainText(QString("* New connection: %1, port %2\n")
+        ui->log->insertPlainText(QString("* New connection: %1, port %2 %3\n")
+
                                  .arg(con->peerAddress().toString())
-                                 .arg(QString::number(con->peerPort())));
+                                 .arg(QString::number(con->peerPort()))
+                                 .arg(con->openMode()));
     }
 }
 
@@ -65,11 +68,20 @@ void TcpServer::newMessage()
             ui->log->insertPlainText("Sending message: " + message + "\n");
             message.append(QChar(23));
             foreach (QTcpSocket *socket, m_clients) {
-                if (socket == con)
-                    continue;
-                if (socket->state() == QAbstractSocket::ConnectedState)
+               /* if (socket == con)
+                    continue;*/
+                if (socket->state() == QAbstractSocket::ConnectedState){
                     socket->write(message.toLocal8Bit());
+                    ui->log->insertPlainText("Message sent \n" + message.toLocal8Bit());
+
+                }
+                else
+                    ui->log->insertPlainText("Not conneted \n");
+
+
+
             }
+
         }
     }
 }

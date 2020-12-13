@@ -1,5 +1,7 @@
 #include "gameserver.h"
 
+#include <QHostAddress>
+
 GameServer::GameServer(TcpClient & p1, TcpClient & p2)
     : gameMap(new GameMap()), m_p1(p1.getPlayer().id(), p1.getPlayer().getName()),
       m_p2(p2.getPlayer().id(), p2.getPlayer().getName()), gameState(GAMESTATE::INIT),
@@ -12,18 +14,20 @@ GameServer::~GameServer() {
 QString GameServer::serverTest() {
 
     if (m_p1.getSocket()->state() != QAbstractSocket::ConnectedState) {
-        m_p1.getSocket()->connectToHost("127.0.0.1", 12345);
-        QString message = m_p1.getPlayer().getName() + QString(": hello there") + QChar(23);
-        m_p1.getSocket()->write(message.toLocal8Bit());
-    }
-    if (m_p2.getSocket()->state() != QAbstractSocket::ConnectedState) {
-        m_p2.getSocket()->connectToHost("127.0.0.1", 12345);
-    }
-    while(m_p2.getReceivedData().isEmpty()){
-        m_p2.readMessage();
+        m_p1.getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
+        if (m_p1.getSocket()->waitForConnected()){
+            QString message = m_p1.getPlayer().getName() + QString(": hello there") + QChar(23);
+            m_p1.getSocket()->write(message.toLocal8Bit());
+
+        }
     }
 
-    return m_p2.getReceivedData();
+
+   if(!m_p1.getSocket()->waitForReadyRead(3000)){
+       m_p1.readMessage();
+   }
+
+    return m_p1.getReceivedData();
 }
 
 bool GameServer::checkMills(unsigned index) const {

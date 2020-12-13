@@ -38,15 +38,29 @@ TcpClient::~TcpClient()
 
 void TcpClient::readMessage()
 {
-    if (m_socket->state() != QAbstractSocket::ConnectedState)
-        return;
 
-    m_receivedData.append(m_socket->readAll());
-    if (!m_receivedData.contains(QChar(23)))
+    if (m_socket->state() != QAbstractSocket::ConnectedState){
+        m_receivedData.append(QString("Not connected"));
         return;
+    }
 
+   // m_socket->readyRead();
+
+
+     m_receivedData.append(QString(m_socket->readAll()));
+
+    if (!m_receivedData.contains(QChar(23))){
+        m_receivedData.append(QString("Not whole") + m_receivedData);
+
+        return;
+    }else{
+        m_receivedData.append(QString("whole message is recieved"));
+
+        return;
+    }
     QStringList messages = m_receivedData.split(QChar(23));
     m_receivedData = messages.takeLast();
+    m_receivedData.append(QString("Still no complete message!") + QChar(23));
 //    foreach (const QString &message, messages) {
 //        ui->chat->insertPlainText(message + "\n");
 //    }
@@ -73,6 +87,7 @@ void TcpClient::connectedToServer()
 {
     //ui->chat->insertPlainText("== Connected to server.\n");
     updateGui(QAbstractSocket::ConnectedState);
+    this->getReceivedData().append(QString("Connected") + getPlayer().getName());
 }
 
 //void TcpClient::on_disconnect_clicked()

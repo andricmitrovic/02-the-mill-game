@@ -26,11 +26,11 @@ void MultiplayerMenu::on_connectBtn_clicked()
     server = new TcpServer(this);
     server->show();
     tcp = new TcpClient(FIELDSTATE::PLAYER_1, ui->leName->text());
-
     // trebalo bi vec server da je pokrenut i da prima jednog igraca
     //board = new Board(this);
     //board->show();
-    GameServer *gameServer = new GameServer(*tcp, *tcp);
+    GameServer *gameServer = new GameServer(*tcp, *new TcpClient(FIELDSTATE::PLAYER_2, QString("br2")));
+    ui->laError->setText("Zdravo");
     ui->laError->setText(gameServer->serverTest());
     //this->hide();
     //
