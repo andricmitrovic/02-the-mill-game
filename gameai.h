@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAMEAI_H
+#define GAMEAI_H
 
 #include "gamemap.h"
 #include "humanplayer.h"
@@ -11,11 +11,11 @@
  *        dva igraca (za sada su oba HumanPlayer)
  */
 
-class Game {
+class GameAI {
 public:
 
-    Game(HumanPlayer& p1, HumanPlayer& p2);
-    ~Game();
+    GameAI(HumanPlayer& p1, HumanPlayer& p2);
+    ~GameAI();
 
     // metode
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
@@ -38,6 +38,7 @@ public:
     bool checkMills(unsigned index) const;
 
     //provera indeks
+
     bool isValidIndex(int i) const;
     bool isValidToMove(int from, int to) const;
     bool isValidToRemove(int i, HumanPlayer& player);
@@ -57,6 +58,10 @@ public:
     void setWinner(FIELDSTATE winner);
     void setMessage(const std::string &msg);
 
+    //ai funkcije
+    std::pair<int,int> max(int depth);
+    std::pair<int,int> min(int depth);
+
     // seteri i geteri za ovo sve
     GameMap         *gameMap;               // i ovo mi treba public
     HumanPlayer     m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima
@@ -67,12 +72,13 @@ public:
     int             moveFrom;
     int             boardPieces;
 
+    int             maxDepthAI;
 
-
-private:  
+private:
     FIELDSTATE      winner;
     QString         message;
 
+
 };
 
-#endif // GAME_H
+#endif // GAMEAI_H

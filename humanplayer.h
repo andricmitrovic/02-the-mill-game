@@ -13,10 +13,11 @@
 class HumanPlayer {
 
 public:
-    void changeTurn(); // invertuje bool za turn tog igraca
-    QString getName() const;
     HumanPlayer(const HumanPlayer& p);
     HumanPlayer(FIELDSTATE playerID, QString name);
+
+    void changeTurn(); // invertuje bool za turn tog igraca
+    QString getName() const;
 
     // geteri
     bool turn() const;
