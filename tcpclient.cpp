@@ -6,7 +6,7 @@
 
 TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) :
   m_socket(new QTcpSocket()),
-  m_player(HumanPlayer(playerId, playerName))
+  m_player(Player(playerId, playerName))
 {
 //    ui->setupUi(this);
 //    ui->address->setText(QHostAddress(QHostAddress::LocalHost).toString());
@@ -100,7 +100,7 @@ void TcpClient::onReadFinished()
     qDebug() << m_receivedData;
 }
 
-HumanPlayer TcpClient::getPlayer()
+Player TcpClient::getPlayer()
 {
     return m_player;
 }

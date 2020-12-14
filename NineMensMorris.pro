@@ -15,7 +15,6 @@ SOURCES += \
     game.cpp \
     gameai.cpp \
     gamemap.cpp \
-    humanplayer.cpp \
     main.cpp \
     board.cpp \
     graphicline.cpp \
@@ -24,6 +23,7 @@ SOURCES += \
     gamelocal.cpp \
     gameserver.cpp \
     mainmenu.cpp \
+    player.cpp \
     tcpclient.cpp \
     tcpserver.cpp
 
@@ -35,7 +35,6 @@ HEADERS += \
     game.h \
     gameai.h \
     gamemap.h \
-    humanplayer.h \
     lib.h \
     graphicline.h \
     multiplayermenu.h \
@@ -43,6 +42,7 @@ HEADERS += \
     gamelocal.h \
     gameserver.h \
     mainmenu.h \
+    player.h \
     tcpclient.h \
     tcpserver.h
 

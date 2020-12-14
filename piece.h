@@ -10,7 +10,7 @@ class Piece: public QGraphicsItem {
   QRectF boundingRect() const override;
   Piece(FIELDSTATE player, QGraphicsItem * parent = nullptr);
   void paint(QPainter * painter,
-    const QStyleOptionGraphicsItem * option, QWidget * widget) override;
+  const QStyleOptionGraphicsItem * option, QWidget * widget) override;
 
   private: FIELDSTATE m_player;
 };

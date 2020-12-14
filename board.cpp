@@ -10,8 +10,8 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
 {
     ui -> setupUi(this);
 
-    HumanPlayer p1(FIELDSTATE::PLAYER_1, QString("Marija"));
-    HumanPlayer p2(FIELDSTATE::PLAYER_2, QString("Mrc"));
+    Player p1(FIELDSTATE::PLAYER_1, QString("Marija"));
+    Player p2(FIELDSTATE::PLAYER_2, QString("Mrc"));
 
     game = new GameAI(p1, p2);
 

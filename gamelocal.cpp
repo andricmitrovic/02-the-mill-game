@@ -1,9 +1,9 @@
 #include "gamelocal.h"
 #include "gamemap.h"
-#include "humanplayer.h"
+#include "player.h"
 #include "QGraphicsScene"
 
-GameLocal::GameLocal(HumanPlayer & p1, HumanPlayer & p2)
+GameLocal::GameLocal(Player & p1, Player & p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
       mill_occured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES), winner(FIELDSTATE::EMPTY){}
 
@@ -29,7 +29,7 @@ bool GameLocal::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool GameLocal::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsScene &scene) {
+bool GameLocal::makeSetupMove_graphical(Player & player, unsigned i, QGraphicsScene &scene) {
 
     //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
     //setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
@@ -58,7 +58,7 @@ bool GameLocal::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraph
 }
 
 
-bool GameLocal::makePlayMove_graphical(HumanPlayer & player, unsigned moveFrom, unsigned moveTo) {
+bool GameLocal::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned moveTo) {
     //setMessage(player.getName() + "'s turn: Choose a piece to move!");
 
     if (isValidToMove(moveFrom, moveTo)){
@@ -77,7 +77,7 @@ bool GameLocal::makePlayMove_graphical(HumanPlayer & player, unsigned moveFrom, 
     Izmenjeno ponavljanje koda u while petlji
 */
 
-bool GameLocal::removeOpponentsPiece_graphic(HumanPlayer & player, unsigned index) {
+bool GameLocal::removeOpponentsPiece_graphic(Player & player, unsigned index) {
 
     if (!isValidToRemove(index, player))
     {
@@ -130,7 +130,7 @@ bool GameLocal::isValidIndex(int i) const {
  *  Metoda se poziva kada player napravil Mill
  *
  */
-bool GameLocal::isValidToRemove(int i, HumanPlayer & player) {
+bool GameLocal::isValidToRemove(int i, Player & player) {
 
     if (!isValidIndex(i)) {
         std::cout << "Error in index!" << std::endl;
@@ -165,11 +165,11 @@ bool GameLocal::isValidToMove(int from, int to) const {
     return (!gameMap -> getBoardFields()[to].isOccupied() && contains);
 }
 
-bool GameLocal::isValidToSelect(int i, HumanPlayer & player) const {
+bool GameLocal::isValidToSelect(int i, Player & player) const {
     return isValidIndex(i) && gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player.id();
 }
 
-bool GameLocal::isValidToOccupy(int i, HumanPlayer & player) const {
+bool GameLocal::isValidToOccupy(int i, Player & player) const {
     return false;
 }
 
@@ -178,7 +178,7 @@ void GameLocal::changeTurn() {
     m_p2.changeTurn();
 }
 
-void GameLocal::playMove(HumanPlayer &player, int index, QGraphicsScene &scene)
+void GameLocal::playMove(Player &player, int index, QGraphicsScene &scene)
 {
 
     if (this->mill_occured){
@@ -222,7 +222,7 @@ void GameLocal::playMove(HumanPlayer &player, int index, QGraphicsScene &scene)
     }
 }
 
-HumanPlayer &GameLocal::getCurrentPlayer(){
+Player &GameLocal::getCurrentPlayer(){
     return m_p1.turn()? m_p1 : m_p2;
 }
 
@@ -325,7 +325,7 @@ void Game::play() {
 
 }
 
-void Game::removeOpponentsPiece(HumanPlayer & player) {
+void Game::removeOpponentsPiece(Player & player) {
     std::cout << "MILL!" << std::endl;
     int index;
     char input_index;
@@ -347,7 +347,7 @@ void Game::removeOpponentsPiece(HumanPlayer & player) {
     }
 }
 
-bool Game::makePlayMove(HumanPlayer & player) {
+bool Game::makePlayMove(Player & player) {
     char input;
     int i;
     std::cout << player.getName() << "'s turn: Choose a piece to move: [a-x]: " << std::endl;
@@ -386,7 +386,7 @@ bool Game::makePlayMove(HumanPlayer & player) {
 }
 
 
-bool Game::makeSetupMove(HumanPlayer & player) {
+bool Game::makeSetupMove(Player & player) {
     int i;
     char input;
 

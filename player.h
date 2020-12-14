@@ -1,20 +1,20 @@
-#ifndef HUMANPLAYER_H
-#define HUMANPLAYER_H
+#ifndef Player_H
+#define Player_H
 
 #include "GraphicPiece.h"
 #include <string>
 
 /*
- * Klasa HumanPlayer
+ * Klasa Player
  * sadrzi identifikator(iz Nikolinog enuma, to ce nam koristiti za iscrtavanje)
  *        bool promenljivu turn - da li je taj igrac na redu ili ne
  */
 
-class HumanPlayer {
+class Player {
 
 public:
-    HumanPlayer(const HumanPlayer& p);
-    HumanPlayer(FIELDSTATE playerID, QString name);
+    Player(const Player& p);
+    Player(FIELDSTATE playerID, QString name);
 
     void changeTurn(); // invertuje bool za turn tog igraca
     QString getName() const;
@@ -32,4 +32,4 @@ private:
     int numOfPieces;
     QString name;
 };
-#endif // HUMANPLAYER_H
+#endif // Player_H

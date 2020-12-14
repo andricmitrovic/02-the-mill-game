@@ -5,7 +5,7 @@
 #include <QAbstractSocket>
 #include <QTcpSocket>
 
-#include "humanplayer.h"
+#include "player.h"
 
 class TcpClient;
 
@@ -16,7 +16,7 @@ class TcpClient : public QWidget
 public:
     explicit TcpClient(FIELDSTATE playerId, QString playerName);
     ~TcpClient();
-    HumanPlayer getPlayer();
+    Player getPlayer();
     QTcpSocket* getSocket();
     QString getReceivedData() const;
 
@@ -34,7 +34,7 @@ signals:
 
 private:
     QTcpSocket *m_socket;
-    HumanPlayer m_player;
+    Player  m_player;
     QString m_receivedData;
 
     void updateGui(QAbstractSocket::SocketState state);

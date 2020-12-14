@@ -1,9 +1,9 @@
 #include "gameai.h"
 #include "gamemap.h"
-#include "humanplayer.h"
+#include "player.h"
 #include "QGraphicsScene"
 
-GameAI::GameAI(HumanPlayer & p1, HumanPlayer & p2)
+GameAI::GameAI(Player & p1, Player & p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
       mill_occured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES), winner(FIELDSTATE::EMPTY), maxDepthAI(5){}
 
@@ -29,7 +29,7 @@ bool GameAI::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool GameAI::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphicsScene &scene) {
+bool GameAI::makeSetupMove_graphical(Player & player, unsigned i, QGraphicsScene &scene) {
 
     //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
     //setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
@@ -57,7 +57,7 @@ bool GameAI::makeSetupMove_graphical(HumanPlayer & player, unsigned i, QGraphics
 
 }
 
-bool GameAI::makePlayMove_graphical(HumanPlayer & player, unsigned moveFrom, unsigned moveTo) {
+bool GameAI::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned moveTo) {
     //setMessage(player.getName() + "'s turn: Choose a piece to move!");
 
     if (isValidToMove(moveFrom, moveTo)){
@@ -76,7 +76,7 @@ bool GameAI::makePlayMove_graphical(HumanPlayer & player, unsigned moveFrom, uns
     Izmenjeno ponavljanje koda u while petlji
 */
 
-bool GameAI::removeOpponentsPiece_graphic(HumanPlayer & player, unsigned index) {
+bool GameAI::removeOpponentsPiece_graphic(Player & player, unsigned index) {
 
     if (!isValidToRemove(index, player))
     {
@@ -129,7 +129,7 @@ bool GameAI::isValidIndex(int i) const {
  *  Metoda se poziva kada player napravil Mill
  *
  */
-bool GameAI::isValidToRemove(int i, HumanPlayer & player) {
+bool GameAI::isValidToRemove(int i, Player & player) {
 
     if (!isValidIndex(i)) {
         std::cout << "Error in index!" << std::endl;
@@ -164,11 +164,11 @@ bool GameAI::isValidToMove(int from, int to) const {
     return (!gameMap -> getBoardFields()[to].isOccupied() && contains);
 }
 
-bool GameAI::isValidToSelect(int i, HumanPlayer & player) const {
+bool GameAI::isValidToSelect(int i, Player & player) const {
     return isValidIndex(i) && gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player.id();
 }
 
-bool GameAI::isValidToOccupy(int i, HumanPlayer & player) const {
+bool GameAI::isValidToOccupy(int i, Player & player) const {
     return false;
 }
 
@@ -177,7 +177,7 @@ void GameAI::changeTurn() {
     m_p2.changeTurn();
 }
 
-void GameAI::playMove(HumanPlayer &player, int index, QGraphicsScene &scene)
+void GameAI::playMove(Player &player, int index, QGraphicsScene &scene)
 {
 
     if (this->mill_occured){
@@ -221,7 +221,7 @@ void GameAI::playMove(HumanPlayer &player, int index, QGraphicsScene &scene)
     }
 }
 
-HumanPlayer &GameAI::getCurrentPlayer(){
+Player &GameAI::getCurrentPlayer(){
     return m_p1.turn()? m_p1 : m_p2;
 }
 
@@ -263,7 +263,7 @@ void GameAI::setMessage(const std::string & msg){
     message = message.fromStdString(msg);
 }
 
-void GameAI::makeSetupMove_AI(HumanPlayer & player, int i) {
+void GameAI::makeSetupMove_AI(Player & player, int i) {
 
     gameMap -> getBoardFields()[i].occupy(player.id());
     player.incNumOfPieces();
@@ -274,7 +274,7 @@ void GameAI::makeSetupMove_AI(HumanPlayer & player, int i) {
     }
 }
 
-void GameAI::revertSetupMove_AI(HumanPlayer & player, int i) {
+void GameAI::revertSetupMove_AI(Player & player, int i) {
 
     gameMap -> getBoardFields()[i].deoccupy();
     player.decNumOfPieces();
