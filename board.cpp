@@ -13,12 +13,12 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
     Player p1(FIELDSTATE::PLAYER_1, QString("Marija"));
     Player p2(FIELDSTATE::PLAYER_2, QString("Mrc"));
 
-    game = new GameAI(p1, p2);
+    game = new Game(p1, p2);
 
     game -> setup_graphical(); //prva faza
 
-    std::pair<int,int> ret = game->max(game->maxDepthAI);
-    std::cout<<ret.first<<" "<<ret.second<<std::endl;
+//    std::pair<int,int> ret = game->max(game->maxDepthAI);
+//    std::cout<<ret.first<<" "<<ret.second<<std::endl;
     /*std::pair<int,int> ret = botina->max(maxDepthAI);
     std::cout<<ret.first<<" "<<ret.second<<std::endl;*/
 
@@ -31,7 +31,7 @@ Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
     //qDebug()<<this->width();
     m_scene.setSceneRect(0, 0, this -> width(), this -> height());
 
-    game -> gameMap -> printMap(m_scene);
+    game -> getGameMap() -> printMap(m_scene);
 
     // Connect scene to the view
     ui -> graphicsView -> setScene( & m_scene);
@@ -58,7 +58,7 @@ Board::~Board() {
 
 // sve se ovde oko igranja desava, poziva se na klik kvadrata
 
-GameAI * Board::getGame() {
+Game *Board::getGame() {
     return game;
 }
 
@@ -68,18 +68,18 @@ void Board::onFieldSelection(QPointF pos) {
     if (item == nullptr)
         return;
 
-    int index = game -> gameMap -> indexByPos(item -> pos());
+    int index = game -> getGameMap() -> indexByPos(item -> pos());
 
     game -> playMove(game -> getCurrentPlayer(), index, m_scene);
 
     // ovde kad kliknem kao i kad pocne potez drugog igraca da nadjem najbolji potez za njega
-    if(game->m_p1.turn() && !game->mill_occured)
-    {
-        //zovi bota da uradi potez
-        int depth = std::min(game->maxDepthAI, game->boardPieces);
-        std::pair<int,int> ret = game->max(depth);
-        std::cout<<ret.first<<" "<<ret.second<<std::endl;
-    }
+//    if(game->m_p1.turn() && !game->mill_occured)
+//    {
+//        //zovi bota da uradi potez
+//        int depth = std::min(game->maxDepthAI, game->boardPieces);
+//        std::pair<int,int> ret = game->max(depth);
+//        std::cout<<ret.first<<" "<<ret.second<<std::endl;
+//    }
 
     ui -> graphicsView -> viewport() -> update();
 }
@@ -88,13 +88,13 @@ void Board::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
     float scale = this -> height() / SCALE_MULTIPLIER;
-    game -> gameMap -> setScale(scale);
-    game -> gameMap -> recalculateOffset();
+    game -> getGameMap() -> setScale(scale);
+    game -> getGameMap() -> recalculateOffset();
 
     m_scene.setSceneRect(-this -> width() / 2 + 6.5 * scale, 0, this -> width(), this -> height());
     ui -> graphicsView -> setFixedSize(ui -> graphicsView -> scene() -> width(), ui -> graphicsView -> scene() -> height());
     ui -> leGameMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
-    game -> gameMap -> printMap(m_scene);
+    game -> getGameMap() -> printMap(m_scene);
     ui -> graphicsView -> viewport() -> update();
 }
 

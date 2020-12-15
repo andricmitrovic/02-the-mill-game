@@ -5,7 +5,7 @@
 
 Game::Game(Player & p1, Player & p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-      mill_occured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES), winner(FIELDSTATE::EMPTY){}
+      winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES){}
 
 Game::~Game() {
     delete gameMap;
@@ -29,13 +29,9 @@ bool Game::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool Game::makeSetupMove_graphical(Player & player, unsigned i, QGraphicsScene &scene) {
-
-    //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
-    //setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
-    setMessage("We are in makeSetupMove_graphical");
+bool Game::makeSetupMove(Player & player, unsigned i, QGraphicsScene &scene) {
+    setMessage("We are in makeSetupMove");
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
-        std::cout << "Error: Invalid index or occupied field." << std::endl;
         setMessage("Error: Invalid index or occupied field.");
         return false;
     } else {
@@ -46,18 +42,18 @@ bool Game::makeSetupMove_graphical(Player & player, unsigned i, QGraphicsScene &
         gameMap -> incRemoveIndex();
 
         //std::cout << player.getName() << " occupied field " << input << std::endl;
-        //setMessage(player.getName() + " occupied a field.");
+        setMessage(player.getName().toStdString() + " occupied a field.");
 
         //gameMap -> printMapTerminal();
 
         if (checkMills(i))
-            mill_occured = true;
+            millOccured = true;
         return true;
     }
 
 }
 
-bool Game::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned moveTo) {
+bool Game::makePlayMove(Player & player, unsigned moveFrom, unsigned moveTo) {
     //setMessage(player.getName() + "'s turn: Choose a piece to move!");
 
     if (isValidToMove(moveFrom, moveTo)){
@@ -65,7 +61,7 @@ bool Game::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned m
         gameMap -> getBoardFields()[moveTo].occupy(player.id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
 
         if (checkMills(moveTo))
-            mill_occured = true;
+            millOccured = true;
         return true;
     }
     return false;
@@ -76,7 +72,7 @@ bool Game::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned m
     Izmenjeno ponavljanje koda u while petlji
 */
 
-bool Game::removeOpponentsPiece_graphic(Player & player, unsigned index) {
+bool Game::removeOpponentsPiece(Player & player, unsigned index) {
 
     if (!isValidToRemove(index, player))
     {
@@ -85,11 +81,12 @@ bool Game::removeOpponentsPiece_graphic(Player & player, unsigned index) {
     }
     gameMap -> getBoardFields()[index].deoccupy();
 
-    player.id() == FIELDSTATE::PLAYER_1 ? m_p2.decNumOfPieces() : m_p1.decNumOfPieces(); // ????? Da ne treba mozda ovde obrnuto
+    player.id() == FIELDSTATE::PLAYER_1 ? m_p2.decNumOfPieces() : m_p1.decNumOfPieces();
 
-    mill_occured = false;
+    millOccured = false;
 
-    //setMessage("Player " + player.getName() + " has lost a piece!");
+    Player opponent = player.id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
+    setMessage("Player " + opponent.getName().toStdString() + " has lost a piece!");
     return true;
 }
 /*
@@ -132,7 +129,8 @@ bool Game::isValidIndex(int i) const {
 bool Game::isValidToRemove(int i, Player & player) {
 
     if (!isValidIndex(i)) {
-        std::cout << "Error in index!" << std::endl;
+        //std::cout << "Error in index!" << std::endl;
+        setMessage("Invalid index");
         return false;
     }
     if (gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() != player.id()) {
@@ -168,10 +166,6 @@ bool Game::isValidToSelect(int i, Player & player) const {
     return isValidIndex(i) && gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player.id();
 }
 
-bool Game::isValidToOccupy(int i, Player & player) const {
-    return false;
-}
-
 void Game::changeTurn() {
     m_p1.changeTurn();
     m_p2.changeTurn();
@@ -179,18 +173,18 @@ void Game::changeTurn() {
 
 void Game::playMove(Player &player, int index, QGraphicsScene &scene)
 {
-
-    if (this->mill_occured){
-          std::cout<< "Mill in playGame"<<std::endl;
-          if (removeOpponentsPiece_graphic(player, index))
+    if (this->millOccured){
+          //std::cout<< "Mill in playGame"<<std::endl;
+          setMessage("Mill in playGame");
+          if (removeOpponentsPiece(player, index))
                 this->changeTurn();
           return ;
     }
 
     if (!checkPhase1End()){
-            if (makeSetupMove_graphical(player, index, scene)){
+            if (makeSetupMove(player, index, scene)){
                 if (checkMills(index))
-                    mill_occured = true;
+                    millOccured = true;
                 else
                     this->changeTurn();
             }
@@ -199,10 +193,10 @@ void Game::playMove(Player &player, int index, QGraphicsScene &scene)
             if (isValidToSelect(index, player))
                 moveFrom = index;
         }else{ // moveFrom != -1
-            if (makePlayMove_graphical(player, moveFrom, index)){
+            if (makePlayMove(player, moveFrom, index)){
                 moveFrom = -1;
                 if (checkMills(index))
-                    mill_occured = true;
+                    millOccured = true;
                 else
                     this->changeTurn();
 
@@ -225,20 +219,51 @@ Player &Game::getCurrentPlayer(){
     return m_p1.turn()? m_p1 : m_p2;
 }
 
+GameMap *Game::getGameMap()
+{
+    return this -> gameMap;
+}
+
+Player Game::getPlayer1()
+{
+    return this -> m_p1;
+}
+
+Player Game::getPlayer2()
+{
+    return this -> m_p2;
+}
+
+GAMESTATE Game::getGameState()
+{
+    return this -> gameState;
+}
+
+bool Game::getMillOccured()
+{
+    return this -> millOccured;
+}
+
+int Game::getMoveFrom()
+{
+    return this -> moveFrom;
+}
+
+int Game::getBoardPieces()
+{
+    return this -> boardPieces;
+}
 
 // Inicijalizuje neke gluposti vrv mozemo i bez ovoga, da se stavi u konstruktor npr
 void Game::setup_graphical() {
     if (gameState != GAMESTATE::INIT) {
-        std::cout << "The has already been initialized" << std::endl;
         setMessage("The game has already been initialized");
         return;
     }
-
     m_p1.changeTurn(); //prvi je na potezu igrac 1
 }
 
 // Proverava da li su sve figurice postavljene i ako jesu zavrsava phase1
-
 bool Game::checkPhase1End() {
     if (boardPieces == 0) {
         //std::cout << "The game has been set up!" << std::endl;
@@ -263,30 +288,37 @@ void Game::setMessage(const std::string & msg){
     message = message.fromStdString(msg);
 }
 
-void Game::makeSetupMove_AI(Player & player, int i) {
-
-    gameMap -> getBoardFields()[i].occupy(player.id());
-    player.incNumOfPieces();
-
-    if (checkMills(i))
-    {
-        mill_occured = true;
-    }
-    else
-    {
-        this->changeTurn();
-    }
-
+void Game::setGameMap(GameMap *gameMap)
+{
+    this -> gameMap = gameMap;
 }
 
-void Game::revertSetupMove_AI(Player & player, int i) {
-
-    gameMap -> getBoardFields()[i].deoccupy();
-    player.decNumOfPieces();
-
-    mill_occured = false;
-
+void Game::setPlayer1(Player p1)
+{
+    this -> m_p1 = p1;
 }
 
+void Game::setPlayer2(Player p2)
+{
+    this -> m_p2 = p2;
+}
 
+void Game::setGameState(GAMESTATE gameState)
+{
+    this -> gameState = gameState;
+}
 
+void Game::setMillOccured(bool millOccured)
+{
+    this -> millOccured = millOccured;
+}
+
+void Game::setMoveFrom(int moveFrom)
+{
+    this -> moveFrom = moveFrom;
+}
+
+void Game::setBoardPieces(int boardPieces)
+{
+    this -> boardPieces = boardPieces;
+}

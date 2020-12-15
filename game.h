@@ -18,19 +18,14 @@ public:
     ~Game();
 
     // metode
-    void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
-    void setup(); // ovo je postavljanje figura, tj. prva faza igre
     void setup_graphical();
 
     void changeTurn();
-    bool makePlayMove(Player& player);
-    bool makeSetupMove(Player& player);
-    void playMove(Player& player, int index, QGraphicsScene &scene);
-    void removeOpponentsPiece(Player& player);
+    virtual void playMove(Player& player, int index, QGraphicsScene &scene); // ova bi trebalo da se postavi na virtual
 
-    bool makeSetupMove_graphical(Player &player, unsigned i, QGraphicsScene &scene);
-    bool removeOpponentsPiece_graphic(Player& player, unsigned index);
-    bool makePlayMove_graphical(Player &player, unsigned moveFrom, unsigned moveTo);
+    bool makeSetupMove(Player &player, unsigned i, QGraphicsScene &scene);
+    bool removeOpponentsPiece(Player& player, unsigned index);
+    bool makePlayMove(Player &player, unsigned moveFrom, unsigned moveTo);
 
     // metodi za proveru stanje igre
     bool gameOver();
@@ -42,37 +37,40 @@ public:
     bool isValidToMove(int from, int to) const;
     bool isValidToRemove(int i, Player& player);
     bool isValidToSelect(int i, Player& player) const;
-    bool isValidToOccupy(int i, Player& player) const;
-
-    // ovde dodajem AI funkcije
-    void makeSetupMove_AI(Player & player, int i);    // ides u drugu klasu
-    void revertSetupMove_AI(Player & player, int i);
 
     // getteri
     QString getMessage() const;
     FIELDSTATE getWinner() const;
     Player &getCurrentPlayer();
+    GameMap *getGameMap();
+    Player getPlayer1();
+    Player getPlayer2();
+    GAMESTATE getGameState();
+    bool getMillOccured();
+    int getMoveFrom();
+    int getBoardPieces();
 
     // setteri
     void setWinner(FIELDSTATE winner);
     void setMessage(const std::string &msg);
-
-    // seteri i geteri za ovo sve
-    GameMap         *gameMap;               // i ovo mi treba public
-    Player          m_p1;                   // stavio sam public jer mi treba turn metoda nad ovim objektima
-    Player          m_p2;                   // public
-    int             phase1_piece_counter;   // dodao ovo ovde da bi iz boarda znao kada da prekinem prvi deo igre
-    GAMESTATE       gameState;
-    bool            mill_occured;
-    int             moveFrom;
-    int             boardPieces;
-
-
+    void setGameMap(GameMap *gameMap);
+    void setPlayer1(Player p1);
+    void setPlayer2(Player p2);
+    void setGameState(GAMESTATE gameState);
+    void setMillOccured(bool millOccured);
+    void setMoveFrom(int moveFrom);
+    void setBoardPieces(int boardPieces);
 
 private:  
+    GameMap         *gameMap;
+    Player          m_p1;
+    Player          m_p2;
+    GAMESTATE       gameState;
     FIELDSTATE      winner;
     QString         message;
-
+    bool            millOccured;
+    int             moveFrom;
+    int             boardPieces;
 };
 
 #endif // GAME_H

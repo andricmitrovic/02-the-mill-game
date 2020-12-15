@@ -28,7 +28,7 @@ class Board : public QMainWindow {
 public:
     Board(QWidget *parent = nullptr);
     ~Board();
-    GameAI* getGame();
+    Game* getGame();
     void resizeEvent(QResizeEvent* event);
 
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
@@ -40,7 +40,7 @@ public slots:
 private:
 
     Ui::Board         *ui;
-    GameAI            *game;
+    Game              *game;
     MyGraphicsScene   m_scene;
 
 };
