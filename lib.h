@@ -24,4 +24,10 @@ enum class GAMESTATE {
     PLAY
 };
 
+enum class GAMEMODE {
+    LOCAL,
+    AI,
+    SERVER
+};
+
 #endif // LIB_H

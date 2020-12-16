@@ -18,8 +18,8 @@ public:
 
 private slots:
     void on_localPlayBtn_clicked();
-
     void on_serverPlayBtn_clicked();
+    void on_aiPlayBtn_clicked();
 
 private:
     Ui::MainMenu *ui;

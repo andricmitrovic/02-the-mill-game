@@ -15,7 +15,14 @@ MainMenu::~MainMenu()
 
 void MainMenu::on_localPlayBtn_clicked()
 {
-    board = new Board(this);
+    board = new Board(this, GAMEMODE::LOCAL);
+    board->show();
+    this->hide();
+}
+
+void MainMenu::on_aiPlayBtn_clicked()
+{
+    board = new Board(this, GAMEMODE::AI);
     board->show();
     this->hide();
 }

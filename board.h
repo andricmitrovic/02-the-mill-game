@@ -12,9 +12,14 @@
 #include <QGraphicsTextItem>
 
 #include <vector>
+
 #include "game.h"
 #include "gameai.h"
+#include "gamelocal.h"
+#include "gameserver.h"
+
 #include "gamemap.h"
+
 #include "MyGraphicsScene.h"
 
 
@@ -26,7 +31,7 @@ class Board : public QMainWindow {
     Q_OBJECT
 
 public:
-    Board(QWidget *parent = nullptr);
+    Board(QWidget *parent = nullptr, GAMEMODE gameMode=GAMEMODE::LOCAL);
     ~Board();
     Game* getGame();
     void resizeEvent(QResizeEvent* event);

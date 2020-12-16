@@ -3,180 +3,12 @@
 #include "player.h"
 #include "QGraphicsScene"
 
-GameAI::GameAI(Player & p1, Player & p2)
-    : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-      mill_occured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES), winner(FIELDSTATE::EMPTY), maxDepthAI(5){}
-
-GameAI::~GameAI() {
-    delete gameMap;
-}
-
-bool GameAI::checkMills(unsigned index) const {
-    FIELDSTATE curPlayer = gameMap -> getBoardFields()[index].getPlayerID();
-    unsigned checkIndex1 = gameMap -> getBoardFields()[index].getMills().first.first;
-    unsigned checkIndex2 = gameMap -> getBoardFields()[index].getMills().first.second;
-    if (gameMap -> getBoardFields()[checkIndex1].getPlayerID() == curPlayer && gameMap -> getBoardFields()[checkIndex2].getPlayerID() == curPlayer) {
-        return true;
-    }
-
-    unsigned checkIndex3 = gameMap -> getBoardFields()[index].getMills().second.first;
-    unsigned checkIndex4 = gameMap -> getBoardFields()[index].getMills().second.second;
-    if (gameMap -> getBoardFields()[checkIndex3].getPlayerID() == curPlayer && gameMap -> getBoardFields()[checkIndex4].getPlayerID() == curPlayer) {
-        return true;
-    }
-    return false;
-}
-
-
-// Postavlja figuricu na polje i, koje smo dobili iz klika
-bool GameAI::makeSetupMove_graphical(Player & player, unsigned i, QGraphicsScene &scene) {
-
-    //std::cout << player.getName() << "'s turn:  Choose a field [a-x]: " << std::endl;
-    //setMessage(player.getName() + "'s turn:  Choose a field [a-x]: ");
-    setMessage("We are in makeSetupMove_graphical");
-    if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
-        std::cout << "Error: Invalid index or occupied field." << std::endl;
-        setMessage("Error: Invalid index or occupied field.");
-        return false;
-    } else {
-        gameMap -> getBoardFields()[i].occupy(player.id());
-        boardPieces--;
-        player.incNumOfPieces();
-        scene.removeItem(gameMap -> getPieces()[gameMap -> getRemoveIndex()]);
-        gameMap -> incRemoveIndex();
-
-        //std::cout << player.getName() << " occupied field " << input << std::endl;
-        //setMessage(player.getName() + " occupied a field.");
-
-        //gameMap -> printMapTerminal();
-
-        if (checkMills(i))
-            mill_occured = true;
-        return true;
-    }
-
-}
-
-bool GameAI::makePlayMove_graphical(Player & player, unsigned moveFrom, unsigned moveTo) {
-    //setMessage(player.getName() + "'s turn: Choose a piece to move!");
-
-    if (isValidToMove(moveFrom, moveTo)){
-        gameMap -> getBoardFields()[moveFrom].deoccupy();
-        gameMap -> getBoardFields()[moveTo].occupy(player.id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
-
-        if (checkMills(moveTo))
-            mill_occured = true;
-        return true;
-    }
-    return false;
-
-}
+GameAI::GameAI(Player* p1, Player* p2)
+    : Game(p1,p2),
+      maxDepthAI(5)
+{}
 
 /*
-    Izmenjeno ponavljanje koda u while petlji
-*/
-
-bool GameAI::removeOpponentsPiece_graphic(Player & player, unsigned index) {
-
-    if (!isValidToRemove(index, player))
-    {
-        setMessage("You can't remove this piece!" );
-        return false;
-    }
-    gameMap -> getBoardFields()[index].deoccupy();
-
-    player.id() == FIELDSTATE::PLAYER_1 ? m_p2.decNumOfPieces() : m_p1.decNumOfPieces(); // ????? Da ne treba mozda ovde obrnuto
-
-    mill_occured = false;
-
-    //setMessage("Player " + player.getName() + " has lost a piece!");
-    return true;
-}
-/*
-    Implementacija metoda koji proverava da li je igra zavrsena
-    Igra nije gotova sve dok jedan od igraca ne ostane sa dve figurice
-*/
-
-bool GameAI::gameOver() {
-    if (m_p1.getNumOfPieces() == 2) {
-        setWinner(FIELDSTATE::PLAYER_2);
-        return true;
-    } else if (m_p2.getNumOfPieces() == 2) {
-        setWinner(FIELDSTATE::PLAYER_1);
-        return true;
-    }
-    return false;
-}
-
-/*
-    setter za winnera
-*/
-void GameAI::setWinner(FIELDSTATE winner) {
-    this -> winner = winner;
-}
-
-
-FIELDSTATE GameAI::getWinner() const {
-    return winner;
-}
-
-bool GameAI::isValidIndex(int i) const {
-    return (i >= 0 && i < NUM_OF_FIELDS);
-}
-
-/*
- *  Implementacija meotde isValidToRemove: provera da li player sme da ukloni figuru sa polja i
- *  Metoda se poziva kada player napravil Mill
- *
- */
-bool GameAI::isValidToRemove(int i, Player & player) {
-
-    if (!isValidIndex(i)) {
-        std::cout << "Error in index!" << std::endl;
-        return false;
-    }
-    if (gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() != player.id()) {
-
-        int numOfPieces = player.id() == FIELDSTATE::PLAYER_1 ? m_p2.getNumOfPieces() : m_p1.getNumOfPieces();
-
-        if (!checkMills(i) || numOfPieces == 3) {
-            return true;
-        } else {
-            setMessage("You can't remove piece from the mill just yet!");
-            return false;
-        }
-
-    }
-    return false;
-}
-
-bool GameAI::isValidToMove(int from, int to) const {
-
-    if (!isValidIndex(from) || !isValidIndex(to)) {
-        return false;
-    }
-
-    auto neighbours = gameMap -> getBoardFields()[from].getNeighboursIndices();
-    bool contains = (std::find(neighbours.begin(), neighbours.end(), to) != neighbours.end());
-
-    // Ukoliko je izabrano polje prazno i sused je polja i
-
-    return (!gameMap -> getBoardFields()[to].isOccupied() && contains);
-}
-
-bool GameAI::isValidToSelect(int i, Player & player) const {
-    return isValidIndex(i) && gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player.id();
-}
-
-bool GameAI::isValidToOccupy(int i, Player & player) const {
-    return false;
-}
-
-void GameAI::changeTurn() {
-    m_p1.changeTurn();
-    m_p2.changeTurn();
-}
-
 void GameAI::playMove(Player &player, int index, QGraphicsScene &scene)
 {
 
@@ -220,66 +52,27 @@ void GameAI::playMove(Player &player, int index, QGraphicsScene &scene)
         std::cout << "GAME OVER" << std:: endl;
     }
 }
-
-Player &GameAI::getCurrentPlayer(){
-    return m_p1.turn()? m_p1 : m_p2;
-}
+*/
 
 
-// Inicijalizuje neke gluposti vrv mozemo i bez ovoga, da se stavi u konstruktor npr
-void GameAI::setup_graphical() {
-    if (gameState != GAMESTATE::INIT) {
-        std::cout << "The has already been initialized" << std::endl;
-        setMessage("The game has already been initialized");
-        return;
-    }
 
-    m_p1.changeTurn(); //prvi je na potezu igrac 1
-}
+void GameAI::makeSetupMove_AI(Player* player, int i) {
 
-// Proverava da li su sve figurice postavljene i ako jesu zavrsava phase1
-
-bool GameAI::checkPhase1End() {
-    if (boardPieces == 0) {
-        //std::cout << "The game has been set up!" << std::endl;
-        setMessage("The game has been set up!");
-        //std::cout << "Player 1 No. of pieces: " << m_p1.getNumOfPieces() << std::endl;
-        //std::cout << "Player 2 No. of pieces: " << m_p2.getNumOfPieces() << std::endl;
-
-        //gameMap -> printMapTerminal();
-        gameState = GAMESTATE::PLAY;
-        return true;
-    }
-    return false;
-}
-
-
-QString GameAI::getMessage() const {
-    return message;
-}
-
-void GameAI::setMessage(const std::string & msg){
-    message.clear();
-    message = message.fromStdString(msg);
-}
-
-void GameAI::makeSetupMove_AI(Player & player, int i) {
-
-    gameMap -> getBoardFields()[i].occupy(player.id());
-    player.incNumOfPieces();
+    Game::getGameMap() -> getBoardFields()[i].occupy(player->id());
+    player->incNumOfPieces();
 
     if (checkMills(i))
     {
-        mill_occured = true;
+        Game::setMillOccured(true);
     }
 }
 
-void GameAI::revertSetupMove_AI(Player & player, int i) {
+void GameAI::revertSetupMove_AI(Player* player, int i) {
 
-    gameMap -> getBoardFields()[i].deoccupy();
-    player.decNumOfPieces();
+    Game::getGameMap() -> getBoardFields()[i].deoccupy();
+    player->decNumOfPieces();
 
-    mill_occured = false;
+    Game::setMillOccured(false);
 
 }
 
@@ -291,7 +84,7 @@ std::pair<int,int> GameAI::max(int depth)
     // !!! TREBA MI HEURISTICKA PROCENA DA JE POTEZ OK AKO MOZE STO VISI MILLOVA DA SE SPOJI ODATLE U BUDUCNOSTI
 
     // ako m_p1 napravi mill pobedio je, ako m_p2 napravi mill izgubio je nagradu
-    if (this->mill_occured)
+    if (Game::getMillOccured())
     {
         // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
         return std::make_pair(-1, -1);
@@ -306,11 +99,11 @@ std::pair<int,int> GameAI::max(int depth)
     // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
     for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
     {
-        if(this->gameMap->getBoardFields()[field_num].isOccupied())               // moram da kopiram gameMap kasnije ovde u zavisnosti koje je trenutno stanje igre ili samo i ovde da promenim stanje mape kad menjam i u pravoj
+        if(Game::getGameMap()->getBoardFields()[field_num].isOccupied())               // moram da kopiram gameMap kasnije ovde u zavisnosti koje je trenutno stanje igre ili samo i ovde da promenim stanje mape kad menjam i u pravoj
             continue;
 
         // odigraj potez
-        this->makeSetupMove_AI(this->m_p1, field_num);
+        this->makeSetupMove_AI(Game::getPlayer1(), field_num);
 
         // pozovi min
         std::pair<int,int> ret_val= min(depth-1);
@@ -327,7 +120,7 @@ std::pair<int,int> GameAI::max(int depth)
             std::cout<<"move_good? : "<<ret_val.first<<" "<<field_num<<std::endl;*/
 
         // vrati potez unazad, da li mogu da zloupotrebim neku funkciju ovde ili pravim novu?
-        this->revertSetupMove_AI(this->m_p1, field_num);
+        this->revertSetupMove_AI(Game::getPlayer1(), field_num);
     }
     return std::make_pair(maxValue, move);
 }
@@ -339,7 +132,7 @@ std::pair<int,int> GameAI::min(int depth)
     //int move;
 
     // proveri da li je mill
-    if (this->mill_occured)             // mozda treba da se obrne nagrada ovde jer kad se desi mill ne menja se turn?
+    if (Game::getMillOccured())             // mozda treba da se obrne nagrada ovde jer kad se desi mill ne menja se turn?
     {
         return std::make_pair(1, -1);
     }
@@ -353,11 +146,11 @@ std::pair<int,int> GameAI::min(int depth)
     // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
     for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
     {
-        if(this->gameMap->getBoardFields()[field_num].isOccupied())               // moram da kopiram gameMap kasnije ovde u zavisnosti koje je trenutno stanje igre ili samo i ovde da promenim stanje mape kad menjam i u pravoj
+        if(Game::getGameMap()->getBoardFields()[field_num].isOccupied())               // moram da kopiram gameMap kasnije ovde u zavisnosti koje je trenutno stanje igre ili samo i ovde da promenim stanje mape kad menjam i u pravoj
             continue;
 
         // odigraj potez
-        this->makeSetupMove_AI(this->m_p2, field_num);
+        this->makeSetupMove_AI(Game::getPlayer2(), field_num);
 
         // pozovi min
         std::pair<int,int> ret_val= max(depth-1);
@@ -369,7 +162,7 @@ std::pair<int,int> GameAI::min(int depth)
         }
 
         // vrati potez unazad, da li mogu da zloupotrebim neku funkciju ovde ili pravim novu?
-        this->revertSetupMove_AI(this->m_p2, field_num);
+        this->revertSetupMove_AI(Game::getPlayer2(), field_num);
     }
 
     return std::make_pair(minValue, -1);

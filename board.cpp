@@ -6,14 +6,23 @@
 // indeksi za drugu fazu igre, za sad globalne
 int moveFrom = -1, moveTo = -1;
 
-Board::Board(QWidget * parent): QMainWindow(parent), ui(new Ui::Board)
+Board::Board(QWidget * parent, GAMEMODE gameMode): QMainWindow(parent), ui(new Ui::Board)
 {
     ui -> setupUi(this);
 
-    Player p1(FIELDSTATE::PLAYER_1, QString("Marija"));
-    Player p2(FIELDSTATE::PLAYER_2, QString("Mrc"));
+    Player* p1 = new Player(FIELDSTATE::PLAYER_1, QString("Marija"));
+    Player* p2 = new Player(FIELDSTATE::PLAYER_2, QString("Mrc"));
 
-    game = new Game(p1, p2);
+    // TODO
+    if(gameMode==GAMEMODE::LOCAL)
+        game = new GameLocal(p1, p2);
+
+    if(gameMode==GAMEMODE::AI)
+        game = new GameAI(p1, p2);
+
+    // TODO
+    if(gameMode==GAMEMODE::SERVER)
+        game = new GameAI(p1, p2);
 
     game -> setup_graphical(); //prva faza
 

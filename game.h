@@ -14,18 +14,19 @@
 class Game {
 public:
 
-    Game(Player& p1, Player& p2);
+    Game(Player* p1, Player* p2);
     ~Game();
 
     // metode
     void setup_graphical();
 
     void changeTurn();
-    virtual void playMove(Player& player, int index, QGraphicsScene &scene); // ova bi trebalo da se postavi na virtual
+    virtual void playMove(Player*  player, int index, QGraphicsScene &scene); // ova bi trebalo da se postavi na virtual
 
-    bool makeSetupMove(Player &player, unsigned i, QGraphicsScene &scene);
-    bool removeOpponentsPiece(Player& player, unsigned index);
-    bool makePlayMove(Player &player, unsigned moveFrom, unsigned moveTo);
+    bool makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene);
+    bool fconentsPiece(Player*  player, unsigned index);
+    bool makePlayMove(Player* player, unsigned moveFrom, unsigned moveTo);
+    bool removeOpponentsPiece(Player* player, unsigned index);
 
     // metodi za proveru stanje igre
     bool gameOver();
@@ -35,16 +36,16 @@ public:
     //provera indeks
     bool isValidIndex(int i) const;
     bool isValidToMove(int from, int to) const;
-    bool isValidToRemove(int i, Player& player);
-    bool isValidToSelect(int i, Player& player) const;
+    bool isValidToRemove(int i, Player*  player);
+    bool isValidToSelect(int i, Player*  player) const;
 
     // getteri
     QString getMessage() const;
     FIELDSTATE getWinner() const;
-    Player &getCurrentPlayer();
-    GameMap *getGameMap();
-    Player getPlayer1();
-    Player getPlayer2();
+    Player* getCurrentPlayer();
+    GameMap *getGameMap() const;
+    Player* getPlayer1() const;
+    Player* getPlayer2() const;
     GAMESTATE getGameState();
     bool getMillOccured();
     int getMoveFrom();
@@ -54,8 +55,8 @@ public:
     void setWinner(FIELDSTATE winner);
     void setMessage(const std::string &msg);
     void setGameMap(GameMap *gameMap);
-    void setPlayer1(Player p1);
-    void setPlayer2(Player p2);
+    void setPlayer1(Player* p1);
+    void setPlayer2(Player* p2);
     void setGameState(GAMESTATE gameState);
     void setMillOccured(bool millOccured);
     void setMoveFrom(int moveFrom);
@@ -63,8 +64,8 @@ public:
 
 private:  
     GameMap         *gameMap;
-    Player          m_p1;
-    Player          m_p2;
+    Player          *m_p1;
+    Player          *m_p2;
     GAMESTATE       gameState;
     FIELDSTATE      winner;
     QString         message;
