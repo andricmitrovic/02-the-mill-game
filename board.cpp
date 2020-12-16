@@ -24,20 +24,6 @@ Board::Board(QWidget * parent, GAMEMODE gameMode): QMainWindow(parent), ui(new U
     if(gameMode==GAMEMODE::SERVER)
         game = new GameAI(p1, p2);
 
-    game -> setup_graphical(); //prva faza
-
-//    std::pair<int,int> ret = game->max(game->maxDepthAI);
-//    std::cout<<ret.first<<" "<<ret.second<<std::endl;
-    /*std::pair<int,int> ret = botina->max(maxDepthAI);
-    std::cout<<ret.first<<" "<<ret.second<<std::endl;*/
-
-
-    /* Postavlja scenu da bude preko celog pogleda, vrlo je cudno ponasanje kad se ovo ne postavi
-     * ili neke druge dimenzije, bas nemam ideju sta su mu radili.
-     * Ovo prvo bolje sljaka, sa drugim izadju scrollbarovi iz nekog razloga.
-     * */
-    //m_scene.setSceneRect(m_scene.itemsBoundingRect());
-    //qDebug()<<this->width();
     m_scene.setSceneRect(0, 0, this -> width(), this -> height());
 
     game -> getGameMap() -> printMap(m_scene);
@@ -80,15 +66,6 @@ void Board::onFieldSelection(QPointF pos) {
     int index = game -> getGameMap() -> indexByPos(item -> pos());
 
     game -> playMove(game -> getCurrentPlayer(), index, m_scene);
-
-    // ovde kad kliknem kao i kad pocne potez drugog igraca da nadjem najbolji potez za njega
-//    if(game->m_p1.turn() && !game->mill_occured)
-//    {
-//        //zovi bota da uradi potez
-//        int depth = std::min(game->maxDepthAI, game->boardPieces);
-//        std::pair<int,int> ret = game->max(depth);
-//        std::cout<<ret.first<<" "<<ret.second<<std::endl;
-//    }
 
     ui -> graphicsView -> viewport() -> update();
 }

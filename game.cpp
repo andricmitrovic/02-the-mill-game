@@ -5,7 +5,18 @@
 
 Game::Game(Player* p1, Player* p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-      winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES){}
+      winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
+{
+//setup_graphical sam ovde sibnuo jer realno ne treba da se zove posebna funkcija za to kad moze u konstruktoru da se odradi
+
+    if (gameState != GAMESTATE::INIT)
+    {
+        setMessage("The game has already been initialized");
+        return;
+    }
+
+    m_p1->changeTurn(); //prvi je na potezu igrac 1
+}
 
 Game::~Game() {
     delete gameMap;
@@ -252,15 +263,6 @@ int Game::getMoveFrom()
 int Game::getBoardPieces()
 {
     return this -> boardPieces;
-}
-
-// Inicijalizuje neke gluposti vrv mozemo i bez ovoga, da se stavi u konstruktor npr
-void Game::setup_graphical() {
-    if (gameState != GAMESTATE::INIT) {
-        setMessage("The game has already been initialized");
-        return;
-    }
-    m_p1->changeTurn(); //prvi je na potezu igrac 1
 }
 
 // Proverava da li su sve figurice postavljene i ako jesu zavrsava phase1

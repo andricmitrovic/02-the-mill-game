@@ -18,8 +18,6 @@ public:
     ~Game();
 
     // metode
-    void setup_graphical();
-
     void changeTurn();
     virtual void playMove(Player*  player, int index, QGraphicsScene &scene); // ova bi trebalo da se postavi na virtual
 

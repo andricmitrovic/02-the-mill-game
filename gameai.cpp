@@ -5,54 +5,43 @@
 
 GameAI::GameAI(Player* p1, Player* p2)
     : Game(p1,p2),
-      maxDepthAI(5)
-{}
-
-/*
-void GameAI::playMove(Player &player, int index, QGraphicsScene &scene)
+      maxDepthAI(5),
+      playerAI(FIELDSTATE::PLAYER_1)
 {
-
-    if (this->mill_occured){
-          std::cout<< "Mill in playGame"<<std::endl;
-          if (removeOpponentsPiece_graphic(player, index))
-                this->changeTurn();
-          return ;
-    }
-
-    if (!checkPhase1End()){
-            if (makeSetupMove_graphical(player, index, scene)){
-                if (checkMills(index))
-                    mill_occured = true;
-                else
-                    this->changeTurn();
-            }
-    }else if (!gameOver()){
-        if (moveFrom == -1){
-            if (isValidToSelect(index, player))
-                moveFrom = index;
-        }else{ // moveFrom != -1
-            if (makePlayMove_graphical(player, moveFrom, index)){
-                moveFrom = -1;
-                if (checkMills(index))
-                    mill_occured = true;
-                else
-                    this->changeTurn();
-
-            }else{
-                if (gameMap->getBoardFields()[index].getPlayerID() == player.id()){
-                    moveFrom = index;
-
-                }
-            }
-
-        }
-    }else {
-        setMessage("Game over!");
-        setWinner(m_p1.getNumOfPieces()<m_p2.getNumOfPieces()? FIELDSTATE::PLAYER_2: FIELDSTATE::PLAYER_1);
-        std::cout << "GAME OVER" << std:: endl;
+    // ako igra AI prvi onda nakon sto inicijalizujemo igru u superu samo odigra prvi potez
+    if(playerAI==FIELDSTATE::PLAYER_1)
+    {
+        std::pair<int,int> ret = max(maxDepthAI);
+        std::cout<<ret.first<<" "<<ret.second<<std::endl;
     }
 }
-*/
+
+
+void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
+{
+   // TODO: Treba mi provera mozda ovde koji je igrac da slucajno covek ne klikne brzo dok bot ne napravi potez, ali mozda i ne treba?
+    Game::playMove(player, index, scene);
+
+    // kad se zavrsi odigravanje protivnickog poteza, bot je na redu ako nije bio mill
+    if(turnAI() && !Game::getMillOccured())
+    {
+        int depth = std::min(maxDepthAI, Game::getBoardPieces());
+        std::pair<int,int> ret = max(depth);
+        std::cout<<ret.first<<" "<<ret.second<<std::endl;
+    }
+}
+
+bool GameAI::turnAI()
+{
+    if(playerAI==FIELDSTATE::PLAYER_1)
+    {
+        return Game::getPlayer1()->turn();
+    }
+    else
+    {
+        return Game::getPlayer2()->turn();
+    }
+}
 
 
 
