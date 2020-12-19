@@ -40,8 +40,7 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
             }
             else
             {
-                //todo
-                //playMovingMoveAI(scene);
+                playMovingMoveAI(scene);
             }
         }
 
@@ -54,14 +53,16 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
             }
             else
             {
-                //todo
-                //playMillMovingAI(scene);
+                playMillMovingAI(scene);
             }
         }
-        //std::cout<<Game::getMillOccured()<<std::endl;//<<std::flush;
     }
+
+    // TODO!!!!!!!!!!!! proveri kraj partije nekad negde ako treba kad bot igra jer je glup pa ne zna da je kraj
+    // takodje ne radi kad human igrac nema gde da pomeri vise ne kaze da je game over, mozda bi bug i za bota ispao, vrv je to ono kad mi kaze -1:-1:2
 }
 
+//Phase 1
 void GameAI::playSetupMoveAI(QGraphicsScene &scene)
 {
     int depth = std::min(maxDepthAI, Game::getBoardPieces());
@@ -113,15 +114,62 @@ void GameAI::playMillSetupAI(QGraphicsScene &scene)
     Game::playMove(getPlayerAI(), move, scene);
 }
 
+// Phase 2
+
 void GameAI::playMovingMoveAI(QGraphicsScene &scene)
 {
-    // TODO
+    int depth = maxDepthAI;
+    std::tuple<int,int, int> retVal = maxPlay(depth, -2, 2);
+    std::cout<<"Bot igra "<<std::get<1>(retVal)<<":"<<std::get<2>(retVal)<<", zbog nagrade od "<<std::get<0>(retVal)<<std::endl;
 
-    // ideja: uzmem svaku AIovu figuricu i pomerim u svakom smeru koji moze i pokrenem minimax drugi jer onaj prvi radi samo za postavlanje figura
-
-
-    return;
+    Game::setMoveFrom(std::get<1>(retVal));
+    Game::playMove(getPlayerAI(), std::get<2>(retVal), scene);
 }
+
+void GameAI::playMillMovingAI(QGraphicsScene &scene)
+{
+    // stavimo false da bi radio minimax
+    Game::setMillOccured(false);
+
+    int depth = std::min(maxDepthAI, Game::getBoardPieces());
+    //std::cout<<depth<<std::endl;
+
+    int maxValue = -2;
+    int move = -1;
+
+    // onda pokrenem MIN jer protivnik igra, iz svake moguce obrisane figurice na stolu tj svake protivnikove figure
+    for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
+    {
+        // ako je protivnikova figurica tu i smes da jedes nju
+        if(isValidToRemove(field_num, getPlayerAI()))
+        {
+            // obrisi tu figuricu
+            Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
+
+            //pokreni MIN
+            std::tuple<int,int,int> retVal = minPlay(depth, -2, 2);                  // !!!!!!!! OVO JE JEDINA RAZLIKA U ODNOSU NA MILLSETUP FUNKCIJU
+
+            //azuriraj vrednosti
+            if(std::get<0>(retVal) > maxValue )
+            {
+                maxValue = std::get<0>(retVal);
+                move = field_num;
+            }
+
+            //vrati tu figuricu
+            Game::getGameMap() -> getBoardFields()[field_num].occupy(getHumanFieldstate());
+        }
+    }
+
+    std::cout<<"Bot bi da jede: "<<move<<", zbog nagrade od: "<<maxValue<<std::endl;
+
+    // vratimo true da bi radio playMove
+    Game::setMillOccured(true);
+    Game::playMove(getPlayerAI(), move, scene);
+}
+
+
+
 
 bool GameAI::turnAI()
 {
@@ -171,7 +219,171 @@ FIELDSTATE GameAI::getHumanFieldstate()
     }
 }
 
+// Phase 2 minimax
+void GameAI::makePlayMoveAI(Player* player, int moveFrom, int moveTo)
+{
+    //if (Game::isValidToMove(moveFrom, moveTo))
 
+    Game::getGameMap() -> getBoardFields()[moveFrom].deoccupy();
+    Game::getGameMap() -> getBoardFields()[moveTo].occupy(player->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
+
+    if (checkMills(moveTo))
+        Game::setMillOccured(true);
+}
+void GameAI::revertPlayMoveAI(Player* player, int moveTo, int moveFrom) // obrnuo sam ovde da bi u minimaxu se istim redom slali podaci
+{
+    Game::getGameMap() -> getBoardFields()[moveFrom].deoccupy();
+    Game::getGameMap() -> getBoardFields()[moveTo].occupy(player->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
+
+    Game::setMillOccured(false);
+}
+
+std::tuple<int, int,int> GameAI::maxPlay(int depth, int alfa, int beta)
+{
+    int maxValue = -2;
+    int moveFrom = -1;
+    int moveTo = -1;
+    Player* player = getPlayerAI();
+
+    // ako pobedis: +beskonacno, ne mora mozda
+    // ako izgubis: -beskonacno, ne mora mozda
+
+    // ako Human napravi mill: -1
+    if (Game::getMillOccured())
+    {
+        // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
+        return std::make_tuple(-1, -1, -1);
+    }
+
+    // ako je dosao do dubine nikom nista, da li moze nesto drugo da bude 0?
+    if (depth == 0)
+    {
+        return std::make_tuple(0, -1, -1);
+    }
+
+    // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
+    for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
+    {
+        // ako je AI figurica na ovom polju, pokreni potez iz svakog moguceg slobodnog suseda
+        if(Game::getGameMap()->getBoardFields()[field_num].getPlayerID() == playerAI)
+        {
+            for(int adj_field_num: Game::getGameMap()->getBoardFields()[field_num].getNeighboursIndices())
+            {
+                // ako je susedno polje slobodno mozes dalje da radis
+                if(Game::getGameMap()->getBoardFields()[adj_field_num].getPlayerID() != FIELDSTATE::EMPTY)
+                    continue;
+
+
+
+                // odigraj potez, tj pomeri sa jednog polja na drugo
+                this->makePlayMoveAI(player, field_num, adj_field_num);
+
+                // pozovi min
+                std::tuple<int,int,int> ret_val= minPlay(depth-1, alfa, beta);
+
+                // azuriraj
+                if(std::get<0>(ret_val) > maxValue )
+                {
+                    maxValue = std::get<0>(ret_val);
+                    moveFrom = field_num;
+                    moveTo = adj_field_num;
+                }
+
+                // vrati potez unazad
+                this->revertPlayMoveAI(player, field_num, adj_field_num);
+
+                // alfa beta odsecanje
+                if(maxValue >= beta)
+                {
+                    // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
+                    return std::make_tuple(maxValue, -1, -1);
+                }
+
+                if(maxValue > alfa)
+                {
+                    alfa = maxValue;
+                }
+
+                /*if(depth==maxDepthAI)
+                {
+                    std::cout<<field_num<<":"<<adj_field_num<<":N"<<std::get<0>(ret_val)<<std::endl;
+                }*/
+            }
+        }
+    }
+    return std::make_tuple(maxValue, moveFrom, moveTo);
+}
+
+std::tuple<int, int,int> GameAI::minPlay(int depth, int alfa, int beta)
+{
+    int minValue = 2;
+    int moveFrom = -1;
+    int moveTo = -1;
+    Player* player = getPlayerHuman();
+
+    // ako pobedis: +beskonacno, ne mora mozda
+    // ako izgubis: -beskonacno, ne mora mozda
+
+    // ako Human napravi mill: 1
+    if (Game::getMillOccured())
+    {
+        // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
+        return std::make_tuple(1, -1, -1);
+    }
+
+    // ako je dosao do dubine nikom nista, da li moze nesto drugo da bude 0?
+    if (depth == 0)
+    {
+        return std::make_tuple(0, -1, -1);
+    }
+
+    // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
+    for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
+    {
+        // ako je Human figurica na ovom polju, pokreni potez iz svakog moguceg slobodnog suseda
+        if(Game::getGameMap()->getBoardFields()[field_num].getPlayerID() == getHumanFieldstate())
+        {
+            for(int adj_field_num: Game::getGameMap()->getBoardFields()[field_num].getNeighboursIndices())
+            {
+                // ako je susedno polje slobodno mozes dalje da radis
+                if(Game::getGameMap()->getBoardFields()[adj_field_num].getPlayerID() != FIELDSTATE::EMPTY)
+                    continue;
+
+                // odigraj potez, tj pomeri sa jednog polja na drugo
+                this->makePlayMoveAI(player, field_num, adj_field_num);
+
+                // pozovi min
+                std::tuple<int,int,int> ret_val= maxPlay(depth-1, alfa, beta);
+
+                // azuriraj
+                if(std::get<0>(ret_val) < minValue )
+                {
+                    minValue = std::get<0>(ret_val);
+                    moveFrom = field_num;
+                    moveTo = adj_field_num;
+                }
+
+                // vrati potez unazad
+                this->revertPlayMoveAI(player, field_num, adj_field_num);
+
+                // alfa beta odsecanje
+                if(minValue <= alfa)
+                {
+                    // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
+                    return std::make_tuple(minValue, -1, -1);
+                }
+
+                if(minValue < beta)
+                {
+                    beta = minValue;
+                }
+            }
+        }
+    }
+    return std::make_tuple(minValue, moveFrom, moveTo);
+}
+
+// Phase 1 minimax
 
 void GameAI::makeSetupMoveAI(Player* player, int i) {
 
@@ -218,14 +430,14 @@ std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
     // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
     for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
     {
-        if(Game::getGameMap()->getBoardFields()[field_num].isOccupied())               // moram da kopiram gameMap kasnije ovde u zavisnosti koje je trenutno stanje igre ili samo i ovde da promenim stanje mape kad menjam i u pravoj
+        if(Game::getGameMap()->getBoardFields()[field_num].isOccupied())
             continue;
 
         // odigraj potez
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= minSetup(depth-1, -2, 2);
+        std::pair<int,int> ret_val= minSetup(depth-1, alfa, beta);
 
         // azuriraj
         if(ret_val.first > maxValue )
@@ -281,7 +493,7 @@ std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= maxSetup(depth-1, -2, 2);
+        std::pair<int,int> ret_val= maxSetup(depth-1, alfa, beta);
 
         // azuriraj
         if(ret_val.first < minValue )

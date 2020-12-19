@@ -43,7 +43,11 @@ public:
     void revertSetupMoveAI(Player* player, int i);
 
     // Minimax phase 2
-    //todo
+    std::tuple<int,int,int> maxPlay(int depth, int alfa, int beta);
+    std::tuple<int,int,int> minPlay(int depth, int alfa, int beta);
+
+    void makePlayMoveAI(Player* player, int from, int to);
+    void revertPlayMoveAI(Player* player, int from, int to);
 
 
 
