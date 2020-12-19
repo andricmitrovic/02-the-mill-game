@@ -47,14 +47,7 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
         // ako je bot napravio mill onda pokrece sledeci korak da vidi sta jede
         if(Game::getMillOccured())
         {
-            if(Game::getGameState()==GAMESTATE::INIT)
-            {
-                playMillSetupAI(scene);
-            }
-            else
-            {
-                playMillMovingAI(scene);
-            }
+            playMillAI(scene);
         }
     }
 
@@ -62,7 +55,6 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
     // takodje ne radi kad human igrac nema gde da pomeri vise ne kaze da je game over, mozda bi bug i za bota ispao, vrv je to ono kad mi kaze -1:-1:2
 }
 
-//Phase 1
 void GameAI::playSetupMoveAI(QGraphicsScene &scene)
 {
     int depth = std::min(maxDepthAI, Game::getBoardPieces());
@@ -71,50 +63,6 @@ void GameAI::playSetupMoveAI(QGraphicsScene &scene)
     std::cout<<"Bot igra na: "<<retVal.second<<", zbog nagrade od: "<<retVal.first<<std::endl;
     Game::playMove(getPlayerAI(), retVal.second, scene);
 }
-
-void GameAI::playMillSetupAI(QGraphicsScene &scene)
-{
-    // stavimo false da bi radio minimax
-    Game::setMillOccured(false);
-
-    int depth = std::min(maxDepthAI, Game::getBoardPieces());
-    //std::cout<<depth<<std::endl;
-
-    int maxValue = -2;
-    int move = -1;
-
-    // onda pokrenem MIN jer protivnik igra, iz svake moguce obrisane figurice na stolu tj svake protivnikove figure
-    for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
-    {
-        // ako je protivnikova figurica tu i smes da jedes nju
-        if(isValidToRemove(field_num, getPlayerAI()))
-        {
-            // obrisi tu figuricu
-            Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
-
-            //pokreni MIN
-            std::pair<int,int> retVal = minSetup(depth, -2, 2);
-
-            //azuriraj vrednosti
-            if(retVal.first > maxValue )
-            {
-                maxValue = retVal.first;
-                move = field_num;
-            }
-
-            //vrati tu figuricu
-            Game::getGameMap() -> getBoardFields()[field_num].occupy(getHumanFieldstate());
-        }
-    }
-
-    std::cout<<"Bot bi da jede: "<<move<<", zbog nagrade od: "<<maxValue<<std::endl;
-
-    // vratimo true da bi radio playMove
-    Game::setMillOccured(true);
-    Game::playMove(getPlayerAI(), move, scene);
-}
-
-// Phase 2
 
 void GameAI::playMovingMoveAI(QGraphicsScene &scene)
 {
@@ -126,7 +74,7 @@ void GameAI::playMovingMoveAI(QGraphicsScene &scene)
     Game::playMove(getPlayerAI(), std::get<2>(retVal), scene);
 }
 
-void GameAI::playMillMovingAI(QGraphicsScene &scene)
+void GameAI::playMillAI(QGraphicsScene &scene)
 {
     // stavimo false da bi radio minimax
     Game::setMillOccured(false);
@@ -136,6 +84,7 @@ void GameAI::playMillMovingAI(QGraphicsScene &scene)
 
     int maxValue = -2;
     int move = -1;
+    int retVal = -1;
 
     // onda pokrenem MIN jer protivnik igra, iz svake moguce obrisane figurice na stolu tj svake protivnikove figure
     for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
@@ -146,13 +95,20 @@ void GameAI::playMillMovingAI(QGraphicsScene &scene)
             // obrisi tu figuricu
             Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
 
-            //pokreni MIN
-            std::tuple<int,int,int> retVal = minPlay(depth, -2, 2);                  // !!!!!!!! OVO JE JEDINA RAZLIKA U ODNOSU NA MILLSETUP FUNKCIJU
+            //pokreni MIN onaj u zavisnosti od stanja igre tj kakve poteze igraju protivnici dalje
+            if(Game::getGameState()==GAMESTATE::INIT)
+            {
+                retVal = std::get<0>(minSetup(depth, -2, 2));
+            }
+            else
+            {
+                retVal = std::get<0>(minPlay(depth, -2, 2));
+            }
 
             //azuriraj vrednosti
-            if(std::get<0>(retVal) > maxValue )
+            if(retVal > maxValue )
             {
-                maxValue = std::get<0>(retVal);
+                maxValue = retVal;
                 move = field_num;
             }
 
@@ -161,13 +117,12 @@ void GameAI::playMillMovingAI(QGraphicsScene &scene)
         }
     }
 
-    std::cout<<"Bot bi da jede: "<<move<<", zbog nagrade od: "<<maxValue<<std::endl;
+    std::cout<<"Bot jede: "<<move<<", zbog nagrade od: "<<maxValue<<std::endl;
 
     // vratimo true da bi radio playMove
     Game::setMillOccured(true);
     Game::playMove(getPlayerAI(), move, scene);
 }
-
 
 
 

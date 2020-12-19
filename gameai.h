@@ -21,13 +21,9 @@ public:
 
     void playMove(Player* player, int index, QGraphicsScene &scene) override;
 
-    // Phase 1
     void playSetupMoveAI(QGraphicsScene &scene);
-    void playMillSetupAI(QGraphicsScene &scene);
-
-    // Phase 2
     void playMovingMoveAI(QGraphicsScene &scene);
-    void playMillMovingAI(QGraphicsScene &scene);
+    void playMillAI(QGraphicsScene &scene);
 
     // Helper functions
     bool turnAI();
