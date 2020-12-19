@@ -30,4 +30,10 @@ enum class GAMEMODE {
     SERVER
 };
 
+enum class GAMEMOVE {
+    MOVE,
+    PLACE,
+    REMOVE
+};
+
 #endif // LIB_H

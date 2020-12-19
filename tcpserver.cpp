@@ -16,8 +16,6 @@ TcpServer::TcpServer(QWidget *parent) :
         return;
     }
     connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
-    ui->address->setText(m_server->serverAddress().toString());
-    ui->port->setText(QString::number(m_server->serverPort()));
 }
 
 TcpServer::~TcpServer()
@@ -31,7 +29,6 @@ void TcpServer::newConnection()
         QTcpSocket *con = m_server->nextPendingConnection();
         m_clients << con;
 
-        ui->disconnectClients->setEnabled(true);
         connect(con, SIGNAL(disconnected()), this, SLOT(removeConnection()));
         connect(con, SIGNAL(readyRead()), this, SLOT(newMessage()));
 
@@ -51,7 +48,6 @@ void TcpServer::removeConnection()
                                  .arg(QString::number(con->peerPort())));
         m_clients.removeOne(con);
         con->deleteLater();
-        ui->disconnectClients->setEnabled(!m_clients.isEmpty());
     }
 }
 
@@ -77,19 +73,8 @@ void TcpServer::newMessage()
                 }
                 else
                     ui->log->insertPlainText("Not conneted \n");
-
-
-
             }
 
         }
     }
-}
-
-void TcpServer::on_disconnectClients_clicked()
-{
-    foreach (QTcpSocket *socket, m_clients) {
-        socket->close();
-    }
-    ui->disconnectClients->setEnabled(false);
 }

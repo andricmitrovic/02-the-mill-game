@@ -10,19 +10,24 @@ Board::Board(QWidget * parent, GAMEMODE gameMode): QMainWindow(parent), ui(new U
 {
     ui -> setupUi(this);
 
-    Player* p1 = new Player(FIELDSTATE::PLAYER_1, QString("Marija"));
-    Player* p2 = new Player(FIELDSTATE::PLAYER_2, QString("Mrc"));
-
     // TODO
-    if(gameMode==GAMEMODE::LOCAL)
+    if(gameMode==GAMEMODE::LOCAL) {
+        Player* p1 = new Player(FIELDSTATE::PLAYER_1, QString("Marija"));
+        Player* p2 = new Player(FIELDSTATE::PLAYER_2, QString("Mrc"));
         game = new GameLocal(p1, p2);
+    }
 
-    if(gameMode==GAMEMODE::AI)
+    if(gameMode==GAMEMODE::AI) {
+        Player* p1 = new Player(FIELDSTATE::PLAYER_1, QString("Nikola Andric Mitrovic"));
+        Player* p2 = new Player(FIELDSTATE::PLAYER_2, QString("AI"));
         game = new GameAI(p1, p2);
+    }
 
-    // TODO
-    if(gameMode==GAMEMODE::SERVER)
-        game = new GameAI(p1, p2);
+    if(gameMode==GAMEMODE::SERVER) {
+        TcpClient* p1 = new TcpClient(FIELDSTATE::PLAYER_1, QString("Miha"));
+        TcpClient* p2 = new TcpClient(FIELDSTATE::PLAYER_2, QString("Jovan"));
+        game = new GameServer(p1, p2);
+    }
 
     m_scene.setSceneRect(0, 0, this -> width(), this -> height());
 

@@ -24,8 +24,6 @@ private slots:
     void removeConnection();
     void newMessage();
 
-    void on_disconnectClients_clicked();
-
 private:
     Ui::TcpServer *ui;
     QTcpServer *m_server;
