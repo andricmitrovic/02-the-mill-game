@@ -11,7 +11,7 @@ GameAI::GameAI(Player* p1, Player* p2)
     // ako igra AI prvi onda nakon sto inicijalizujemo igru u superu samo odigra prvi potez
     if(playerAI==FIELDSTATE::PLAYER_1)
     {
-        std::pair<int,int> ret = maxSetup(maxDepthAI);
+        std::pair<int,int> ret = maxSetup(maxDepthAI, -2, 2);
         std::cout<<"Bot igra na: "<<ret.second<<", zbog nagrade od: "<<ret.first<<std::endl;
 
         //Game::playMove(getPlayerAI(), ret.second, scene);
@@ -66,7 +66,7 @@ void GameAI::playSetupMoveAI(QGraphicsScene &scene)
 {
     int depth = std::min(maxDepthAI, Game::getBoardPieces());
     //std::cout<<depth<<std::endl;
-    std::pair<int,int> retVal = maxSetup(depth);
+    std::pair<int,int> retVal = maxSetup(depth, -2, 2);
     std::cout<<"Bot igra na: "<<retVal.second<<", zbog nagrade od: "<<retVal.first<<std::endl;
     Game::playMove(getPlayerAI(), retVal.second, scene);
 }
@@ -92,7 +92,7 @@ void GameAI::playMillSetupAI(QGraphicsScene &scene)
             Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
 
             //pokreni MIN
-            std::pair<int,int> retVal = minSetup(depth);
+            std::pair<int,int> retVal = minSetup(depth, -2, 2);
 
             //azuriraj vrednosti
             if(retVal.first > maxValue )
@@ -193,7 +193,7 @@ void GameAI::revertSetupMoveAI(Player* player, int i) {
 
 }
 
-std::pair<int,int> GameAI::maxSetup(int depth)
+std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
 {
     int maxValue = -2;
     int move = -1;
@@ -225,7 +225,7 @@ std::pair<int,int> GameAI::maxSetup(int depth)
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= minSetup(depth-1);
+        std::pair<int,int> ret_val= minSetup(depth-1, -2, 2);
 
         // azuriraj
         if(ret_val.first > maxValue )
@@ -236,12 +236,24 @@ std::pair<int,int> GameAI::maxSetup(int depth)
 
         // vrati potez unazad, da li mogu da zloupotrebim neku funkciju ovde ili pravim novu?
         this->revertSetupMoveAI(player, field_num);
+
+        // alfa beta odsecanje
+        if(maxValue >= beta)
+        {
+            // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
+            return std::make_pair(maxValue, -1);
+        }
+
+        if(maxValue > alfa)
+        {
+            alfa = maxValue;
+        }
     }
     return std::make_pair(maxValue, move);
 }
 
 
-std::pair<int,int> GameAI::minSetup(int depth)
+std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
 {
     int minValue = 2;
     //int move;
@@ -269,7 +281,7 @@ std::pair<int,int> GameAI::minSetup(int depth)
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= maxSetup(depth-1);
+        std::pair<int,int> ret_val= maxSetup(depth-1, -2, 2);
 
         // azuriraj
         if(ret_val.first < minValue )
@@ -279,6 +291,18 @@ std::pair<int,int> GameAI::minSetup(int depth)
 
         // vrati potez unazad, da li mogu da zloupotrebim neku funkciju ovde ili pravim novu?
         this->revertSetupMoveAI(player, field_num);
+
+        // alfa beta odsecanje
+        if(minValue <= alfa)
+        {
+            // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
+            return std::make_pair(minValue, -1);
+        }
+
+        if(minValue < beta)
+        {
+            beta = minValue;
+        }
     }
 
     return std::make_pair(minValue, -1);

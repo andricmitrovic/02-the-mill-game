@@ -36,8 +36,8 @@ public:
     FIELDSTATE getHumanFieldstate();
 
     // Minimax phase 1
-    std::pair<int,int> maxSetup(int depth);
-    std::pair<int,int> minSetup(int depth);
+    std::pair<int,int> maxSetup(int depth, int alfa, int beta);
+    std::pair<int,int> minSetup(int depth, int alfa, int beta);
 
     void makeSetupMoveAI(Player* player, int i);
     void revertSetupMoveAI(Player* player, int i);
