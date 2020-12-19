@@ -21,21 +21,31 @@ public:
 
     void playMove(Player* player, int index, QGraphicsScene &scene) override;
 
-    // AI funkcije
+    // Phase 1
+    void playSetupMoveAI(QGraphicsScene &scene);
+    void playMillSetupAI(QGraphicsScene &scene);
+
+    // Phase 2
+    void playMovingMoveAI(QGraphicsScene &scene);
+    void playMillMovingAI(QGraphicsScene &scene);
+
+    // Helper functions
     bool turnAI();
-    void makeSetupMove_AI(Player* player, int i);    // ides u drugu klasu
-    void revertSetupMove_AI(Player* player, int i);
+    Player* getPlayerAI();
+    Player* getPlayerHuman();
+    FIELDSTATE getHumanFieldstate();
 
-    std::pair<int,int> max(int depth);
-    std::pair<int,int> min(int depth);
+    // Minimax phase 1
+    std::pair<int,int> maxSetup(int depth);
+    std::pair<int,int> minSetup(int depth);
 
-    // TODO: obrisati?: cak se i ne koriste van klase pa nisu potrebni i ne menjaju se
-    // geteri
-    int        getMaxDepthAI();
-    FIELDSTATE getPlayerAI();
-    // seteri
-    void       setMaxDepthAI(int val);
-    void       setPlayerAI(FIELDSTATE val);
+    void makeSetupMoveAI(Player* player, int i);
+    void revertSetupMoveAI(Player* player, int i);
+
+    // Minimax phase 2
+    //todo
+
+
 
 private:
     int             maxDepthAI;
