@@ -1,5 +1,6 @@
 #include "tcpserver.h"
 #include "ui_tcpserver.h"
+#include "lib.h"
 
 #include <QtNetwork>
 #include <QPlainTextEdit>
@@ -27,6 +28,7 @@ void TcpServer::newConnection()
 {
     while (m_server->hasPendingConnections()) {
         QTcpSocket *con = m_server->nextPendingConnection();
+
         m_clients << con;
 
         connect(con, SIGNAL(disconnected()), this, SLOT(removeConnection()));
@@ -37,7 +39,14 @@ void TcpServer::newConnection()
                                  .arg(con->peerAddress().toString())
                                  .arg(QString::number(con->peerPort()))
                                  .arg(con->openMode()));
-    }
+
+        if (m_clients.size() == 2){
+            GAMEMOVE move = GAMEMOVE::INIT;
+            QString message = QString::number(2) + QString(" ") + QString::number((int) (move)) + QString(" ") + QChar(23);
+            m_clients[1]->write(message.toLocal8Bit());
+        }
+        }
+
 }
 
 void TcpServer::removeConnection()

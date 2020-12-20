@@ -7,7 +7,6 @@ Game::Game(Player* p1, Player* p2)
     : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
       winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
 {
-//setup_graphical sam ovde sibnuo jer realno ne treba da se zove posebna funkcija za to kad moze u konstruktoru da se odradi
 
     if (gameState != GAMESTATE::INIT)
     {
@@ -26,7 +25,8 @@ bool Game::checkMills(unsigned index) const {
     FIELDSTATE curPlayer = gameMap -> getBoardFields()[index].getPlayerID();
     unsigned checkIndex1 = gameMap -> getBoardFields()[index].getMills().first.first;
     unsigned checkIndex2 = gameMap -> getBoardFields()[index].getMills().first.second;
-    if (gameMap -> getBoardFields()[checkIndex1].getPlayerID() == curPlayer && gameMap -> getBoardFields()[checkIndex2].getPlayerID() == curPlayer) {
+    if (gameMap -> getBoardFields()[checkIndex1].getPlayerID() == curPlayer &&
+        gameMap -> getBoardFields()[checkIndex2].getPlayerID() == curPlayer) {
         return true;
     }
 

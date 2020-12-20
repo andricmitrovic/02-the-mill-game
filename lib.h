@@ -31,6 +31,7 @@ enum class GAMEMODE {
 };
 
 enum class GAMEMOVE {
+    INIT,
     MOVE,
     PLACE,
     REMOVE

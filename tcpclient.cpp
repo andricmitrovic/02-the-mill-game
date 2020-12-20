@@ -3,13 +3,20 @@
 #include <QtNetwork>
 #include <QDebug>
 
-TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) : Player(playerId, playerName),
-                                                                m_socket(new QTcpSocket()) {
+TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
+    : Player(playerId, playerName), m_socket(new QTcpSocket()) {
+
+
     connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
     connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()), Qt::DirectConnection);
+
+    if (this->id() != FIELDSTATE::EMPTY && this->getSocket()->state() != QAbstractSocket::ConnectedState) {
+        this->getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
+    }
 }
 
 void TcpClient::readMessage() {
+
     if (m_socket->state() != QAbstractSocket::ConnectedState) {
         m_receivedData.append(QString("Not connected"));
         return;
@@ -28,9 +35,21 @@ void TcpClient::readMessage() {
 
 void TcpClient::onReadFinished() {
     qDebug() << m_receivedData;
+
     QStringList data = m_receivedData.split(" ");
     GAMEMOVE move = (GAMEMOVE)(data[1].toInt());
     setMove(move);
+
+    if (move == GAMEMOVE::INIT){
+        int index = data[0].toInt();
+        if (index == 1){
+            this->setId(FIELDSTATE::PLAYER_1);
+            this->setTurn(true);
+        }else{
+            this->setId(FIELDSTATE::PLAYER_2);
+            this->setTurn(false);
+        }
+    }
     if (move == GAMEMOVE::PLACE) {
         int index = data[2].toInt();
         this->setToIndex(index);

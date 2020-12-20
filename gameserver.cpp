@@ -4,6 +4,7 @@
 
 GameServer::GameServer(TcpClient *p1, TcpClient *p2)
         : Game(p1, p2) {
+
 }
 
 void GameServer::serverTest() {
@@ -22,6 +23,7 @@ void GameServer::serverTest() {
 }
 
 void GameServer::playMove(Player *player, int index, QGraphicsScene &scene) {
+
     if (this->getMillOccured()) {
         //std::cout<< "Mill in playGame"<<std::endl;
         setMessage("Mill in playGame");
@@ -84,6 +86,8 @@ void GameServer::sendMoveToServer(GAMEMOVE move, int fromIndex, int toIndex) {
 
     client1->getSocket()->write(message.toLocal8Bit());
 }
+
+
 
 void GameServer::getMoveFromServer() {
     TcpClient *client1 = static_cast<TcpClient *>(getPlayer1());

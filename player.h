@@ -27,10 +27,16 @@ public:
     void decNumOfPieces();
     int getNumOfPieces() const;
 
+
+    //seteri
+    void setId(FIELDSTATE playerId);
+    void setTurn(bool turn);
+
 private:
     bool m_turn;
     FIELDSTATE m_id;
     int numOfPieces;
     QString name;
+
 };
 #endif // Player_H

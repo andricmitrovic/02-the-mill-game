@@ -31,7 +31,7 @@ class Board : public QMainWindow {
     Q_OBJECT
 
 public:
-    Board(QWidget *parent = nullptr, GAMEMODE gameMode=GAMEMODE::LOCAL);
+    Board(QWidget *parent = nullptr, GAMEMODE gameMode=GAMEMODE::LOCAL, QString player1_name="", QString player2_name="");
     ~Board();
     Game* getGame();
     void resizeEvent(QResizeEvent* event);
@@ -47,6 +47,7 @@ private:
     Ui::Board         *ui;
     Game              *game;
     MyGraphicsScene   m_scene;
+    GAMEMODE          game_mode;
 
 };
 #endif // BOARD_H
