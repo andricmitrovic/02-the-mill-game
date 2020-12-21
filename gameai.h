@@ -37,6 +37,7 @@ public:
 
     void makeSetupMoveAI(Player* player, int i);
     void revertSetupMoveAI(Player* player, int i);
+    int heuristicSetup();
 
     // Minimax phase 2
     std::tuple<int,int,int> maxPlay(int depth, int alfa, int beta);
