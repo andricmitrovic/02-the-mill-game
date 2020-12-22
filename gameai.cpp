@@ -4,7 +4,7 @@
 #include "QGraphicsScene"
 
 GameAI::GameAI(Player* p1, Player* p2)
-    : Game(p1,p2),
+    : Game(p1, p2),
       maxDepthAI(5),
       playerAI(FIELDSTATE::PLAYER_1)
 {

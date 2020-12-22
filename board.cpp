@@ -28,8 +28,8 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 
         TcpClient* p1 = new TcpClient(FIELDSTATE::PLAYER_1, player1_name);
         TcpClient* p2 = new TcpClient(FIELDSTATE::EMPTY, QString(""));
-
-        game = new GameServer(p1, p2);
+        connect(p1, SIGNAL(upd()), this, SLOT(up_scene()), Qt::DirectConnection);
+        game = new GameServer(this, p1, p2);
 
     }
 
@@ -99,4 +99,10 @@ void Board::writeGameMessage() {
 
 void Board::test() {
 
+}
+
+void Board::up_scene()
+{
+    game -> getGameMap() -> printMap(m_scene);
+    ui -> graphicsView -> viewport() -> update();
 }

@@ -14,6 +14,7 @@
  */
 
 class GameAI: public Game{
+
 public:
 
     GameAI(Player* p1, Player* p2);

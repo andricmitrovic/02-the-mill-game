@@ -26,8 +26,9 @@ TcpServer::~TcpServer()
 
 void TcpServer::newConnection()
 {
-    while (m_server->hasPendingConnections()) {
+    while (m_server->hasPendingConnections() && m_clients.size()< 2) {
         QTcpSocket *con = m_server->nextPendingConnection();
+
 
         m_clients << con;
 
@@ -45,7 +46,8 @@ void TcpServer::newConnection()
             QString message = QString::number(2) + QString(" ") + QString::number((int) (move)) + QString(" ") + QChar(23);
             m_clients[1]->write(message.toLocal8Bit());
         }
-        }
+       }
+
 
 }
 

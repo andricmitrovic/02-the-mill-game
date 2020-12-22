@@ -31,6 +31,8 @@ public slots:
 
 signals:
     void readFinished();
+    void over(GAMEMOVE move);
+    void upd();
 
 private:
     QTcpSocket *m_socket;

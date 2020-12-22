@@ -26,7 +26,7 @@ void MultiplayerMenu::on_connectBtn_clicked()
     server = new TcpServer(this);
     server->show();
 
-
+    this->hide();
     board = new Board(this, GAMEMODE::SERVER, ui->leName->text());
     board->show();
 

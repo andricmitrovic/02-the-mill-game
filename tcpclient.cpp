@@ -10,13 +10,16 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
     connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
     connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()), Qt::DirectConnection);
 
+    this->setToIndex(-1);
+    this->setFromIndex(-1);
+
     if (this->id() != FIELDSTATE::EMPTY && this->getSocket()->state() != QAbstractSocket::ConnectedState) {
         this->getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
     }
 }
 
 void TcpClient::readMessage() {
-
+    this->m_receivedData.clear();
     if (m_socket->state() != QAbstractSocket::ConnectedState) {
         m_receivedData.append(QString("Not connected"));
         return;
@@ -25,7 +28,7 @@ void TcpClient::readMessage() {
 
     if (!m_receivedData.contains(QChar(23))) {
         m_receivedData.append(QString("Not whole"));
-        emit readFinished();
+        //emit readFinished();
         return;
     } else {
         emit readFinished();
@@ -34,36 +37,38 @@ void TcpClient::readMessage() {
 }
 
 void TcpClient::onReadFinished() {
-    qDebug() << m_receivedData;
+
+   // qDebug() << m_receivedData;
 
     QStringList data = m_receivedData.split(" ");
     GAMEMOVE move = (GAMEMOVE)(data[1].toInt());
     setMove(move);
 
     if (move == GAMEMOVE::INIT){
-        int index = data[0].toInt();
-        if (index == 1){
-            this->setId(FIELDSTATE::PLAYER_1);
-            this->setTurn(true);
-        }else{
-            this->setId(FIELDSTATE::PLAYER_2);
-            this->setTurn(false);
-        }
+        emit over(move);
     }
-    if (move == GAMEMOVE::PLACE) {
+    else if (move == GAMEMOVE::PLACE) {
+
         int index = data[2].toInt();
+
         this->setToIndex(index);
+
+        this->changeTurn();
+        emit over(move);
     }
-    if (move == GAMEMOVE::MOVE) {
+    else if (move == GAMEMOVE::MOVE) {
         int index1 = data[2].toInt();
         int index2 = data[3].toInt();
         this->setFromIndex(index1);
         this->setToIndex(index2);
+        this->changeTurn();
     }
-    if (move == GAMEMOVE::REMOVE) {
+    else{
         int index = data[2].toInt();
         this->setFromIndex(index);
     }
+
+
 }
 
 void TcpClient::setMove(GAMEMOVE value) {

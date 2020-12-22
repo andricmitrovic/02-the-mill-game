@@ -41,6 +41,7 @@ public slots:
     void onFieldSelection(QPointF);
     void writeGameMessage();
     void test();
+    void up_scene();
 
 private:
 

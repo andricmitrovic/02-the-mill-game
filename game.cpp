@@ -3,23 +3,26 @@
 #include "player.h"
 #include "QGraphicsScene"
 
-Game::Game(Player* p1, Player* p2)
-    : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-      winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
+Game::Game(Player *p1, Player *p2):
+    gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
+    winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
 {
 
-    if (gameState != GAMESTATE::INIT)
-    {
-        setMessage("The game has already been initialized");
-        return;
-    }
+  if (gameState != GAMESTATE::INIT)
+  {
+      setMessage("The game has already been initialized");
+      return;
+  }
 
-    m_p1->changeTurn(); //prvi je na potezu igrac 1
+  m_p1->changeTurn(); //prvi je na potezu igrac 1
 }
+
+
 
 Game::~Game() {
     delete gameMap;
 }
+
 
 bool Game::checkMills(unsigned index) const {
     FIELDSTATE curPlayer = gameMap -> getBoardFields()[index].getPlayerID();
