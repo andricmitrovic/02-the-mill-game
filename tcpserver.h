@@ -28,7 +28,7 @@ private:
     Ui::TcpServer *ui;
     QTcpServer *m_server;
     QList<QTcpSocket*> m_clients;
-    QHash<QTcpSocket*, QString> m_receivedData;
+    QHash<QTcpSocket*, QByteArray> m_receivedData;
 };
 
 #endif // TCPSERVER_H

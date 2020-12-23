@@ -2,6 +2,7 @@
 #define TCPCLIENT_H
 
 #include <QAbstractSocket>
+#include <QJsonDocument>
 #include <QTcpSocket>
 #include <QWidget>
 
@@ -36,10 +37,14 @@ signals:
 
 private:
     QTcpSocket *m_socket;
-    QString m_receivedData;
+    //QString m_receivedData;
+    QJsonDocument m_receivedData_1;
     int fromIndex;
     int toIndex;
     GAMEMOVE move;
+public:
+    bool m_gameStart;
+    bool m_millOccured;
 };
 
 #endif // TCPCLIENT_H

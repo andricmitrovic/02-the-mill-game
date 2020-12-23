@@ -2,13 +2,14 @@
 
 #include <QtNetwork>
 #include <QDebug>
+#include <iostream>
 
 TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
-    : Player(playerId, playerName), m_socket(new QTcpSocket()) {
+    : Player(playerId, playerName), m_socket(new QTcpSocket()), m_gameStart(false), m_millOccured(false){
 
 
-    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()), Qt::DirectConnection);
+    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()), Qt::DirectConnection);
+    //connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()));
 
     this->setToIndex(-1);
     this->setFromIndex(-1);
@@ -19,55 +20,63 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
 }
 
 void TcpClient::readMessage() {
-    this->m_receivedData.clear();
-    if (m_socket->state() != QAbstractSocket::ConnectedState) {
-        m_receivedData.append(QString("Not connected"));
-        return;
-    }
-    m_receivedData.append(QString(m_socket->readAll()));
 
-    if (!m_receivedData.contains(QChar(23))) {
-        m_receivedData.append(QString("Not whole"));
-        //emit readFinished();
-        return;
-    } else {
-        emit readFinished();
+
+    QJsonDocument readDocument = m_receivedData_1.fromJson(this->m_socket->readAll());
+
+    if (readDocument.isEmpty()){
         return;
     }
+
+
+    QJsonObject jObj = readDocument.toVariant().toJsonObject();
+
+    setMove( GAMEMOVE (jObj.value(QString("game_move")).toInt()));
+
+
+    if (move == GAMEMOVE :: INIT){
+
+        this->m_gameStart = jObj.value(QString("game_start")).toBool();
+
+        this->setTurn(jObj.value(QString("turn")).toBool());
+
+        FIELDSTATE player_id = jObj.value(QString("player_id")).toInt() == 0? FIELDSTATE::PLAYER_1 : FIELDSTATE :: PLAYER_2;
+
+        this->setId(player_id);
+
+
+        emit over(move);
+     }
+    else if (move == GAMEMOVE :: PLACE){
+
+        this->setToIndex(jObj.value(QString("toIndex")).toInt());
+        this->m_millOccured = jObj.value(QString("mill_occured")).toBool();
+
+
+        emit over(move);
+
+    }else if (move == GAMEMOVE :: REMOVE){
+
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+        this->m_millOccured = false;
+
+
+
+        emit over(move);
+    }else if (move == GAMEMOVE :: MOVE) {
+        this->setToIndex(jObj.value(QString("toIndex")).toInt());
+        this->m_millOccured = jObj.value(QString("mill_occured")).toBool();
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+
+        emit over(move);
+    }else{
+
+        emit over(move);
+    }
+
 }
 
 void TcpClient::onReadFinished() {
-
-   // qDebug() << m_receivedData;
-
-    QStringList data = m_receivedData.split(" ");
-    GAMEMOVE move = (GAMEMOVE)(data[1].toInt());
-    setMove(move);
-
-    if (move == GAMEMOVE::INIT){
-        emit over(move);
-    }
-    else if (move == GAMEMOVE::PLACE) {
-
-        int index = data[2].toInt();
-
-        this->setToIndex(index);
-
-        this->changeTurn();
-        emit over(move);
-    }
-    else if (move == GAMEMOVE::MOVE) {
-        int index1 = data[2].toInt();
-        int index2 = data[3].toInt();
-        this->setFromIndex(index1);
-        this->setToIndex(index2);
-        this->changeTurn();
-    }
-    else{
-        int index = data[2].toInt();
-        this->setFromIndex(index);
-    }
-
 
 }
 
@@ -100,6 +109,3 @@ QTcpSocket *TcpClient::getSocket() const {
     return m_socket;
 }
 
-QString TcpClient::getReceivedData() const {
-    return m_receivedData;
-}

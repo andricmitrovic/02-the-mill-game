@@ -3,6 +3,8 @@
 #include "lib.h"
 
 #include <QtNetwork>
+#include <QJsonDocument>
+#include <QJsonValue>
 #include <QPlainTextEdit>
 
 TcpServer::TcpServer(QWidget *parent) :
@@ -26,9 +28,9 @@ TcpServer::~TcpServer()
 
 void TcpServer::newConnection()
 {
-    while (m_server->hasPendingConnections() && m_clients.size()< 2) {
-        QTcpSocket *con = m_server->nextPendingConnection();
+    while (m_server->hasPendingConnections() && m_clients.size() < 2) {
 
+        QTcpSocket *con = m_server->nextPendingConnection();
 
         m_clients << con;
 
@@ -41,14 +43,28 @@ void TcpServer::newConnection()
                                  .arg(QString::number(con->peerPort()))
                                  .arg(con->openMode()));
 
+
         if (m_clients.size() == 2){
-            GAMEMOVE move = GAMEMOVE::INIT;
-            QString message = QString::number(2) + QString(" ") + QString::number((int) (move)) + QString(" ") + QChar(23);
-            m_clients[1]->write(message.toLocal8Bit());
-        }
+            for (int i=0; i<m_clients.size(); i++){
+
+                QJsonObject message;
+
+                message.insert("game_move", static_cast<int>(GAMEMOVE::INIT));
+
+                message.insert("game_start", QJsonValue(true));
+
+                message.insert("player_id", QJsonValue(i));
+
+                message.insert("turn", QJsonValue(!i).toBool());
+
+
+                QJsonDocument doc = QJsonDocument(message);
+                m_clients[i]->write(doc.toJson());
+
+            }
        }
 
-
+    }
 }
 
 void TcpServer::removeConnection()
@@ -65,27 +81,20 @@ void TcpServer::removeConnection()
 void TcpServer::newMessage()
 {
     if (QTcpSocket *con = qobject_cast<QTcpSocket*>(sender())) {
+        m_receivedData[con].clear();
         m_receivedData[con].append(con->readAll());
-        if (!m_receivedData[con].contains(QChar(23)))
-            return;
 
-        QStringList messages = m_receivedData[con].split(QChar(23));
-        m_receivedData[con] = messages.takeLast();
-        foreach (QString message, messages) {
-            ui->log->insertPlainText("Sending message: " + message + "\n");
-            message.append(QChar(23));
-            foreach (QTcpSocket *socket, m_clients) {
-                if (socket == con)
-                    continue;
-                if (socket->state() == QAbstractSocket::ConnectedState){
-                    socket->write(message.toLocal8Bit());
-                    ui->log->insertPlainText("Message sent \n" + message.toLocal8Bit());
 
-                }
-                else
-                    ui->log->insertPlainText("Not conneted \n");
-            }
+        QByteArray messages = m_receivedData[con];
 
+        ui->log->insertPlainText("Sending message: \n");
+        foreach (QTcpSocket *socket, m_clients) {
+            if (socket == con)
+                continue;
+            if (socket->state() == QAbstractSocket::ConnectedState){
+
+                socket->write(messages);
+             }
         }
     }
 }

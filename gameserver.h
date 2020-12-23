@@ -18,7 +18,6 @@ public:
     ~GameServer();
 
     // metode
-    void serverTest();
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
     void playMove(Player *player, int index, QGraphicsScene &scene);
     void sendMoveToServer(GAMEMOVE move, int fromIndex, int toIndex);
@@ -26,6 +25,8 @@ public:
 public slots:
     void readMoveFromServer(GAMEMOVE move);
 
+public:
+    FIELDSTATE active;
 };
 
 #endif // GAMESERVER_H

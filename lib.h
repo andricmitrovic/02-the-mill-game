@@ -34,7 +34,8 @@ enum class GAMEMOVE {
     INIT,
     MOVE,
     PLACE,
-    REMOVE
+    REMOVE,
+    GAMEOVER
 };
 
 #endif // LIB_H

@@ -45,6 +45,7 @@ bool Game::checkMills(unsigned index) const {
 // Postavlja figuricu na polje i, koje smo dobili iz klika
 bool Game::makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene) {
     setMessage("We are in makeSetupMove");
+
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
         setMessage("Error: Invalid index or occupied field.");
         return false;

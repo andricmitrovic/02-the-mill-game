@@ -28,6 +28,7 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 
         TcpClient* p1 = new TcpClient(FIELDSTATE::PLAYER_1, player1_name);
         TcpClient* p2 = new TcpClient(FIELDSTATE::EMPTY, QString(""));
+
         connect(p1, SIGNAL(upd()), this, SLOT(up_scene()), Qt::DirectConnection);
         game = new GameServer(this, p1, p2);
 
@@ -74,8 +75,11 @@ void Board::onFieldSelection(QPointF pos) {
 
     int index = game -> getGameMap() -> indexByPos(item -> pos());
 
-    //if (this->game_mode != GAMEMODE::SERVER)
-    game -> playMove(game -> getCurrentPlayer(), index, m_scene);
+    if (this->game_mode == GAMEMODE::SERVER && !static_cast<TcpClient *>(this->game->getPlayer1())->m_gameStart){
+        this->getGame()->setMessage("Game has not started yet! Looking for another player!");
+     }else
+        game -> playMove(game -> getCurrentPlayer(), index, m_scene);
+
     ui -> graphicsView -> viewport() -> update();
 }
 
@@ -97,12 +101,35 @@ void Board::writeGameMessage() {
     ui -> leGameMessage -> setText(game -> getMessage());
 }
 
-void Board::test() {
 
-}
 
 void Board::up_scene()
 {
+    /* TODO U ANIMACIJI SA STRANE GRESKA -- TREBA POPRAVITI */
+
+    TcpClient *client1 = static_cast<TcpClient *>(this->game->getPlayer1());
+    TcpClient *client2 = static_cast<TcpClient *>(this->game->getPlayer2());
+
+
+    if (client1->getMove() == GAMEMOVE :: PLACE){
+        int index = client1->getToIndex();
+        game->makeSetupMove(client2, index, m_scene);
+    }
+
+    if (client1->getMove() == GAMEMOVE :: REMOVE){
+        game->removeOpponentsPiece(client2, client1->getFromIndex());
+    }
+    if (client1->getMove() == GAMEMOVE :: MOVE){
+        game->makePlayMove(client2, client1->getFromIndex(), client1->getToIndex());
+    }
+    if (client1->getMove() == GAMEMOVE :: GAMEOVER){
+        game->setMessage("YOU LOST THIS ONE");
+    }
+    if (client1->m_millOccured)
+        game->setMillOccured(true);
+    else
+        game->changeTurn();
+
     game -> getGameMap() -> printMap(m_scene);
     ui -> graphicsView -> viewport() -> update();
 }
