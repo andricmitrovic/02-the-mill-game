@@ -32,8 +32,8 @@ public:
     FIELDSTATE getHumanFieldstate();
 
     // Minimax phase 1
-    std::pair<int,int> maxSetup(int depth, int alfa, int beta);
-    std::pair<int,int> minSetup(int depth, int alfa, int beta);
+    std::pair<int,int> maxSetup(int depth, int remainingPieces, int alfa, int beta);
+    std::pair<int,int> minSetup(int depth, int remainingPieces, int alfa, int beta);
 
     void makeSetupMoveAI(Player* player, int i);
     void revertSetupMoveAI(Player* player, int i);
@@ -49,7 +49,8 @@ public:
 
 
 private:
-    int             maxDepthAI;
+    int             maxDepthPhase1;
+    int             maxDepthPhase2;             // todo: moze da bude veci depth kad ima ostane manje piece-ova na boardu
     FIELDSTATE      playerAI;
 };
 

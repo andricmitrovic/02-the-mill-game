@@ -5,20 +5,10 @@
 
 GameAI::GameAI(Player* p1, Player* p2)
     : Game(p1,p2),
-      maxDepthAI(5),
+      maxDepthPhase1(5),
+      maxDepthPhase2(8),
       playerAI(FIELDSTATE::PLAYER_2)
-{
-    // ako igra AI prvi onda nakon sto inicijalizujemo igru u superu samo odigra prvi potez
-    if(playerAI==FIELDSTATE::PLAYER_1)
-    {
-        std::pair<int,int> ret = maxSetup(maxDepthAI, INT32_MIN, INT32_MAX);
-        std::cout<<"Bot igra na: "<<ret.second<<", zbog nagrade od: "<<ret.first<<std::endl;
-
-        //Game::playMove(getPlayerAI(), ret.second, scene);
-        /* ovde je problemcic sto mi fali scena da bih odradio first move,
-         pa bi morala posebna funkcija da se zove u board.cpp nakon sto se scena iscrta da bot odigra*/
-    }
-}
+{}
 
 
 void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
@@ -67,21 +57,22 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
     // kda jede u drugoj fazi a mozda i u prvoj, jedi one koje prave mill pomeranjem figurica
 
     // todo kad jedes u drugoj fazi msm da treba samo da pojede figure koje spajaju mill u sledecem potezu protivnika
+
+    // todo: heuristika u fazi 2 moze biti samo to ko je pobedio a ako dodje do dubine onda stanje igre tj odnos figurica za pocetak pa kasnije mozda nesto advanced vise
+
+    // bug: ako minimax pocne da simulira igru i kojoj nema vise nista da se igra zabosce cak i ako nije jos gotovo ali bice sigurno
 }
 
 void GameAI::playSetupMoveAI(QGraphicsScene &scene)
 {
-    int depth = std::min(maxDepthAI, Game::getBoardPieces());
-    //std::cout<<depth<<std::endl;
-    std::pair<int,int> retVal = maxSetup(depth, INT32_MIN, INT32_MAX);
+    std::pair<int,int> retVal = maxSetup(maxDepthPhase1, getBoardPieces(), INT32_MIN, INT32_MAX);
     std::cout<<"Bot igra na: "<<retVal.second<<", zbog nagrade od: "<<retVal.first<<std::endl;
     Game::playMove(getPlayerAI(), retVal.second, scene);
 }
 
 void GameAI::playMovingMoveAI(QGraphicsScene &scene)
 {
-    int depth = maxDepthAI;
-    std::tuple<int,int, int> retVal = maxPlay(depth, INT32_MIN, INT32_MAX);
+    std::tuple<int,int, int> retVal = maxPlay(maxDepthPhase2, INT32_MIN, INT32_MAX);
     std::cout<<"Bot igra "<<std::get<1>(retVal)<<":"<<std::get<2>(retVal)<<", zbog nagrade od "<<std::get<0>(retVal)<<std::endl;
 
     Game::setMoveFrom(std::get<1>(retVal));
@@ -93,7 +84,7 @@ void GameAI::playMillAI(QGraphicsScene &scene)
     // stavimo false da bi radio minimax
     Game::setMillOccured(false);
 
-    int depth = std::min(maxDepthAI, Game::getBoardPieces());
+    int depth = std::min(maxDepthPhase1, Game::getBoardPieces());
 
     int maxValue = INT32_MIN;
     int move = -1;
@@ -111,11 +102,11 @@ void GameAI::playMillAI(QGraphicsScene &scene)
             //pokreni MIN onaj u zavisnosti od stanja igre tj kakve poteze igraju protivnici dalje
             if(Game::getGameState()==GAMESTATE::INIT)
             {
-                retVal = std::get<0>(minSetup(depth, INT32_MIN, INT32_MAX));
+                retVal = std::get<0>(minSetup(depth, Game::getBoardPieces(), INT32_MIN, INT32_MAX));
             }
             else
             {
-                retVal = std::get<0>(minPlay(maxDepthAI, INT32_MIN, INT32_MAX));
+                retVal = std::get<0>(minPlay(maxDepthPhase1, INT32_MIN, INT32_MAX));
                 //std::cout<<field_num<<" "<<retVal<<std::endl;
             }
 
@@ -466,7 +457,7 @@ int GameAI::heuristicSetup(FIELDSTATE player)
     return reward;
 }
 
-std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
+std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, int beta)
 {
     int maxValue = INT32_MIN;
     int move = -1;
@@ -483,11 +474,17 @@ std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
-    if (this->checkPhase1End() || depth == 0)
+
+    if( remainingPieces== 0 )
     {
-        // Todo testiraj ovo: Ovde valjda minus reward jer ono sto je dobro za Bota je lose za coveka !!!!!!!!!!!!!! valjda je ok
+        std::tuple<int,int,int> retVal = minPlay(maxDepthPhase2, alfa, beta);
+        return std::make_pair(std::get<0>(retVal), -1);
+    }
+
+    if (depth == 0)
+    {
         reward = heuristicSetup(getHumanFieldstate());
-        return std::make_pair(reward, -1);
+        return std::make_pair(-reward, -1);
     }
 
     // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
@@ -500,7 +497,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= minSetup(depth-1, alfa, beta);
+        std::pair<int,int> ret_val= minSetup(depth-1, remainingPieces-1, alfa, beta);
 
         // azuriraj
         if(ret_val.first > maxValue )
@@ -528,7 +525,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
 }
 
 
-std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
+std::pair<int,int> GameAI::minSetup(int depth, int remainingPieces, int alfa, int beta)
 {
     int minValue = INT32_MAX;
     //int move;
@@ -542,7 +539,16 @@ std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
-    if (this->checkPhase1End() || depth == 0)
+
+    if( remainingPieces== 0 )
+    {
+        //Todo
+        //std::cout<<"MIN"<<std::endl;
+        std::tuple<int,int,int> retVal = maxPlay(maxDepthPhase2, alfa, beta);
+        return std::make_pair(std::get<0>(retVal), -1);
+    }
+
+    if( depth == 0 )
     {
         reward = heuristicSetup(playerAI);
         return std::make_pair(reward, -1);
@@ -558,7 +564,7 @@ std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
         this->makeSetupMoveAI(player, field_num);
 
         // pozovi min
-        std::pair<int,int> ret_val= maxSetup(depth-1, alfa, beta);
+        std::pair<int,int> ret_val= maxSetup(depth-1, remainingPieces-1,alfa, beta);
 
         // azuriraj
         if(ret_val.first < minValue )
