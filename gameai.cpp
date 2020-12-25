@@ -43,7 +43,7 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
                 playMovingMoveAI(scene);
             }
 
-            std::cout<<Game::getPlayer1()->getNumOfPieces()<<" "<<Game::getPlayer2()->getNumOfPieces()<<std::endl;
+            //std::cout<<Game::getPlayer1()->getNumOfPieces()<<" "<<Game::getPlayer2()->getNumOfPieces()<<std::endl;
         }
 
         // ako je bot napravio mill onda pokrece sledeci korak da vidi sta jede
@@ -51,7 +51,7 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
         {
             playMillAI(scene);
 
-            std::cout<<Game::getPlayer1()->getNumOfPieces()<<" "<<Game::getPlayer2()->getNumOfPieces()<<std::endl;
+            //std::cout<<Game::getPlayer1()->getNumOfPieces()<<" "<<Game::getPlayer2()->getNumOfPieces()<<std::endl;
         }
     }
 
@@ -61,6 +61,12 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
     // !!! ispise gluposti kada bot izgubi ili kada nema sta da igra
 
     // takodje ima bug kod humana kad mora micu da jede botu ali radi u lokalu
+
+    // Todo kad blokira ili zauzima da preferira centralna polja
+
+    // kda jede u drugoj fazi a mozda i u prvoj, jedi one koje prave mill pomeranjem figurica
+
+    // todo kad jedes u drugoj fazi msm da treba samo da pojede figure koje spajaju mill u sledecem potezu protivnika
 }
 
 void GameAI::playSetupMoveAI(QGraphicsScene &scene)
@@ -88,7 +94,6 @@ void GameAI::playMillAI(QGraphicsScene &scene)
     Game::setMillOccured(false);
 
     int depth = std::min(maxDepthAI, Game::getBoardPieces());
-    //std::cout<<depth<<std::endl;
 
     int maxValue = INT32_MIN;
     int move = -1;
@@ -110,7 +115,8 @@ void GameAI::playMillAI(QGraphicsScene &scene)
             }
             else
             {
-                retVal = std::get<0>(minPlay(depth, INT32_MIN, INT32_MAX));
+                retVal = std::get<0>(minPlay(maxDepthAI, INT32_MIN, INT32_MAX));
+                //std::cout<<field_num<<" "<<retVal<<std::endl;
             }
 
             //azuriraj vrednosti
@@ -214,7 +220,7 @@ std::tuple<int, int,int> GameAI::maxPlay(int depth, int alfa, int beta)
         // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
 
         // ista fora kao u Setup, ako vec gubis izgubi najbolje moguce npr. blokiraj mu mill da ne moze da ga ponavlja u nedogled
-        return std::make_tuple(-1, -1, -1);
+        return std::make_tuple(-depth, -1, -1);
     }
 
     // ako je dosao do dubine nikom nista, da li moze nesto drugo da bude 0?
@@ -366,7 +372,7 @@ void GameAI::revertSetupMoveAI(Player* player, int i) {
     Game::setMillOccured(false);
 }
 
-int GameAI::heuristicSetup()
+int GameAI::heuristicSetup(FIELDSTATE player)
 {
     int reward = 0;
 
@@ -377,7 +383,9 @@ int GameAI::heuristicSetup()
 
     // procenjujemo tablu za AI igraca
 
-    FIELDSTATE player = playerAI;
+    std::vector<int> interrsections{4, 10, 13, 19};
+    std::vector<int> sides{1, 9, 14, 22, 7, 11, 12, 16};
+
 
     for(int index = 0; index < NUM_OF_FIELDS; index++)
     {
@@ -394,26 +402,62 @@ int GameAI::heuristicSetup()
             // index je igraceva figurica
 
             // 1. Ako su druga dva polja praza super
-
             if (Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == FIELDSTATE::EMPTY)
-                reward+=1;
+            {
+                if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
+                    reward+=10;
+                else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
+                    reward+=5;
+                else
+                    reward+=1;
+            }
 
             if (Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == FIELDSTATE::EMPTY)
-                reward+=1;
+            {
+                if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
+                    reward+=10;
+                else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
+                    reward+=5;
+                else
+                    reward+=1;
+            }
 
             // 2. Ako je jedno prazno a drugo tvoje SUPER
 
             if ((Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == player) || \
                 (Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == FIELDSTATE::EMPTY) )
-                reward+=5;
+            {
+                if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
+                    reward+=500;
+                else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
+                    reward+=250;
+                else
+                    reward+=50;
+            }
 
             if ((Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == player) || \
                 (Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == FIELDSTATE::EMPTY) )
-                reward+=5;
+            {
+                if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
+                    reward+=500;
+                else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
+                    reward+=250;
+                else
+                    reward+=50;
+            }
+
 
             // 3. Ako je jedno tvoje a drugo protivnicko, meh
 
             // 4. Ako je jedno prazno, a drugo protivnicko ok blokirao si ga
+
+            /* Tips:
+               Any piece surrounded by your opponent's pieces is useless.                               inc reward = 0
+               Intersections are the most valuable locations, since they have four adjacent spaces.     inc reward x10
+               Corners are weakest, since they only have two adjacent spaces.                           inc reward x1
+               Sides are stronger than corners, as they have three adjacent spaces.                     inc reward x5
+            */
+
 
 
             }
@@ -435,15 +479,15 @@ std::pair<int,int> GameAI::maxSetup(int depth, int alfa, int beta)
         // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
 
         // TODO: ako vec gubis izgubi najbolje moguce tj zablokiraj mu neki buduci mill
-        return std::make_pair(-1000, -1);
+        return std::make_pair(-10000, -1);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
     if (this->checkPhase1End() || depth == 0)
     {
         // Todo testiraj ovo: Ovde valjda minus reward jer ono sto je dobro za Bota je lose za coveka !!!!!!!!!!!!!! valjda je ok
-        reward = heuristicSetup();
-        return std::make_pair(-reward, -1);
+        reward = heuristicSetup(getHumanFieldstate());
+        return std::make_pair(reward, -1);
     }
 
     // ako nije nista od odozgo ovih, odigraj sve moguce poteze i pozovi min() i azuriraj maxValue posle svakog poziva
@@ -494,13 +538,13 @@ std::pair<int,int> GameAI::minSetup(int depth, int alfa, int beta)
     // proveri da li je mill
     if (Game::getMillOccured())             // mozda treba da se obrne nagrada ovde jer kad se desi mill ne menja se turn?
     {
-        return std::make_pair(1000, -1);
+        return std::make_pair(10000, -1);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
     if (this->checkPhase1End() || depth == 0)
     {
-        reward = heuristicSetup();
+        reward = heuristicSetup(playerAI);
         return std::make_pair(reward, -1);
     }
 
