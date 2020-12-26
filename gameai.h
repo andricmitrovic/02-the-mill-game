@@ -14,16 +14,17 @@
  */
 
 class GameAI: public Game{
+
 public:
 
     GameAI(Player* p1, Player* p2);
     ~GameAI();
 
-    void playMove(Player* player, int index, QGraphicsScene &scene) override;
+    void playMove(Player* player, int index, MyGraphicsScene *scene) override;
 
-    void playSetupMoveAI(QGraphicsScene &scene);
-    void playMovingMoveAI(QGraphicsScene &scene);
-    void playMillAI(QGraphicsScene &scene);
+    void playSetupMoveAI(MyGraphicsScene *scene);
+    void playMovingMoveAI(MyGraphicsScene *scene);
+    void playMillAI(MyGraphicsScene *scene);
 
     // Helper functions
     bool turnAI();

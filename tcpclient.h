@@ -1,43 +1,50 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
-#include <QWidget>
 #include <QAbstractSocket>
+#include <QJsonDocument>
 #include <QTcpSocket>
+#include <QWidget>
 
 #include "player.h"
 
 class TcpClient;
 
-class TcpClient : public QWidget
+class TcpClient : public Player
 {
     Q_OBJECT
 
 public:
     explicit TcpClient(FIELDSTATE playerId, QString playerName);
-    ~TcpClient();
-    Player getPlayer();
-    QTcpSocket* getSocket();
+    QTcpSocket* getSocket() const;
     QString getReceivedData() const;
+    int getFromIndex() const;
+    int getToIndex() const;
+    GAMEMOVE getMove() const;
+
+    void setFromIndex(int value);
+    void setToIndex(int value);
+    void setMove(GAMEMOVE value);
 
 public slots:
-//    void on_text_returnPressed();
     void readMessage();
-//    void on_connect_clicked();
-    void connectedToServer();
-//    void on_disconnect_clicked();
-    void disconnectByServer();
     void onReadFinished();
 
 signals:
     void readFinished();
+    void over(GAMEMOVE move);
+    void upd();
 
 private:
     QTcpSocket *m_socket;
-    Player  m_player;
-    QString m_receivedData;
-
-    void updateGui(QAbstractSocket::SocketState state);
+    //QString m_receivedData;
+    QJsonDocument m_receivedData_1;
+    int fromIndex;
+    int toIndex;
+    GAMEMOVE move;
+public:
+    bool m_gameStart;
+    bool m_millOccured;
 };
 
 #endif // TCPCLIENT_H

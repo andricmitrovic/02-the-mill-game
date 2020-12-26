@@ -1,123 +1,107 @@
 #include "tcpclient.h"
 
-#include <QtWidgets>
 #include <QtNetwork>
 #include <QDebug>
+#include <iostream>
 
-TcpClient::TcpClient(FIELDSTATE playerId, QString playerName) :
-  m_socket(new QTcpSocket()),
-  m_player(Player(playerId, playerName))
-{
-//    ui->setupUi(this);
-//    ui->address->setText(QHostAddress(QHostAddress::LocalHost).toString());
-//    ui->port->setValue(52693);
-
-//    ui->text->setFocus();
+TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
+    : Player(playerId, playerName), m_socket(new QTcpSocket()), m_gameStart(false), m_millOccured(false){
 
 
-    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()));
-    connect(m_socket, SIGNAL(connected()), this, SLOT(connectedToServer()));
-    connect(m_socket, SIGNAL(disconnected()), this, SLOT(disconnectByServer()));
-    connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()), Qt::DirectConnection);
+    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()), Qt::DirectConnection);
+    //connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()));
+
+    this->setToIndex(-1);
+    this->setFromIndex(-1);
+
+    if (this->id() != FIELDSTATE::EMPTY && this->getSocket()->state() != QAbstractSocket::ConnectedState) {
+        this->getSocket()->connectToHost(QHostAddress::LocalHost, 12345);
+    }
 }
 
+void TcpClient::readMessage() {
 
-TcpClient::~TcpClient()
-{
-}
+    QString serverMessage = (QString)(this->m_socket->readAll());
+    QJsonDocument readDocument = QJsonDocument::fromJson(serverMessage.toUtf8());
 
-//void TcpClient::on_text_returnPressed()
-//{
-//    const QString text = ui->text->text().simplified();
-//    if (text.isEmpty()
-//            || m_socket->state() != QAbstractSocket::ConnectedState)
-//        return;
-
-//    QString message = m_user + ": " + ui->text->text() + QChar(23);
-//    m_socket->write(message.toLocal8Bit());
-//    ui->text->clear();
-//}
-
-void TcpClient::readMessage()
-{
-    if (m_socket->state() != QAbstractSocket::ConnectedState){
-        m_receivedData.append(QString("Not connected"));
+    if (readDocument.isEmpty()){
         return;
     }
-    m_receivedData.append(QString(m_socket->readAll()));
 
-    if (!m_receivedData.contains(QChar(23))){
-        m_receivedData.append(QString("Not whole"));
-        emit readFinished();
-        return;
+
+    QJsonObject jObj = readDocument.object();
+
+    setMove( GAMEMOVE (jObj.value(QString("game_move")).toInt()));
+
+
+    if (move == GAMEMOVE :: INIT){
+
+        this->m_gameStart = jObj.value(QString("game_start")).toBool();
+
+        this->setTurn(jObj.value(QString("turn")).toBool());
+
+        FIELDSTATE player_id = jObj.value(QString("player_id")).toInt() == 0? FIELDSTATE::PLAYER_1 : FIELDSTATE :: PLAYER_2;
+
+        this->setId(player_id);
+
+
+        emit over(move);
+     }
+    else if (move == GAMEMOVE :: PLACE){
+
+        this->setToIndex(jObj.value(QString("toIndex")).toInt());
+        this->m_millOccured = jObj.value(QString("mill_occured")).toBool();
+
+
+        emit over(move);
+
+    }else if (move == GAMEMOVE :: REMOVE){
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+        this->m_millOccured = false;
+        emit over(move);
+    }else if (move == GAMEMOVE :: MOVE) {
+        this->setToIndex(jObj.value(QString("toIndex")).toInt());
+        this->m_millOccured = jObj.value(QString("mill_occured")).toBool();
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+
+        emit over(move);
     }else{
-        emit readFinished();
-        return;
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+        emit over(move);
     }
+
 }
 
-//void TcpClient::on_connect_clicked()
-//{
-//    const QString user = ui->user->text().simplified();
-//    if (user.isEmpty()) {
-//        ui->chat->insertPlainText("== Unable to connect to server. You must define an user name.\n");
-//        return;
-//    }
+void TcpClient::onReadFinished() {
 
-//    m_user = user;
-
-//    if (m_socket->state() != QAbstractSocket::ConnectedState) {
-//        ui->chat->insertPlainText("== Connecting...\n");
-//        m_socket->connectToHost(ui->address->text(), ui->port->value());
-//        updateGui(QAbstractSocket::ConnectingState);
-//    }
-//}
-
-void TcpClient::connectedToServer()
-{
-    //ui->chat->insertPlainText("== Connected to server.\n");
-    updateGui(QAbstractSocket::ConnectedState);
-    this->getReceivedData().append(QString("Connected") + getPlayer().getName());
 }
 
-//void TcpClient::on_disconnect_clicked()
-//{
-//    if (m_socket->state() != QAbstractSocket::ConnectingState) {
-//        ui->chat->insertPlainText("== Abort connecting.\n");
-//    }
-//    m_socket->abort();
-//    updateGui(QAbstractSocket::UnconnectedState);
-//}
-
-void TcpClient::disconnectByServer()
-{
-    //ui->chat->insertPlainText("== Disconnected by server.\n");
-    updateGui(QAbstractSocket::UnconnectedState);
+void TcpClient::setMove(GAMEMOVE value) {
+    move = value;
 }
 
-void TcpClient::onReadFinished()
-{
-    qDebug() << m_receivedData;
+void TcpClient::setToIndex(int value) {
+    toIndex = value;
 }
 
-Player TcpClient::getPlayer()
-{
-    return m_player;
+void TcpClient::setFromIndex(int value) {
+    fromIndex = value;
 }
 
-QTcpSocket *TcpClient::getSocket(){
+GAMEMOVE TcpClient::getMove() const {
+    return move;
+}
+
+int TcpClient::getToIndex() const {
+    return toIndex;
+}
+
+int TcpClient::getFromIndex() const {
+    return fromIndex;
+}
+
+
+QTcpSocket *TcpClient::getSocket() const {
     return m_socket;
-}
-
-QString TcpClient::getReceivedData() const
-{
-    return m_receivedData;
-}
-
-void TcpClient::updateGui(QAbstractSocket::SocketState state)
-{
-    const bool connected = (state == QAbstractSocket::ConnectedState);
-    const bool unconnected = (state == QAbstractSocket::UnconnectedState);
-
 }
 

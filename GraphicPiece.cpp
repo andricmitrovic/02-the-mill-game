@@ -19,6 +19,7 @@ void GraphicPiece::paint(QPainter * painter,
     const QStyleOptionGraphicsItem * option, QWidget * widget) {
     Q_UNUSED(option)
     Q_UNUSED(widget)
+
     QImage image = QImage(QString("../02-the-mill-game/images/circle.jpg"));
     painter -> drawImage(QRectF(0, 0, 30, 30), image);
 

@@ -11,7 +11,7 @@ GameAI::GameAI(Player* p1, Player* p2)
 {}
 
 
-void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
+void GameAI::playMove(Player* player, int index, MyGraphicsScene *scene)
 {
     // Provera ovde koji je igrac da slucajno covek ne klikne brzo dok bot ne napravi potez
     if(player != getPlayerHuman())
@@ -63,14 +63,14 @@ void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
     // bug: ako minimax pocne da simulira igru i kojoj nema vise nista da se igra zabosce cak i ako nije jos gotovo ali bice sigurno
 }
 
-void GameAI::playSetupMoveAI(QGraphicsScene &scene)
+void GameAI::playSetupMoveAI(MyGraphicsScene *scene)
 {
     std::pair<int,int> retVal = maxSetup(maxDepthPhase1, getBoardPieces(), INT32_MIN, INT32_MAX);
     std::cout<<"Bot igra na: "<<retVal.second<<", zbog nagrade od: "<<retVal.first<<std::endl;
     Game::playMove(getPlayerAI(), retVal.second, scene);
 }
 
-void GameAI::playMovingMoveAI(QGraphicsScene &scene)
+void GameAI::playMovingMoveAI(MyGraphicsScene *scene)
 {
     std::tuple<int,int, int> retVal = maxPlay(maxDepthPhase2, INT32_MIN, INT32_MAX);
     std::cout<<"Bot igra "<<std::get<1>(retVal)<<":"<<std::get<2>(retVal)<<", zbog nagrade od "<<std::get<0>(retVal)<<std::endl;
@@ -79,7 +79,7 @@ void GameAI::playMovingMoveAI(QGraphicsScene &scene)
     Game::playMove(getPlayerAI(), std::get<2>(retVal), scene);
 }
 
-void GameAI::playMillAI(QGraphicsScene &scene)
+void GameAI::playMillAI(MyGraphicsScene *scene)
 {
     // stavimo false da bi radio minimax
     Game::setMillOccured(false);
