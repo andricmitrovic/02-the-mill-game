@@ -189,7 +189,7 @@ void Game::playMove(Player* player, int index, QGraphicsScene &scene)
           setMessage("Mill in playGame");
           if (removeOpponentsPiece(player, index))
                 this->changeTurn();
-          return ;
+          return;
     }
 
     if (!checkPhase1End()){
