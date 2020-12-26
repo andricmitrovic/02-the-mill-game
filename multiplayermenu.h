@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "board.h"
-#include "tcpclient.h"
+#include "gameserver.h"
 #include "tcpserver.h"
 
 namespace Ui {
@@ -24,7 +24,6 @@ private slots:
 private:
     Ui::MultiplayerMenu *ui;
     Board *board;
-    TcpClient *tcp;
     TcpServer *server;
 };
 

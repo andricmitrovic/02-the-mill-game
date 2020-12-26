@@ -36,3 +36,15 @@ void Player::decNumOfPieces() {
 int Player::getNumOfPieces() const {
     return numOfPieces;
 }
+
+void Player::setId(FIELDSTATE playerId)
+{
+    this->m_id = playerId;
+}
+
+void Player::setTurn(bool turn)
+{
+    this->m_turn = turn;
+}
+
+

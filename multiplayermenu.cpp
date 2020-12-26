@@ -8,6 +8,7 @@ MultiplayerMenu::MultiplayerMenu(QWidget *parent) :
     ui(new Ui::MultiplayerMenu)
 {
     ui->setupUi(this);
+    this->server = nullptr;
 }
 
 MultiplayerMenu::~MultiplayerMenu()
@@ -22,19 +23,12 @@ void MultiplayerMenu::on_connectBtn_clicked()
         ui->laError->setText("Enter your name!");
         return ;
     }
-
     server = new TcpServer(this);
     server->show();
-    tcp = new TcpClient(FIELDSTATE::PLAYER_1, ui->leName->text());
-    // trebalo bi vec server da je pokrenut i da prima jednog igraca
-    //board = new Board(this);
-    //board->show();
-    GameServer *gameServer = new GameServer(*tcp, *new TcpClient(FIELDSTATE::PLAYER_2, QString("br2")));
-    ui->laError->setText("Zdravo");
-    gameServer->serverTest();
+
+    this->hide();
+    board = new Board(this, GAMEMODE::SERVER, ui->leName->text());
+    board->show();
 
 
-    ui->laError->setText(gameServer->m_p2.getReceivedData());
-    //this->hide();
-    //
 }

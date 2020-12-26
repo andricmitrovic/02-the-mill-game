@@ -2,6 +2,7 @@
 #define Player_H
 
 #include "GraphicPiece.h"
+#include <QWidget>
 #include <string>
 
 /*
@@ -10,7 +11,7 @@
  *        bool promenljivu turn - da li je taj igrac na redu ili ne
  */
 
-class Player {
+class Player : public QWidget{
 
 public:
     Player(const Player& p);
@@ -26,10 +27,16 @@ public:
     void decNumOfPieces();
     int getNumOfPieces() const;
 
+
+    //seteri
+    void setId(FIELDSTATE playerId);
+    void setTurn(bool turn);
+
 private:
     bool m_turn;
     FIELDSTATE m_id;
     int numOfPieces;
     QString name;
+
 };
 #endif // Player_H

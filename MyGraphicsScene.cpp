@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
+#include "lib.h"
 
 void MyGraphicsScene::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
 {
@@ -23,7 +24,40 @@ void MyGraphicsScene::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
         //update();
         //QGraphicsScene::mousePressEvent(mouseEvent);
     }
+}
 
+MyGraphicsScene::MyGraphicsScene()
+{
+    setRedPieces(NUM_OF_PIECES);
+    setBluePieces(NUM_OF_PIECES);
+}
 
- //if the event has not been processed by an item create a new item here
+int MyGraphicsScene::getRedPieces()
+{
+    return this->redPieces;
+}
+
+int MyGraphicsScene::getBluePieces()
+{
+    return this->bluePieces;
+}
+
+void MyGraphicsScene::setRedPieces(int value)
+{
+    this->redPieces = value;
+}
+
+void MyGraphicsScene::setBluePieces(int value)
+{
+    this->bluePieces = value;
+}
+
+void MyGraphicsScene::decrementRedPieces()
+{
+    this->redPieces--;
+}
+
+void MyGraphicsScene::decrementBluePieces()
+{
+    this->bluePieces--;
 }

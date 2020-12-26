@@ -14,31 +14,44 @@
  */
 
 class GameAI: public Game{
+
 public:
 
     GameAI(Player* p1, Player* p2);
     ~GameAI();
 
-    void playMove(Player* player, int index, QGraphicsScene &scene) override;
+    void playMove(Player* player, int index, MyGraphicsScene *scene) override;
 
-    // AI funkcije
+    void playSetupMoveAI(MyGraphicsScene *scene);
+    void playMovingMoveAI(MyGraphicsScene *scene);
+    void playMillAI(MyGraphicsScene *scene);
+
+    // Helper functions
     bool turnAI();
-    void makeSetupMove_AI(Player* player, int i);    // ides u drugu klasu
-    void revertSetupMove_AI(Player* player, int i);
+    Player* getPlayerAI();
+    Player* getPlayerHuman();
+    FIELDSTATE getHumanFieldstate();
 
-    std::pair<int,int> max(int depth);
-    std::pair<int,int> min(int depth);
+    // Minimax phase 1
+    std::pair<int,int> maxSetup(int depth, int remainingPieces, int alfa, int beta);
+    std::pair<int,int> minSetup(int depth, int remainingPieces, int alfa, int beta);
 
-    // TODO: obrisati?: cak se i ne koriste van klase pa nisu potrebni i ne menjaju se
-    // geteri
-    int        getMaxDepthAI();
-    FIELDSTATE getPlayerAI();
-    // seteri
-    void       setMaxDepthAI(int val);
-    void       setPlayerAI(FIELDSTATE val);
+    void makeSetupMoveAI(Player* player, int i);
+    void revertSetupMoveAI(Player* player, int i);
+    int heuristicSetup(FIELDSTATE player);
+
+    // Minimax phase 2
+    std::tuple<int,int,int> maxPlay(int depth, int alfa, int beta);
+    std::tuple<int,int,int> minPlay(int depth, int alfa, int beta);
+
+    void makePlayMoveAI(Player* player, int from, int to);
+    void revertPlayMoveAI(Player* player, int from, int to);
+
+
 
 private:
-    int             maxDepthAI;
+    int             maxDepthPhase1;
+    int             maxDepthPhase2;             // todo: moze da bude veci depth kad ima ostane manje piece-ova na boardu
     FIELDSTATE      playerAI;
 };
 

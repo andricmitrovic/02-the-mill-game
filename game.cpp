@@ -3,30 +3,33 @@
 #include "player.h"
 #include "QGraphicsScene"
 
-Game::Game(Player* p1, Player* p2)
-    : gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-      winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
+Game::Game(Player *p1, Player *p2):
+    gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
+    winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
 {
-//setup_graphical sam ovde sibnuo jer realno ne treba da se zove posebna funkcija za to kad moze u konstruktoru da se odradi
 
-    if (gameState != GAMESTATE::INIT)
-    {
-        setMessage("The game has already been initialized");
-        return;
-    }
+  if (gameState != GAMESTATE::INIT)
+  {
+      setMessage("The game has already been initialized");
+      return;
+  }
 
-    m_p1->changeTurn(); //prvi je na potezu igrac 1
+  m_p1->changeTurn(); //prvi je na potezu igrac 1
 }
+
+
 
 Game::~Game() {
     delete gameMap;
 }
 
+
 bool Game::checkMills(unsigned index) const {
     FIELDSTATE curPlayer = gameMap -> getBoardFields()[index].getPlayerID();
     unsigned checkIndex1 = gameMap -> getBoardFields()[index].getMills().first.first;
     unsigned checkIndex2 = gameMap -> getBoardFields()[index].getMills().first.second;
-    if (gameMap -> getBoardFields()[checkIndex1].getPlayerID() == curPlayer && gameMap -> getBoardFields()[checkIndex2].getPlayerID() == curPlayer) {
+    if (gameMap -> getBoardFields()[checkIndex1].getPlayerID() == curPlayer &&
+        gameMap -> getBoardFields()[checkIndex2].getPlayerID() == curPlayer) {
         return true;
     }
 
@@ -40,8 +43,9 @@ bool Game::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool Game::makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene) {
+bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
     setMessage("We are in makeSetupMove");
+
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
         setMessage("Error: Invalid index or occupied field.");
         return false;
@@ -49,8 +53,14 @@ bool Game::makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene) {
         gameMap -> getBoardFields()[i].occupy(player->id());
         boardPieces--;
         player->incNumOfPieces();
-        scene.removeItem(gameMap -> getPieces()[gameMap -> getRemoveIndex()]);
-        gameMap -> incRemoveIndex();
+        if(player->id() == FIELDSTATE::PLAYER_1 ){
+            scene->decrementBluePieces();
+            scene->removeItem(gameMap -> getBluePieces()[scene->getBluePieces()]);
+        }
+        if(player->id() == FIELDSTATE::PLAYER_2 ){
+            scene->decrementRedPieces();
+            scene->removeItem(gameMap -> getRedPieces()[scene->getRedPieces()]);
+        }
 
         //std::cout << player->getName() << " occupied field " << input << std::endl;
         setMessage(player->getName().toStdString() + " occupied a field.");
@@ -182,14 +192,14 @@ void Game::changeTurn() {
     m_p2->changeTurn();
 }
 
-void Game::playMove(Player* player, int index, QGraphicsScene &scene)
+void Game::playMove(Player* player, int index, MyGraphicsScene *scene)
 {
     if (this->millOccured){
           //std::cout<< "Mill in playGame"<<std::endl;
           setMessage("Mill in playGame");
           if (removeOpponentsPiece(player, index))
                 this->changeTurn();
-          return ;
+          return;
     }
 
     if (!checkPhase1End()){

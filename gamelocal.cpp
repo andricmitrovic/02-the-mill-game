@@ -12,11 +12,11 @@ GameLocal::GameLocal(Player* p1, Player* p2):
 /*
 GameLocal::~GameLocal() {
     delete gameMap;
-}*/
+}
 
 
-/*
- * void Game::setup() {
+
+  void Game::setup() {
     if (gameState != GAMESTATE::INIT) {
         std::cout << "The has already been initialized" << std::endl;
         return;
@@ -163,5 +163,4 @@ bool Game::makeSetupMove(Player & player) {
     }
     return true;
 }
-
 */
