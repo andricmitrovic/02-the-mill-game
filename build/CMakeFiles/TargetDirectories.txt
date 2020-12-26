@@ -1,0 +1,4 @@
+/home/jelena/Desktop/Projekat_azrs/02-the-mill-game-master/build/CMakeFiles/rebuild_cache.dir
+/home/jelena/Desktop/Projekat_azrs/02-the-mill-game-master/build/CMakeFiles/NineMensMorris.dir
+/home/jelena/Desktop/Projekat_azrs/02-the-mill-game-master/build/CMakeFiles/edit_cache.dir
+/home/jelena/Desktop/Projekat_azrs/02-the-mill-game-master/build/CMakeFiles/NineMensMorris_autogen.dir
