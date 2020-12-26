@@ -46,7 +46,7 @@ private:
 
     Ui::Board         *ui;
     Game              *game;
-    MyGraphicsScene   m_scene;
+    MyGraphicsScene   *m_scene;
     GAMEMODE          game_mode;
 
 };

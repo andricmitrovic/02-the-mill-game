@@ -21,15 +21,15 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
 
 void TcpClient::readMessage() {
 
-
-    QJsonDocument readDocument = m_receivedData_1.fromJson(this->m_socket->readAll());
+    QString serverMessage = (QString)(this->m_socket->readAll());
+    QJsonDocument readDocument = QJsonDocument::fromJson(serverMessage.toUtf8());
 
     if (readDocument.isEmpty()){
         return;
     }
 
 
-    QJsonObject jObj = readDocument.toVariant().toJsonObject();
+    QJsonObject jObj = readDocument.object();
 
     setMove( GAMEMOVE (jObj.value(QString("game_move")).toInt()));
 
@@ -56,12 +56,8 @@ void TcpClient::readMessage() {
         emit over(move);
 
     }else if (move == GAMEMOVE :: REMOVE){
-
         this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
         this->m_millOccured = false;
-
-
-
         emit over(move);
     }else if (move == GAMEMOVE :: MOVE) {
         this->setToIndex(jObj.value(QString("toIndex")).toInt());
@@ -70,7 +66,7 @@ void TcpClient::readMessage() {
 
         emit over(move);
     }else{
-
+        this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
         emit over(move);
     }
 

@@ -4,6 +4,7 @@
 #include "field.h"
 #include "graphicline.h"
 #include "piece.h"
+#include "MyGraphicsScene.h"
 
 class GameMap {
 
@@ -12,14 +13,13 @@ public:
     // metode za ispis
     void printMapTerminal();
     char strPlayer(unsigned p);
-    void printMap(QGraphicsScene &scene);
-    void printLines(QGraphicsScene &scene);
-    void printFields(QGraphicsScene &scene);
-    void printPieces(QGraphicsScene &scene);
+    void printMap(MyGraphicsScene *scene);
+    void printLines(MyGraphicsScene *scene);
+    void printFields(MyGraphicsScene *scene);
+    void printPieces(MyGraphicsScene *scene);
     void initializeLines();
     void initializeFields();
     void initializePieces();
-    void removePiece(QGraphicsScene &scene, int index);
     void printFieldTerminal(int index, bool lettersOnly);
 
     /* Inicijalizuje se za svako polji niz polja koja cine mill*/
@@ -31,19 +31,18 @@ public:
     // getteri
     float getScale() const;
     float getOffset() const;
-    int getRemoveIndex();
     std::vector<Field> &getBoardFields();
-    std::vector<Piece*> &getPieces();
+    std::vector<Piece*> &getRedPieces();
+    std::vector<Piece*> &getBluePieces();
 
     void setScale(float scale);
     void recalculateOffset();
-    void incRemoveIndex();
-
 
 private:
     std::vector<Field> boardFields;
     std::vector<GraphicLine*> lines;
-    std::vector<Piece*> pieces;
+    std::vector<Piece*> redPieces;
+    std::vector<Piece*> bluePieces;
     float scale; //distance between the closest two fields in pixels
     float offset;
     int removeIndex = 0;

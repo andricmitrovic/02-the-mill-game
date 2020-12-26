@@ -43,7 +43,7 @@ bool Game::checkMills(unsigned index) const {
 
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
-bool Game::makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene) {
+bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
     setMessage("We are in makeSetupMove");
 
     if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
@@ -53,8 +53,14 @@ bool Game::makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene) {
         gameMap -> getBoardFields()[i].occupy(player->id());
         boardPieces--;
         player->incNumOfPieces();
-        scene.removeItem(gameMap -> getPieces()[gameMap -> getRemoveIndex()]);
-        gameMap -> incRemoveIndex();
+        if(player->id() == FIELDSTATE::PLAYER_1 ){
+            scene->decrementBluePieces();
+            scene->removeItem(gameMap -> getBluePieces()[scene->getBluePieces()]);
+        }
+        if(player->id() == FIELDSTATE::PLAYER_2 ){
+            scene->decrementRedPieces();
+            scene->removeItem(gameMap -> getRedPieces()[scene->getRedPieces()]);
+        }
 
         //std::cout << player->getName() << " occupied field " << input << std::endl;
         setMessage(player->getName().toStdString() + " occupied a field.");
@@ -186,7 +192,7 @@ void Game::changeTurn() {
     m_p2->changeTurn();
 }
 
-void Game::playMove(Player* player, int index, QGraphicsScene &scene)
+void Game::playMove(Player* player, int index, MyGraphicsScene *scene)
 {
     if (this->millOccured){
           //std::cout<< "Mill in playGame"<<std::endl;

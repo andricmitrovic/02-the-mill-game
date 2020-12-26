@@ -20,7 +20,7 @@ public:
     GameAI(Player* p1, Player* p2);
     ~GameAI();
 
-    void playMove(Player* player, int index, QGraphicsScene &scene) override;
+    void playMove(Player* player, int index, MyGraphicsScene *scene) override;
 
     // AI funkcije
     bool turnAI();

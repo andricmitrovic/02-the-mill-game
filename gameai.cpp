@@ -17,7 +17,7 @@ GameAI::GameAI(Player* p1, Player* p2)
 }
 
 
-void GameAI::playMove(Player* player, int index, QGraphicsScene &scene)
+void GameAI::playMove(Player* player, int index, MyGraphicsScene *scene)
 {
    // TODO: Treba mi provera mozda ovde koji je igrac da slucajno covek ne klikne brzo dok bot ne napravi potez, ali mozda i ne treba?
     Game::playMove(player, index, scene);

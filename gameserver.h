@@ -19,7 +19,7 @@ public:
 
     // metode
     void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
-    void playMove(Player *player, int index, QGraphicsScene &scene);
+    void playMove(Player *player, int index, MyGraphicsScene *scene);
     void sendMoveToServer(GAMEMOVE move, int fromIndex, int toIndex);
 
 public slots:

@@ -20,9 +20,9 @@ public:
 
     // metode
     void changeTurn();
-    virtual void playMove(Player*  player, int index, QGraphicsScene &scene); // ova bi trebalo da se postavi na virtual
+    virtual void playMove(Player*  player, int index, MyGraphicsScene *scene); // ova bi trebalo da se postavi na virtual
 
-    bool makeSetupMove(Player* player, unsigned i, QGraphicsScene &scene);
+    bool makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene);
     bool fconentsPiece(Player*  player, unsigned index);
     bool makePlayMove(Player* player, unsigned moveFrom, unsigned moveTo);
     bool removeOpponentsPiece(Player* player, unsigned index);
