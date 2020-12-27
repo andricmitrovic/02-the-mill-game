@@ -39,7 +39,8 @@ public:
     bool isValidToSelect(int i, Player*  player) const;
 
     // getteri
-    QString getMessage() const;
+    QString getGameMessage() const;
+    QString getErrorMessage() const;
     FIELDSTATE getWinner() const;
     Player* getCurrentPlayer();
     GameMap *getGameMap() const;
@@ -52,7 +53,10 @@ public:
 
     // setteri
     void setWinner(FIELDSTATE winner);
-    void setMessage(const std::string &msg);
+    void setGameMessage(const std::string &msg);
+    void clearGameMessage();
+    void setErrorMessage(const std::string &msg);
+    void clearErrorMessage();
     void setGameMap(GameMap *gameMap);
     void setPlayer1(Player* p1);
     void setPlayer2(Player* p2);
@@ -67,7 +71,8 @@ private:
     Player          *m_p2;
     GAMESTATE       gameState;
     FIELDSTATE      winner;
-    QString         message;
+    QString         gameMessage;
+    QString         errorMessage;
     bool            millOccured;
     int             moveFrom;
     int             boardPieces;

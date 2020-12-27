@@ -14,15 +14,15 @@ GameServer::~GameServer() {}
 
 void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
     if (player->id() != active || !player->turn()) {
-        setMessage("It's not your turn yet! :(");
+        setGameMessage("It's not your turn yet! :(");
         return;
     }
 
     if (this->getMillOccured()) {
-        setMessage("Mill in playGame");
+        setGameMessage("Mill in playGame");
         if (removeOpponentsPiece(player, index)) {
             if (checkPhase1End() && gameOver()) {
-                setMessage("GAME OVER! YOU WON!");
+                setGameMessage("GAME OVER! YOU WON!");
                 sendMoveToServer(GAMEMOVE::GAMEOVER, index, -1);
             } else {
                 this->changeTurn();
@@ -36,6 +36,7 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
         if (makeSetupMove(player, index, scene)) {
             if (checkMills(index)) {
                 setMillOccured(true);
+                setGameMessage("MILL! Choose an opponent's piece to remove!");
                 sendMoveToServer(GAMEMOVE::PLACE, -1, index);
             } else {
                 sendMoveToServer(GAMEMOVE::PLACE, -1, index);
@@ -50,8 +51,10 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
             if (makePlayMove(player, getMoveFrom(), index)) {
                 sendMoveToServer(GAMEMOVE::MOVE, getMoveFrom(), index);
                 setMoveFrom(-1);
-                if (checkMills(index))
+                if (checkMills(index)) {
                     setMillOccured(true);
+                    setGameMessage("MILL! Choose an opponent's piece to remove!");
+                }
                 else
                     this->changeTurn();
             } else {
@@ -61,7 +64,7 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
             }
         }
     } else {
-        setMessage("Game over! YOU WON!");
+        setGameMessage("Game over! YOU WON!");
         setWinner(getPlayer1()->getNumOfPieces() < getPlayer2()->getNumOfPieces() ? FIELDSTATE::PLAYER_2
                                                                                   : FIELDSTATE::PLAYER_1);
         sendMoveToServer(GAMEMOVE::GAMEOVER, -1, -1);

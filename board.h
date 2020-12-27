@@ -40,6 +40,7 @@ public:
 public slots:
     void onFieldSelection(QPointF);
     void writeGameMessage();
+    void writeErrorMessage();
     void up_scene();
 
 private:

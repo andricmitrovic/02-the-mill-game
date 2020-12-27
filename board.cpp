@@ -46,6 +46,8 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::onFieldSelection);
     // povezivanje za ispisivanje poruke
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeGameMessage);
+    connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeErrorMessage);
+
 
     /* treba pokusati da stavimo view da bude fullscreen, prvo sto nece manuelno iz designa da ode skroz desno,
      *  a ima i u prozoru neko glupost dole sto blokira deo viewa vrv moze da se iskljuci negde.*/
@@ -78,7 +80,7 @@ void Board::onFieldSelection(QPointF pos) {
     int index = game -> getGameMap() -> indexByPos(item -> pos());
 
     if (this->game_mode == GAMEMODE::SERVER && !static_cast<TcpClient *>(this->game->getPlayer1())->m_gameStart){
-        this->getGame()->setMessage("Game has not started yet! Looking for another player!");
+        this->getGame()->setGameMessage("Game has not started yet! Looking for another player!");
      }else
         game -> playMove(game -> getCurrentPlayer(), index, m_scene);
 
@@ -94,16 +96,26 @@ void Board::resizeEvent(QResizeEvent * event) {
 
     m_scene->setSceneRect(-this -> width() / 2 + 6.5 * scale, 0, this -> width(), this -> height());
     ui -> graphicsView -> setFixedSize(ui -> graphicsView -> scene() -> width(), ui -> graphicsView -> scene() -> height());
-    ui -> leGameMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
+    //ui -> laGameMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
+    //ui -> laErrorMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
+    //ui -> frame -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 60);
     game -> getGameMap() -> printMap(m_scene);
     ui -> graphicsView -> viewport() -> update();
 }
 
 void Board::writeGameMessage() {
-    ui -> leGameMessage -> setText(game -> getMessage());
+    //ui -> laGameMessage -> setText(game -> getGameMessage());
+    if (!game->getGameMessage().isEmpty())
+        ui->textBrowser->append(game->getGameMessage());
+    game->clearGameMessage();
 }
 
-
+void Board::writeErrorMessage() {
+    //ui -> laErrorMessage -> setText("<font color='red'>" + game -> getErrorMessage() + "</font>");
+    if (!game->getErrorMessage().isEmpty())
+        ui->textBrowser->append("<font color='red'>" + game -> getErrorMessage() + "</font>");
+    game->clearErrorMessage();
+}
 
 void Board::up_scene()
 {
@@ -126,7 +138,7 @@ void Board::up_scene()
     }
     if (client1->getMove() == GAMEMOVE :: GAMEOVER){
         game->removeOpponentsPiece(client2, client1->getFromIndex());
-        game->setMessage("YOU LOST THIS ONE");
+        game->setGameMessage("YOU LOST THIS ONE");
     }
     if (client1->m_millOccured)
         game->setMillOccured(true);
