@@ -419,11 +419,11 @@ int GameAI::heuristicSetup(FIELDSTATE player)
                 (Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == FIELDSTATE::EMPTY) )
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=500;
+                    reward+=1000;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
-                    reward+=250;
+                    reward+=500;
                 else
-                    reward+=50;
+                    reward+=100;
             }
 
             if ((Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == player) || \
@@ -434,7 +434,7 @@ int GameAI::heuristicSetup(FIELDSTATE player)
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
                     reward+=500;
                 else
-                    reward+=200;
+                    reward+=100;
             }
 
 
