@@ -430,11 +430,11 @@ int GameAI::heuristicSetup(FIELDSTATE player)
                 (Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == FIELDSTATE::EMPTY) )
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=500;
+                    reward+=1000;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
-                    reward+=250;
+                    reward+=500;
                 else
-                    reward+=50;
+                    reward+=200;
             }
 
 
@@ -467,10 +467,50 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
     // ako m_p1 napravi mill pobedio je, ako m_p2 napravi mill izgubio je nagradu
     if (Game::getMillOccured())
     {
-        // ako je pozivom maxa desio se mill to znaci da se on desio zapravo u minu i salje se -1 jer je to protivnikov najbolji potez
+        Game::setMillOccured(false);
 
-        // TODO: ako vec gubis izgubi najbolje moguce tj zablokiraj mu neki buduci mill
-        return std::make_pair(-10000, -1);
+        int retVal = -1;
+
+        // onda pokrenem MIN jer protivnik igra, iz svake moguce obrisane figurice na stolu tj svake protivnikove figure
+        for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
+        {
+            // ako je protivnikova figurica tu i smes da jedes nju
+            if(isValidToRemove(field_num, getPlayerHuman()))
+            {
+                // obrisi tu figuricu
+                Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
+
+                retVal = std::get<0>(maxSetup(depth-1, Game::getBoardPieces(), INT32_MIN, INT32_MAX));
+
+                //azuriraj vrednosti
+                if(retVal > maxValue )
+                {
+                    maxValue = retVal;
+                    move = field_num;
+                }
+                //vrati tu figuricu
+                Game::getGameMap() -> getBoardFields()[field_num].occupy(playerAI);
+
+                if(maxValue >= beta)
+                {
+                    // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
+                    //Game::setMillOccured(true);
+                    return std::make_pair(maxValue, -1);
+                }
+
+                if(maxValue > alfa)
+                {
+                    alfa = maxValue;
+                }
+
+
+
+            }
+        }
+
+        // vratimo true da bi radio playMove
+        //Game::setMillOccured(true);
+        return std::make_pair(maxValue, move);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
