@@ -31,6 +31,7 @@ public:
     bool gameOver();
     bool checkPhase1End();
     bool checkMills(unsigned index) const;
+    bool hasAvailableFields(Player *player) const;
 
     //provera indeks
     bool isValidIndex(int i) const;

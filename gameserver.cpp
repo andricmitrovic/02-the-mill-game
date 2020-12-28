@@ -19,7 +19,7 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
     }
 
     if (this->getMillOccured()) {
-        setGameMessage("Mill in playGame");
+        setGameMessage("MILL! Choose an opponent's piece to remove!");
         if (removeOpponentsPiece(player, index)) {
             if (checkPhase1End() && gameOver()) {
                 setGameMessage("GAME OVER! YOU WON!");

@@ -96,22 +96,18 @@ void Board::resizeEvent(QResizeEvent * event) {
 
     m_scene->setSceneRect(-this -> width() / 2 + 6.5 * scale, 0, this -> width(), this -> height());
     ui -> graphicsView -> setFixedSize(ui -> graphicsView -> scene() -> width(), ui -> graphicsView -> scene() -> height());
-    //ui -> laGameMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
-    //ui -> laErrorMessage -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 30);
-    //ui -> frame -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 100, 13 * scale, 60);
+    ui -> textBrowser -> setGeometry(this -> width() / 2 - 6.5 * scale, this -> height() - 130, 13 * scale, 90);
     game -> getGameMap() -> printMap(m_scene);
     ui -> graphicsView -> viewport() -> update();
 }
 
 void Board::writeGameMessage() {
-    //ui -> laGameMessage -> setText(game -> getGameMessage());
     if (!game->getGameMessage().isEmpty())
         ui->textBrowser->append(game->getGameMessage());
     game->clearGameMessage();
 }
 
 void Board::writeErrorMessage() {
-    //ui -> laErrorMessage -> setText("<font color='red'>" + game -> getErrorMessage() + "</font>");
     if (!game->getErrorMessage().isEmpty())
         ui->textBrowser->append("<font color='red'>" + game -> getErrorMessage() + "</font>");
     game->clearErrorMessage();
