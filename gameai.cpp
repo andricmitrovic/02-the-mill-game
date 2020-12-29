@@ -14,10 +14,12 @@ GameAI::GameAI(Player* p1, Player* p2)
 void GameAI::playMove(Player* player, int index, MyGraphicsScene *scene)
 {
     // Provera ovde koji je igrac da slucajno covek ne klikne brzo dok bot ne napravi potez
-    if(player != getPlayerHuman())
+    if(player == getPlayerHuman())
+    {
+        // Human igra potez
+        Game::playMove(player, index, scene);
         return;
-    // Human igra potez
-    Game::playMove(player, index, scene);
+    }
 
     // Kad se zavrsi odigravanje Human poteza AI je na redu
     if(turnAI())
@@ -521,7 +523,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
         return std::make_pair(std::get<0>(retVal), -1);
     }
 
-    if (depth == 0)
+    if (depth <= 0)
     {
         reward = heuristicSetup(getHumanFieldstate());
         return std::make_pair(-reward, -1);
@@ -588,7 +590,7 @@ std::pair<int,int> GameAI::minSetup(int depth, int remainingPieces, int alfa, in
         return std::make_pair(std::get<0>(retVal), -1);
     }
 
-    if( depth == 0 )
+    if( depth <= 0 )
     {
         reward = heuristicSetup(playerAI);
         return std::make_pair(reward, -1);

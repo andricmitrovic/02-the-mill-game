@@ -80,7 +80,17 @@ void Board::onFieldSelection(QPointF pos) {
     if (this->game_mode == GAMEMODE::SERVER && !static_cast<TcpClient *>(this->game->getPlayer1())->m_gameStart){
         this->getGame()->setMessage("Game has not started yet! Looking for another player!");
      }else
+    {
         game -> playMove(game -> getCurrentPlayer(), index, m_scene);
+
+        if(this->game_mode == GAMEMODE::AI)
+        {
+            m_scene->update();
+            ui -> graphicsView -> viewport() -> update();
+            ui-> graphicsView ->repaint();
+            game -> playMove(game -> getCurrentPlayer(), index, m_scene);
+        }
+    }
 
     ui -> graphicsView -> viewport() -> update();
 }
