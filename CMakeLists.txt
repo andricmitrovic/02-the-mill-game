@@ -14,3 +14,4 @@ find_package(Qt5Network REQUIRED)
 add_executable(NineMensMorris ${SOURCES} ${HEADERS} ${UI})
 qt5_use_modules(NineMensMorris Widgets)
 target_link_libraries(NineMensMorris Qt5::Widgets Qt5::Core Qt5::Network ${QT_LIBRARIES})
+

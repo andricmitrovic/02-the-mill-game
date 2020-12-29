@@ -9,48 +9,46 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    GraphicPiece.cpp \
-    MyGraphicsScene.cpp \
-    field.cpp \
-    game.cpp \
-    gameai.cpp \
-    gamemap.cpp \
-    main.cpp \
-    board.cpp \
-    graphicline.cpp \
-    multiplayermenu.cpp \
-    piece.cpp \
-    gamelocal.cpp \
-    gameserver.cpp \
-    mainmenu.cpp \
-    player.cpp \
-    tcpclient.cpp \
-    tcpserver.cpp
+    code/src/GameServer.cpp \
+    code/src/GraphicLine.cpp \
+    code/src/GraphicPiece.cpp \
+    code/src/MainMenu.cpp \
+    code/src/MultiplayerMenu.cpp \
+    code/src/MyGraphicsScene.cpp \
+    code/src/Piece.cpp \
+    code/src/Player.cpp \
+    code/src/TcpClient.cpp \
+    code/src/TcpServer.cpp \
+    code/src/Field.cpp \
+    code/src/Game.cpp \
+    code/src/GameAi.cpp \
+    code/src/GameMap.cpp \
+    code/src/main.cpp \
+    code/src/Board.cpp
 
 HEADERS += \
-    GraphicPiece.h \
-    MyGraphicsScene.h \
-    board.h \
-    field.h \
-    game.h \
-    gameai.h \
-    gamemap.h \
-    lib.h \
-    graphicline.h \
-    multiplayermenu.h \
-    piece.h \
-    gamelocal.h \
-    gameserver.h \
-    mainmenu.h \
-    player.h \
-    tcpclient.h \
-    tcpserver.h
+    code/include/GameServer.h \
+    code/include/GraphicLine.h \
+    code/include/GraphicPiece.h \
+    code/include/MainMenu.h \
+    code/include/MultiplayerMenu.h \
+    code/include/MyGraphicsScene.h \
+    code/include/Piece.h \
+    code/include/Player.h \
+    code/include/TcpClient.h \
+    code/include/TcpServer.h \
+    code/include/Field.h \
+    code/include/Game.h \
+    code/include/GameAi.h \
+    code/include/GameMap.h \
+    code/include/Board.h \
+    code/include/Lib.h
 
 FORMS += \
-    board.ui \
-    mainmenu.ui \
-    multiplayermenu.ui \
-    tcpserver.ui
+    code/forms/board.ui \
+    code/forms/mainmenu.ui \
+    code/forms/multiplayermenu.ui \
+    code/forms/tcpserver.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -58,4 +56,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/binq
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    images/circle.jpg
+    code/resorces/images/circle.jpg
