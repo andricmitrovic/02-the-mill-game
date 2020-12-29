@@ -63,6 +63,8 @@ void GameAI::playMove(Player* player, int index, MyGraphicsScene *scene)
     // todo: heuristika u fazi 2 moze biti samo to ko je pobedio a ako dodje do dubine onda stanje igre tj odnos figurica za pocetak pa kasnije mozda nesto advanced vise
 
     // bug: ako minimax pocne da simulira igru i kojoj nema vise nista da se igra zabosce cak i ako nije jos gotovo ali bice sigurno
+
+    // Todo: sto nije stavio na intersection, kad plavi pocne na 0
 }
 
 void GameAI::playSetupMoveAI(MyGraphicsScene *scene)
@@ -384,6 +386,7 @@ int GameAI::heuristicSetup(FIELDSTATE player)
     {
         if(Game::getGameMap()->getBoardFields()[index].getPlayerID() == player)
         {
+            reward += 10000;
             // preuzeto iz checkMillsa, modifikovati tako da odredi nagradu u odnosu susede u millu
 
             unsigned checkIndex1 = Game::getGameMap()-> getBoardFields()[index].getMills().first.first;
@@ -398,21 +401,21 @@ int GameAI::heuristicSetup(FIELDSTATE player)
             if (Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == FIELDSTATE::EMPTY)
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=10;
+                    reward+=100;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
-                    reward+=5;
+                    reward+=50;
                 else
-                    reward+=1;
+                    reward+=10;
             }
 
             if (Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == FIELDSTATE::EMPTY)
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=10;
+                    reward+=100;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
-                    reward+=5;
+                    reward+=50;
                 else
-                    reward+=1;
+                    reward+=10;
             }
 
             // 2. Ako je jedno prazno a drugo tvoje SUPER
@@ -421,22 +424,22 @@ int GameAI::heuristicSetup(FIELDSTATE player)
                 (Game::getGameMap() -> getBoardFields()[checkIndex1].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex2].getPlayerID() == FIELDSTATE::EMPTY) )
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=1000;
+                    reward+=2000;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
                     reward+=500;
                 else
-                    reward+=100;
+                    reward+=250;
             }
 
             if ((Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == FIELDSTATE::EMPTY && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == player) || \
                 (Game::getGameMap() -> getBoardFields()[checkIndex3].getPlayerID() == player && Game::getGameMap() -> getBoardFields()[checkIndex4].getPlayerID() == FIELDSTATE::EMPTY) )
             {
                 if(find(std::begin(interrsections), std::end(interrsections), index) != std::end(interrsections))
-                    reward+=1000;
+                    reward+=2000;
                 else if(find(std::begin(sides), std::end(sides), index) != std::end(sides))
                     reward+=500;
                 else
-                    reward+=100;
+                    reward+=250;
             }
 
 
@@ -469,10 +472,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
     // ako m_p1 napravi mill pobedio je, ako m_p2 napravi mill izgubio je nagradu
     if (Game::getMillOccured())
     {
-        if (depth == 0)
-        {
-            return std::make_pair(-1000, -1);
-        }
+        //std::cout<<"ALOOO"<<std::endl;
 
         Game::setMillOccured(false);
 
@@ -502,7 +502,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
                 {
                     // ovaj je sigurno gori nego neki dosadasnji u minu pa je nebitno polje
                     //Game::setMillOccured(true);
-                    return std::make_pair(maxValue, -1);
+                    return std::make_pair(-maxValue, -1);
                 }
 
                 if(maxValue > alfa)
@@ -580,9 +580,45 @@ std::pair<int,int> GameAI::minSetup(int depth, int remainingPieces, int alfa, in
     int reward = 0;
 
     // proveri da li je mill
-    if (Game::getMillOccured())             // mozda treba da se obrne nagrada ovde jer kad se desi mill ne menja se turn?
+    if (Game::getMillOccured())
     {
-        return std::make_pair(10000*depth, -1);
+
+        Game::setMillOccured(false);
+
+        int retVal = -1;
+
+        // onda pokrenem MIN jer protivnik igra, iz svake moguce obrisane figurice na stolu tj svake protivnikove figure
+        for(int field_num = 0; field_num < NUM_OF_FIELDS; field_num++)
+        {
+            // ako je protivnikova figurica tu i smes da jedes nju
+            if(isValidToRemove(field_num, getPlayerHuman()))
+            {
+                // obrisi tu figuricu
+                Game::getGameMap() -> getBoardFields()[field_num].deoccupy();
+
+                retVal = std::get<0>(minSetup(depth-1, Game::getBoardPieces(), INT32_MIN, INT32_MAX));
+
+                //azuriraj vrednosti
+                if(retVal < minValue )
+                {
+                    minValue = retVal;
+                }
+                //vrati tu figuricu
+                Game::getGameMap() -> getBoardFields()[field_num].occupy(playerAI);
+
+                if(minValue <= alfa )
+                {
+                    return std::make_pair(minValue, -1);
+                }
+
+                if(minValue < beta)
+                {
+                    beta = minValue;
+                }
+            }
+        }
+
+        return std::make_pair(minValue, -1);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
