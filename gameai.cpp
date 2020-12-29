@@ -6,7 +6,7 @@
 GameAI::GameAI(Player* p1, Player* p2)
     : Game(p1,p2),
       maxDepthPhase1(5),
-      maxDepthPhase2(8),
+      maxDepthPhase2(5),
       playerAI(FIELDSTATE::PLAYER_2)
 {}
 
@@ -469,6 +469,11 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
     // ako m_p1 napravi mill pobedio je, ako m_p2 napravi mill izgubio je nagradu
     if (Game::getMillOccured())
     {
+        if (depth == 0)
+        {
+            return std::make_pair(-1000, -1);
+        }
+
         Game::setMillOccured(false);
 
         int retVal = -1;
@@ -512,7 +517,7 @@ std::pair<int,int> GameAI::maxSetup(int depth, int remainingPieces, int alfa, in
 
         // vratimo true da bi radio playMove
         //Game::setMillOccured(true);
-        return std::make_pair(maxValue, move);
+        return std::make_pair(-maxValue, move);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
@@ -577,7 +582,7 @@ std::pair<int,int> GameAI::minSetup(int depth, int remainingPieces, int alfa, in
     // proveri da li je mill
     if (Game::getMillOccured())             // mozda treba da se obrne nagrada ovde jer kad se desi mill ne menja se turn?
     {
-        return std::make_pair(10000, -1);
+        return std::make_pair(10000*depth, -1);
     }
 
     // ako je kraj postavljanja figurica vrati 0 jer nema milla i nikome nista
