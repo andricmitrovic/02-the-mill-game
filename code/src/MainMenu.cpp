@@ -15,8 +15,8 @@ MainMenu::~MainMenu()
 
 void MainMenu::on_localPlayBtn_clicked()
 {
-    board = new Board(this, GAMEMODE::LOCAL);
-    board->show();
+    lg_menu = new LocalGameMenu(this);
+    lg_menu->show();
     this->hide();
 }
 
