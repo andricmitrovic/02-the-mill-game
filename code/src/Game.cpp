@@ -61,6 +61,8 @@ bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
         setErrorMessage("Error: Invalid index or occupied field.");
         return false;
     } else {
+        Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
+        setGameMessage(opponent->getName().toStdString() + "'s turn. Choose a field to place your piece.");
         gameMap -> getBoardFields()[i].occupy(player->id());
         boardPieces--;
         if (boardPieces == 0) {
@@ -85,6 +87,8 @@ bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
 
 bool Game::makePlayMove(Player* player, unsigned moveFrom, unsigned moveTo) {
     if (isValidToMove(moveFrom, moveTo)){
+        Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
+        setGameMessage(opponent->getName().toStdString() + "'s turn");
         gameMap -> getBoardFields()[moveFrom].deoccupy();
         gameMap -> getBoardFields()[moveTo].occupy(player->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
 
@@ -116,7 +120,7 @@ bool Game::removeOpponentsPiece(Player* player, unsigned index) {
     millOccured = false;
 
     Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
-    setGameMessage("Player " + opponent->getName().toStdString() + " has lost a piece!");
+    setGameMessage(opponent->getName().toStdString() + " has lost a piece!\n" + opponent->getName().toStdString() + "'s turn");
     return true;
 }
 /*

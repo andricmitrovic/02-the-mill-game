@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "Board.h"
 #include "MultiplayerMenu.h"
+#include "LocalGameMenu.h"
 
 namespace Ui {
 class MainMenu;
@@ -26,6 +27,7 @@ private:
     Ui::MainMenu *ui;
     Board *board;
     MultiplayerMenu *mp_menu;
+    LocalGameMenu *lg_menu;
 };
 
 #endif // MAINMENU_H

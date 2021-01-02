@@ -12,6 +12,7 @@ SOURCES += \
     code/src/GameServer.cpp \
     code/src/GraphicLine.cpp \
     code/src/GraphicPiece.cpp \
+    code/src/LocalGameMenu.cpp \
     code/src/MainMenu.cpp \
     code/src/MultiplayerMenu.cpp \
     code/src/MyGraphicsScene.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     code/include/GameServer.h \
     code/include/GraphicLine.h \
     code/include/GraphicPiece.h \
+    code/include/LocalGameMenu.h \
     code/include/MainMenu.h \
     code/include/MultiplayerMenu.h \
     code/include/MyGraphicsScene.h \
@@ -46,6 +48,7 @@ HEADERS += \
 
 FORMS += \
     code/forms/board.ui \
+    code/forms/localgamemenu.ui \
     code/forms/mainmenu.ui \
     code/forms/multiplayermenu.ui \
     code/forms/tcpserver.ui
