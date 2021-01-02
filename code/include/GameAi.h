@@ -38,7 +38,7 @@ public:
 
     void makeSetupMoveAI(Player* player, int i);
     void revertSetupMoveAI(Player* player, int i);
-    int heuristicSetup(FIELDSTATE player);
+    int heuristicSetup();
 
     // Minimax phase 2
     std::tuple<int,int,int> maxPlay(int depth, int alfa, int beta);
@@ -50,8 +50,10 @@ public:
 
 
 private:
-    int             maxDepthPhase1;
-    int             maxDepthPhase2;             // todo: moze da bude veci depth kad ima ostane manje piece-ova na boardu
+    // Max depth for minimax algorithm in each phase, best values for a quick AI play
+    int             maxDepthPhase1 = 5;
+    int             maxDepthPhase2 = 7;
+
     FIELDSTATE      playerAI;
 };
 

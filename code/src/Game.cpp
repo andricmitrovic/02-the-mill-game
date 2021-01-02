@@ -161,7 +161,7 @@ bool Game::isValidIndex(int i) const {
  *  Metoda se poziva kada player napravil Mill
  *
  */
-bool Game::isValidToRemove(int i, Player* player) {
+bool Game::isValidToRemove(int i, Player* player, bool displayError) {
 
     if (!isValidIndex(i)) {
         setErrorMessage("Invalid index");
@@ -177,13 +177,15 @@ bool Game::isValidToRemove(int i, Player* player) {
         } else if(numOfPieces >3){
             for (auto &field:gameMap->getBoardFields()){
                 if (field.getPlayerID() == player_2 && !checkMills(field.getFieldPosition())){
-                    setErrorMessage("You can't remove piece from the mill just yet!");
+                    if(displayError)
+                        setErrorMessage("You can't remove piece from the mill just yet!");
                     return false;
                 }
             }
             return true;
         }else{
-            setErrorMessage("You can't remove piece from the mill just yet!");
+            if(displayError)
+                setErrorMessage("You can't remove piece from the mill just yet!");
             return false;
         }
 

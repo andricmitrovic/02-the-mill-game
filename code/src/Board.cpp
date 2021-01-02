@@ -86,7 +86,7 @@ void Board::onFieldSelection(QPointF pos) {
     {
             game -> playMove(game -> getCurrentPlayer(), index, m_scene);
 
-            if(this->game_mode == GAMEMODE::AI)
+            if(this->game_mode == GAMEMODE::AI && !this->game->getMillOccured())
             {
                 m_scene->update();
                 ui -> graphicsView -> viewport() -> update();
