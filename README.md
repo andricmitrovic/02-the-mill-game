@@ -23,8 +23,8 @@ Example of compiling project with Makefile.
 ```
 2. Make build file.
 ```
-    mkdir ../build
-    cd ../build
+    mkdir build
+    cd build
 ```
 3. Compile program.
 ```
