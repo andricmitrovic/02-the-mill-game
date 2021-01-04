@@ -7,9 +7,9 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS "code/forms/")
 
-set(SOURCES GraphicPiece.cpp MyGraphicsScene.cpp Field.cpp Game.cpp GameAi.cpp GameMap.cpp main.cpp Board.cpp GraphicLine.cpp MultiplayerMenu.cpp Piece.cpp GameServer.cpp MainMenu.cpp Player.cpp TcpClient.cpp TcpServer.cpp)
-set(HEADERS GraphicPiece.h MyGraphicsScene.h Board.h Field.h Game.h GameAi.h GameMap.h Lib.h GraphicLine.h MultiplayerMenu.h Piece.h GameServer.h MainMenu.h Player.h TcpClient.h TcpServer.h)
-set(UI board.ui mainmenu.ui multiplayermenu.ui tcpserver.ui)
+set(SOURCES GraphicPiece.cpp MyGraphicsScene.cpp Field.cpp Game.cpp GameAi.cpp GameMap.cpp main.cpp Board.cpp GraphicLine.cpp MultiplayerMenu.cpp LocalGameMenu.cpp Piece.cpp GameServer.cpp MainMenu.cpp Player.cpp TcpClient.cpp TcpServer.cpp)
+set(HEADERS GraphicPiece.h MyGraphicsScene.h Board.h Field.h Game.h GameAi.h GameMap.h Lib.h GraphicLine.h MultiplayerMenu.h LocalGameMenu.h Piece.h GameServer.h MainMenu.h Player.h TcpClient.h TcpServer.h)
+set(UI board.ui mainmenu.ui multiplayermenu.ui localgamemenu.ui)
 
 list(TRANSFORM SOURCES PREPEND "code/src/")
 list(TRANSFORM HEADERS PREPEND "code/include/")
