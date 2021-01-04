@@ -2,7 +2,7 @@
 #define MYGRAPHICSVIEW_H
 
 #include "QGraphicsScene"
-
+#include <QPushButton>
 class MyGraphicsScene : public QGraphicsScene {
     Q_OBJECT
 
@@ -26,6 +26,7 @@ public:
 private:
     int redPieces;
     int bluePieces;
+
 };
 
 #endif // MYGRAPHICSVIEW_H

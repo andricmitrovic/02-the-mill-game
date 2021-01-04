@@ -20,6 +20,7 @@
 #include "GameMap.h"
 
 #include "MyGraphicsScene.h"
+#include "Help.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -42,12 +43,15 @@ public slots:
     void writeErrorMessage();
     void up_scene();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
 
     Ui::Board         *ui;
     Game              *game;
     MyGraphicsScene   *m_scene;
+    Help              *help;
     GAMEMODE          game_mode;
-
 };
 #endif // BOARD_H

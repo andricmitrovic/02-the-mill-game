@@ -161,3 +161,9 @@ void Board::up_scene()
     game -> getGameMap() -> printMap(m_scene);
     ui -> graphicsView -> viewport() -> update();
 }
+
+void Board::on_pushButton_clicked()
+{
+    help = new Help(this);
+    help->show();
+}

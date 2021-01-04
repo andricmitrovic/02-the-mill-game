@@ -24,6 +24,7 @@ MyGraphicsScene::MyGraphicsScene()
 {
     setRedPieces(NUM_OF_PIECES);
     setBluePieces(NUM_OF_PIECES);
+
 }
 
 int MyGraphicsScene::getRedPieces()

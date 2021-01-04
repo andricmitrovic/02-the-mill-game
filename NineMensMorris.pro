@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    code/src/Help.cpp \
     code/src/GameServer.cpp \
     code/src/GraphicLine.cpp \
     code/src/GraphicPiece.cpp \
@@ -28,6 +29,7 @@ SOURCES += \
     code/src/Board.cpp
 
 HEADERS += \
+    code/include/Help.h \
     code/include/GameServer.h \
     code/include/GraphicLine.h \
     code/include/GraphicPiece.h \
@@ -48,6 +50,7 @@ HEADERS += \
 
 FORMS += \
     code/forms/board.ui \
+    code/forms/help.ui \
     code/forms/localgamemenu.ui \
     code/forms/mainmenu.ui \
     code/forms/multiplayermenu.ui
@@ -57,8 +60,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/binq
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES += \
-    code/resources/images/circle.jpg \
-    code/resources/images/blue_circle.png \
-    code/resources/images/red_circle.png
+
+RESOURCES += \
+    code/resources/icons.qrc
 
