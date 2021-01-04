@@ -9,7 +9,7 @@ Implementacija The Mill Game-a. Igra ce moci da se igra lokalno, preko servera i
 - If you want to compile your program with MakeFile you will need Qt5 base development files.
 Example of command for downloading these files.
 ```
-    sudo apt-get install qt5base-dev
+    sudo apt-get install qtbase5-dev
 ```
 
 - Alternatively you can use [QtCreator](https://www.qt.io/download).
@@ -21,13 +21,14 @@ Example of compiling project with Makefile.
 ```
     git clone https://gitlab.com/matf-bg-ac-rs/course-rs/projects-2020-2021/02-the-mill-game
 ```
-2. Position yourself in 02-the-mill-game/build directory.
+2. Make build file.
 ```
-    cd 02-the-mill-game/build
+    mkdir ../build
+    cd ../build
 ```
 3. Compile program.
 ```
-    cmake -G "Unix MakeFiles" ..
+    cmake -G "Unix MakeFiles" ../02-the-mill-game
     make
 ``` 
 4. Start the program.
