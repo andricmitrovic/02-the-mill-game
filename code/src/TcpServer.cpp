@@ -1,5 +1,5 @@
 #include "code/include/TcpServer.h"
-#include <ui_tcpserver.h>
+
 
 #include "code/include/Lib.h"
 
@@ -9,22 +9,17 @@
 #include <QPlainTextEdit>
 
 TcpServer::TcpServer(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::TcpServer)
-  , m_server(new QTcpServer(this))
+     m_server(new QTcpServer(this))
 {
-    ui->setupUi(this);
 
-    if (!m_server->listen(QHostAddress::LocalHost, 12345)) {
-        ui->log->setPlainText("Failure while starting server: "+ m_server->errorString());
-        return;
-    }
+    m_server->listen(QHostAddress::LocalHost, 12345);
+
     connect(m_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 }
 
 TcpServer::~TcpServer()
 {
-    delete ui;
+
 }
 
 void TcpServer::newConnection()
@@ -37,12 +32,6 @@ void TcpServer::newConnection()
 
         connect(con, SIGNAL(disconnected()), this, SLOT(removeConnection()));
         connect(con, SIGNAL(readyRead()), this, SLOT(newMessage()));
-
-        ui->log->insertPlainText(QString("* New connection: %1, port %2 %3\n")
-
-                                 .arg(con->peerAddress().toString())
-                                 .arg(QString::number(con->peerPort()))
-                                 .arg(con->openMode()));
 
 
         if (m_clients.size() == 2){
@@ -71,9 +60,7 @@ void TcpServer::newConnection()
 void TcpServer::removeConnection()
 {
     if (QTcpSocket *con = qobject_cast<QTcpSocket*>(sender())) {
-        ui->log->insertPlainText(QString("* Connection removed: %1, port %2\n")
-                                 .arg(con->peerAddress().toString())
-                                 .arg(QString::number(con->peerPort())));
+
         m_clients.removeOne(con);
         con->deleteLater();
     }
@@ -88,7 +75,7 @@ void TcpServer::newMessage()
 
         QByteArray messages = m_receivedData[con];
 
-        ui->log->insertPlainText("Sending message: \n");
+
         foreach (QTcpSocket *socket, m_clients) {
             if (socket == con)
                 continue;

@@ -25,7 +25,6 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    Board *board;
     MultiplayerMenu *mp_menu;
     LocalGameMenu *lg_menu;
 };

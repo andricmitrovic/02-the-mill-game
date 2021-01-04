@@ -34,7 +34,6 @@ public:
     bool hasAvailableFields(Player *player) const;
 
     //provera indeks
-    bool isValidIndex(int i) const;
     bool isValidToMove(int from, int to) const;
     bool isValidToRemove(int i, Player*  player,  bool displayError = 1);
     bool isValidToSelect(int i, Player*  player) const;

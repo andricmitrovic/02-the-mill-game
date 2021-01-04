@@ -57,8 +57,8 @@ bool Game::hasAvailableFields(Player *player) const {
 
 // Postavlja figuricu na polje i, koje smo dobili iz klika
 bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
-    if (!isValidIndex(i) || gameMap -> getBoardFields()[i].isOccupied()) {
-        setErrorMessage("Error: Invalid index or occupied field.");
+    if (gameMap -> getBoardFields()[i].isOccupied()) {
+        setErrorMessage("Error: Occupied field.");
         return false;
     } else {
         Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
@@ -156,9 +156,7 @@ FIELDSTATE Game::getWinner() const {
     return winner;
 }
 
-bool Game::isValidIndex(int i) const {
-    return (i >= 0 && i < NUM_OF_FIELDS);
-}
+
 
 /*
  *  Implementacija meotde isValidToRemove: provera da li player sme da ukloni figuru sa polja i
@@ -167,10 +165,6 @@ bool Game::isValidIndex(int i) const {
  */
 bool Game::isValidToRemove(int i, Player* player, bool displayError) {
 
-    if (!isValidIndex(i)) {
-        setErrorMessage("Invalid index");
-        return false;
-    }
     if (gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() != player->id()) {
 
         int numOfPieces = player->id() == FIELDSTATE::PLAYER_1 ? m_p2->getNumOfPieces() : m_p1->getNumOfPieces();
@@ -199,9 +193,7 @@ bool Game::isValidToRemove(int i, Player* player, bool displayError) {
 
 bool Game::isValidToMove(int from, int to) const {
 
-    if (!isValidIndex(from) || !isValidIndex(to)) {
-        return false;
-    }
+
 
     auto neighbours = gameMap -> getBoardFields()[from].getNeighboursIndices();
     bool contains = (std::find(neighbours.begin(), neighbours.end(), to) != neighbours.end());
@@ -212,7 +204,7 @@ bool Game::isValidToMove(int from, int to) const {
 }
 
 bool Game::isValidToSelect(int i, Player* player) const {
-    return isValidIndex(i) && gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player->id();
+    return  gameMap -> getBoardFields()[i].isOccupied() && gameMap -> getBoardFields()[i].getPlayerID() == player->id();
 }
 
 void Game::changeTurn() {

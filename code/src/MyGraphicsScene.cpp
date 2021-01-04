@@ -17,12 +17,6 @@ void MyGraphicsScene::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent )
     {
         emit signalClickedSomething(mouseEvent->scenePos());
 
-        //qDebug() << mouseEvent->scenePos();
-        //qDebug() << this->width();
-        //qDebug() << this->height();
-
-        //update();
-        //QGraphicsScene::mousePressEvent(mouseEvent);
     }
 }
 

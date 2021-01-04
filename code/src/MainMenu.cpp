@@ -22,14 +22,14 @@ void MainMenu::on_localPlayBtn_clicked()
 
 void MainMenu::on_aiPlayBtn_clicked()
 {
-    board = new Board(this, GAMEMODE::AI);
-    board->show();
+    mp_menu = new MultiplayerMenu(this);
+    mp_menu->show();
     this->hide();
 }
 
 void MainMenu::on_serverPlayBtn_clicked()
 {
-    mp_menu = new MultiplayerMenu(this);
+    mp_menu = new MultiplayerMenu(this, GAMEMODE::SERVER);
     mp_menu->show();
     this->hide();
 }

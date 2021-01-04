@@ -20,13 +20,13 @@ void GraphicPiece::paint(QPainter * painter,
     Q_UNUSED(option)
     Q_UNUSED(widget)
 
-    QImage image = QImage(QString("../02-the-mill-game/code/resorces/images/circle.jpg"));
+    QImage image = QImage(QString("../02-the-mill-game/code/resources/images/circle.jpg"));
     painter -> drawImage(QRectF(0, 0, 30, 30), image);
 
     if (m_player == FIELDSTATE::PLAYER_1)
-        painter -> drawImage(QRectF(-1, -1, 32, 32), QImage(QString("../02-the-mill-game/code/resorces/images/blue_circle.png")));
+        painter -> drawImage(QRectF(-1, -1, 32, 32), QImage(QString("../02-the-mill-game/code/resources/images/blue_circle.png")));
     else if (m_player == FIELDSTATE::PLAYER_2)
-        painter -> drawImage(QRectF(-1, -1, 32, 32), QImage(QString("../02-the-mill-game/code/resorces/images/red_circle.png")));
+        painter -> drawImage(QRectF(-1, -1, 32, 32), QImage(QString("../02-the-mill-game/code/resources/images/red_circle.png")));
 }
 
 void GraphicPiece::set_player(FIELDSTATE p) {

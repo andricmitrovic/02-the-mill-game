@@ -15,7 +15,7 @@ class MultiplayerMenu : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MultiplayerMenu(QWidget *parent = nullptr);
+    explicit MultiplayerMenu(QWidget *parent = nullptr, GAMEMODE mode=GAMEMODE::AI);
     ~MultiplayerMenu();
 
 private slots:
@@ -23,6 +23,7 @@ private slots:
 
 private:
     Ui::MultiplayerMenu *ui;
+    GAMEMODE mode;
     Board *board;
     TcpServer *server;
 };

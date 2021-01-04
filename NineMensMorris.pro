@@ -50,8 +50,7 @@ FORMS += \
     code/forms/board.ui \
     code/forms/localgamemenu.ui \
     code/forms/mainmenu.ui \
-    code/forms/multiplayermenu.ui \
-    code/forms/tcpserver.ui
+    code/forms/multiplayermenu.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -59,4 +58,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/binq
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    code/resorces/images/circle.jpg
+    code/resources/images/circle.jpg \
+    code/resources/images/blue_circle.png \
+    code/resources/images/red_circle.png
+
