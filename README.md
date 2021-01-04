@@ -21,13 +21,14 @@ Example of compiling project with Makefile.
 ```
     git clone https://gitlab.com/matf-bg-ac-rs/course-rs/projects-2020-2021/02-the-mill-game
 ```
-2. Position yourself in 02-the-mill-game/build directory.
+2. Make build file.
 ```
-    cd 02-the-mill-game/build
+    mkdir ../build
+    cd ../build
 ```
 3. Compile program.
 ```
-    cmake -G "Unix MakeFiles" ..
+    cmake -G "Unix MakeFiles" ../02-the-mill-game
     make
 ``` 
 4. Start the program.
