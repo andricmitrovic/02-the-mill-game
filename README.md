@@ -9,7 +9,7 @@ Implementacija The Mill Game-a. Igra ce moci da se igra lokalno, preko servera i
 - If you want to compile your program with MakeFile you will need Qt5 base development files.
 Example of command for downloading these files.
 ```
-    sudo apt-get install qt5base-dev
+    sudo apt-get install qtbase5-dev
 ```
 
 - Alternatively you can use [QtCreator](https://www.qt.io/download).
