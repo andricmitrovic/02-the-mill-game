@@ -43,12 +43,16 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
                 this->changeTurn();
             }
         }
-    } else if (!gameOver()) {
+    } else {
         if (getMoveFrom() == -1) {
             if (isValidToSelect(index, player))
                 setMoveFrom(index);
         } else { // moveFrom != -1
             if (makePlayMove(player, getMoveFrom(), index)) {
+                if (gameOver()){
+                    setGameMessage("Game over! YOU WON!");
+                    sendMoveToServer(GAMEMOVE::GAMEOVER, getMoveFrom(), index);
+                }else {
                 sendMoveToServer(GAMEMOVE::MOVE, getMoveFrom(), index);
                 setMoveFrom(-1);
                 if (checkMills(index)) {
@@ -57,17 +61,15 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
                 }
                 else
                     this->changeTurn();
-            } else {
-                if (getGameMap()->getBoardFields()[index].getPlayerID() == player->id()) {
-                    setMoveFrom(index);
-                }
             }
-        }
-    } else {
-        setGameMessage("Game over! YOU WON!");
-        setWinner(getPlayer1()->getNumOfPieces() < getPlayer2()->getNumOfPieces() ? FIELDSTATE::PLAYER_2
-                                                                                  : FIELDSTATE::PLAYER_1);
-        sendMoveToServer(GAMEMOVE::GAMEOVER, -1, -1);
+                } else {
+                if (getGameMap()->getBoardFields()[index].getPlayerID() == player->id())
+                    setMoveFrom(index);
+
+            }
+            }
+
+
     }
 }
 
@@ -91,8 +93,7 @@ void GameServer::readMoveFromServer(GAMEMOVE move) {
         this->active = client1->id();
         client2->setId(client1->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_2 : FIELDSTATE::PLAYER_1);
         client1->turn() ? client2->setTurn(false) : client2->setTurn(true);
-    } else {
-        emit
-        client1->upd();
     }
+        emit client1->upd();
+
 }

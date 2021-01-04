@@ -44,6 +44,7 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 
     // povezivanje scene i glavnog prozora radi registrovanja selekcije kvadrata
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::onFieldSelection);
+
     // povezivanje za ispisivanje poruke
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeGameMessage);
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeErrorMessage);
@@ -130,7 +131,10 @@ void Board::up_scene()
     TcpClient *client1 = static_cast<TcpClient *>(this->game->getPlayer1());
     TcpClient *client2 = static_cast<TcpClient *>(this->game->getPlayer2());
 
-
+    if (client1->getMove() == GAMEMOVE::INIT){
+        game->setGameMessage("GAME HAS STARTED! It's your turn to play!");
+        game->changeTurn();
+    }
     if (client1->getMove() == GAMEMOVE :: PLACE){
         int index = client1->getToIndex();
         game->makeSetupMove(client2, index, m_scene);
@@ -143,8 +147,11 @@ void Board::up_scene()
         game->makePlayMove(client2, client1->getFromIndex(), client1->getToIndex());
     }
     if (client1->getMove() == GAMEMOVE :: GAMEOVER){
-        game->removeOpponentsPiece(client2, client1->getFromIndex());
-        game->setGameMessage("YOU LOST THIS ONE");
+        if (client1->getFromIndex() != -1 && client1->getToIndex() !=-1)
+            game->makePlayMove(client2, client1->getFromIndex(),client2->getToIndex());
+        else if (client1->getFromIndex() != -1)
+            game->removeOpponentsPiece(client2, client1->getFromIndex());
+        game->setGameMessage("GAME OVER! YOU LOST THIS ONE!");
     }
     if (client1->m_millOccured)
         game->setMillOccured(true);

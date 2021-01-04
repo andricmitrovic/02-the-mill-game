@@ -30,6 +30,7 @@ void MultiplayerMenu::on_connectBtn_clicked()
 
     board = new Board(this, mode, ui->leName->text());
     board->show();
+    this->hide();
 
 
 }

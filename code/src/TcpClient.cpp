@@ -9,7 +9,6 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
 
 
     connect(m_socket, SIGNAL(readyRead()), this, SLOT(readMessage()), Qt::DirectConnection);
-    //connect(this, SIGNAL(readFinished()), this, SLOT(onReadFinished()));
 
     this->setToIndex(-1);
     this->setFromIndex(-1);
@@ -65,8 +64,10 @@ void TcpClient::readMessage() {
         this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
 
         emit over(move);
-    }else{
+    }else{ // GAMEOVER
         this->setFromIndex(jObj.value(QString("FromIndex")).toInt());
+        this->setToIndex(jObj.value(QString("toIndex")).toInt());
+
         emit over(move);
     }
 
