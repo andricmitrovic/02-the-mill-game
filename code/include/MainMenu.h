@@ -23,7 +23,7 @@ private slots:
     void on_serverPlayBtn_clicked();
     void on_aiPlayBtn_clicked();
 public slots:
-    void on_btnBackMain_clicked();
+    void on_btnBackMainClicked();
 
 private:
     Ui::MainMenu *ui;

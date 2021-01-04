@@ -20,7 +20,7 @@ public:
 
 private slots:
     void on_connectBtn_clicked();
-    void on_btnBackMultiplayer_clicked();
+    void on_btnBackMultiplayerClicked();
 
 
 private:

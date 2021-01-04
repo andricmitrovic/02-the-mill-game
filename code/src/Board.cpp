@@ -28,8 +28,8 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 
         TcpClient* p1 = new TcpClient(FIELDSTATE::PLAYER_1, player1_name);
         TcpClient* p2 = new TcpClient(FIELDSTATE::EMPTY, QString(""));
+        connect(p1, SIGNAL(upd()), this, SLOT(up_scene()));
 
-        connect(p1, SIGNAL(upd()), this, SLOT(up_scene()), Qt::DirectConnection);
         game = new GameServer(this, p1, p2);
 
     }
@@ -162,7 +162,7 @@ void Board::up_scene()
     ui -> graphicsView -> viewport() -> update();
 }
 
-void Board::on_pushButton_clicked()
+void Board::on_btnHelp_clicked()
 {
     help = new Help(this);
     help->show();
@@ -170,6 +170,6 @@ void Board::on_pushButton_clicked()
 
 void Board::on_btnBack_clicked()
 {
-    this->hide();
     emit clickedBack();
 }
+

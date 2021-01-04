@@ -42,10 +42,7 @@ public slots:
     void writeGameMessage();
     void writeErrorMessage();
     void up_scene();
-
-private slots:
-    void on_pushButton_clicked();
-
+    void on_btnHelp_clicked();
     void on_btnBack_clicked();
 
 private:

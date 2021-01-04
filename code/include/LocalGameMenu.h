@@ -18,7 +18,7 @@ public:
 
 private slots:
     void on_btnStartGame_clicked();
-    void on_btnBackLocal_clicked();
+    void on_btnBackLocalClicked();
 
 private:
     Ui::LocalGameMenu *ui;
