@@ -22,11 +22,13 @@ private slots:
     void on_localPlayBtn_clicked();
     void on_serverPlayBtn_clicked();
     void on_aiPlayBtn_clicked();
+public slots:
+    void on_btnBackMain_clicked();
 
 private:
     Ui::MainMenu *ui;
-    MultiplayerMenu *mp_menu;
-    LocalGameMenu *lg_menu;
+    MultiplayerMenu *mp_menu =nullptr;
+    LocalGameMenu *lg_menu = nullptr;
 };
 
 #endif // MAINMENU_H

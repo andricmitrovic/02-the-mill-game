@@ -20,12 +20,17 @@ public:
 
 private slots:
     void on_connectBtn_clicked();
+    void on_btnBackMultiplayer_clicked();
+
 
 private:
     Ui::MultiplayerMenu *ui;
     GAMEMODE mode;
     Board *board;
     TcpServer *server;
+
+signals:
+    void back();
 };
 
 #endif // MULTIPLAYERMENU_H

@@ -29,8 +29,15 @@ void MultiplayerMenu::on_connectBtn_clicked()
         server = new TcpServer();
 
     board = new Board(this, mode, ui->leName->text());
+    connect(board, &Board :: clickedBack, this, & MultiplayerMenu :: on_btnBackMultiplayer_clicked);
     board->show();
     this->hide();
 
 
+}
+
+void MultiplayerMenu::on_btnBackMultiplayer_clicked()
+{
+    board->close();
+    emit back();
 }

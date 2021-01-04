@@ -5,4 +5,7 @@
         <file alias="help">images/help.png</file>
         <file alias="red_circle">images/red_circle.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/arrow.png</file>
+    </qresource>
 </RCC>

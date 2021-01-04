@@ -11,11 +11,11 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 {
     ui -> setupUi(this);
 
-    // TODO
     if(gameMode==GAMEMODE::LOCAL) {
         Player* p1 = new Player(FIELDSTATE::PLAYER_1, player1_name);
         Player* p2 = new Player(FIELDSTATE::PLAYER_2, player2_name);
         game = new Game(p1, p2);
+
     }
 
     if(gameMode==GAMEMODE::AI) {
@@ -166,4 +166,10 @@ void Board::on_pushButton_clicked()
 {
     help = new Help(this);
     help->show();
+}
+
+void Board::on_btnBack_clicked()
+{
+    this->hide();
+    emit clickedBack();
 }

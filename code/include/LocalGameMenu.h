@@ -18,10 +18,13 @@ public:
 
 private slots:
     void on_btnStartGame_clicked();
+    void on_btnBackLocal_clicked();
 
 private:
     Ui::LocalGameMenu *ui;
     Board *board;
+signals:
+    void back();
 };
 
 #endif // LOCALGAMEMENU_H

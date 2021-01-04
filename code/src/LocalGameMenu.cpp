@@ -6,6 +6,7 @@ LocalGameMenu::LocalGameMenu(QWidget *parent) :
     ui(new Ui::LocalGameMenu)
 {
     ui->setupUi(this);
+
 }
 
 LocalGameMenu::~LocalGameMenu()
@@ -17,5 +18,13 @@ void LocalGameMenu::on_btnStartGame_clicked()
 {
     this->hide();
     board = new Board(this, GAMEMODE::LOCAL, ui->lePlayer1Name->text(), ui->lePlayer2Name->text());
+    connect(board, &Board ::clickedBack, this, & LocalGameMenu:: on_btnBackLocal_clicked);
     board->show();
+}
+
+void LocalGameMenu::on_btnBackLocal_clicked()
+{
+    board->close();
+
+    emit back();
 }

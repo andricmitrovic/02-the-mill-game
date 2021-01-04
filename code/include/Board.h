@@ -46,12 +46,17 @@ public slots:
 private slots:
     void on_pushButton_clicked();
 
-private:
+    void on_btnBack_clicked();
 
+private:
     Ui::Board         *ui;
     Game              *game;
     MyGraphicsScene   *m_scene;
     Help              *help;
     GAMEMODE          game_mode;
+
+signals:
+    void clickedBack();
+
 };
 #endif // BOARD_H
