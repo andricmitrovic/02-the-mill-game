@@ -1,6 +1,6 @@
 # Project 02-The-Mill-Game
 
-Implementacija The Mill Game-a. Igra ce moci da se igra lokalno, preko servera i protiv AI-a.
+Implementation of The Mill Game. The game can be played locally, on server or versus AI.
 
 ## Getting Started
 
@@ -35,6 +35,20 @@ Example of compiling project with Makefile.
 ```
     ./NineMensMorris
 ```
+
+## Implementation ##
+
+### Local ###
+
+### Server ###
+
+### AI ###
+
+AI is based on minimax algorithm with alfa-beta pruning. Since there are two phases of the game, the minimax and heuristcs used differ in each.
+In the first phase of the game AI simulates the game by trying every possible play for each player. In this phase actions are defined by which field is the current player occupying. When the maximum depth of the search is reached, heuristc function is applied. The heuristic function takes into account each players number of pieces and the fields they are occupying, but also how each players pieces are arranged on the board (for example if two pieces of the first player are in the same line with the third field empty, giving him a chance to make a mill in the next turn).
+In the second phase actions differ from the first phase, the algorithm now picks every piece from one player and tries to move it to every possible location on the board. Here heuristic function is trivially defined by number of steps until the first mill is reached, whether it was from first or second player. The ultimate heuristic reward in second phase is for winning/losing.
+In both phases when the mill occurs it needs to be specially processed, for the player who made the mill algorithm simulates trying to remove each piece and continues the game from there, depending in which state of the game we are in.
+
 
 ## Developers
 
