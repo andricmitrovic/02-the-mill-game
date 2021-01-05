@@ -40,7 +40,12 @@ Example of compiling project with Makefile.
 
 ### Local ###
 
+In a local game, two players can play on the same application instance. The game is played by clicking on the fields on the board and depending on the game phase, the pieces are placed, moved, or removed from the selected field. This is done by sending a signal on a mouse click and processing that signal to update the game state. When a move is made a message is displayed in the messages box beneath the board informing the players of what happened on the board. All GUI is made in QtCreator and the board is drawn manually using Qt5 libraries.
+
 ### Server ###
+
+In this game mode, each player needs to run his own instance of the application. When the first player starts, a server process is run and the player is automatically connected to that server. When the second player starts, a check is made to see if the server is already running, and if it is,
+the player is connected automatically, if it is not, he is actually the first player to run the game. When both players are connected the game can begin. When a player on turn plays a move, that data is sent to the server as a JSON containing all necessary data. The server processes that data and sends it to the other player and updates his game state and his board keeping the two games in synch.
 
 ### AI ###
 
