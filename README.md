@@ -35,7 +35,7 @@ Example of compiling project with Makefile.
 ```
     ./NineMensMorris
 ```
-
+If you are using QtCreator, after starting QtCreator, click on tab Open and find NineMensMorris.pro file in cloned directory. After this, click build.
 ## Implementation ##
 
 ### Local ###
