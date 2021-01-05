@@ -13,6 +13,7 @@ LocalGameMenu::LocalGameMenu(QWidget *parent) :
 LocalGameMenu::~LocalGameMenu()
 {
     delete ui;
+    delete board;
 }
 
 void LocalGameMenu::on_btnStartGame_clicked()

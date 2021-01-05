@@ -18,6 +18,10 @@ TcpClient::TcpClient(FIELDSTATE playerId, QString playerName)
     }
 }
 
+TcpClient::~TcpClient() {
+    delete m_socket;
+}
+
 void TcpClient::readMessage() {
 
     QString serverMessage = (QString)(this->m_socket->readAll());

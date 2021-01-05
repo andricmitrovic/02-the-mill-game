@@ -22,6 +22,8 @@ Game::Game(Player *p1, Player *p2, GAMEMODE gameMode):
 
 Game::~Game() {
     delete gameMap;
+    delete m_p1;
+    delete m_p2;
 }
 
 

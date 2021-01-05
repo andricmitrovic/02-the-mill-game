@@ -12,6 +12,8 @@ MainMenu::MainMenu(QWidget *parent) :
 MainMenu::~MainMenu()
 {
     delete ui;
+    delete mp_menu;
+    delete lg_menu;
 }
 
 void MainMenu::on_localPlayBtn_clicked()

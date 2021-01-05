@@ -16,6 +16,7 @@ class TcpClient : public Player
 
 public:
     explicit TcpClient(FIELDSTATE playerId, QString playerName);
+    ~TcpClient();
     QTcpSocket* getSocket() const;
     QString getReceivedData() const;
     int getFromIndex() const;

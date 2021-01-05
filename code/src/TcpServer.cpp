@@ -19,6 +19,9 @@ TcpServer::TcpServer(QWidget *parent) :
 
 TcpServer::~TcpServer()
 {
+    delete m_server;
+    for (auto client : m_clients)
+        delete client;
 
 }
 

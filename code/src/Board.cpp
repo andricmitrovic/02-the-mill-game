@@ -65,6 +65,7 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
 Board::~Board() {
     delete ui;
     delete m_scene;
+    delete help;
 }
 
 // sve se ovde oko igranja desava, poziva se na klik kvadrata

@@ -15,6 +15,8 @@ MultiplayerMenu::MultiplayerMenu(QWidget *parent, GAMEMODE mode) :
 MultiplayerMenu::~MultiplayerMenu()
 {
     delete ui;
+    delete board;
+    delete server;
 }
 
 void MultiplayerMenu::on_connectBtn_clicked()

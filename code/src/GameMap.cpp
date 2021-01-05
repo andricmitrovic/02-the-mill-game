@@ -30,6 +30,15 @@ GameMap::GameMap() {
     initializePieces();
 }
 
+GameMap::~GameMap() {
+    for (auto line : lines)
+        delete line;
+    for (auto redPiece : redPieces)
+        delete redPiece;
+    for (auto bluePiece : bluePieces)
+        delete bluePiece;
+}
+
 void GameMap::printMap(MyGraphicsScene *scene) {
     for (auto item: scene->items()) {
         scene->removeItem(item);

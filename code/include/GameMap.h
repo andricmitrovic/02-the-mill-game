@@ -10,6 +10,7 @@ class GameMap {
 
 public:
     GameMap();
+    ~GameMap();
     // metode za ispis
     void printMapTerminal();
     char strPlayer(unsigned p);
