@@ -28,7 +28,7 @@ Example of compiling project with Makefile.
 ```
 3. Compile program.
 ```
-    cmake -G "Unix MakeFiles" ../02-the-mill-game
+    cmake -G "Unix Makefiles" ../02-the-mill-game
     make
 ``` 
 4. Start the program.
