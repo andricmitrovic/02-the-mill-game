@@ -3,8 +3,8 @@
 #include "code/include/Player.h"
 #include "code/include/MyGraphicsScene.h"
 
-GameAI::GameAI(Player* p1, Player* p2)
-    : Game(p1,p2),
+GameAI::GameAI(Player* p1, Player* p2, GAMEMODE gameMode)
+    : Game(p1,p2, gameMode),
       playerAI(FIELDSTATE::PLAYER_2)
 {}
 

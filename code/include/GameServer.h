@@ -14,7 +14,7 @@ class GameServer : public QWidget, public Game {
     Q_OBJECT
 public:
 
-     GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2);
+     GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2, GAMEMODE gameMode);
     ~GameServer();
 
     // metode

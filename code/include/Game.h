@@ -15,7 +15,7 @@ class Game {
 
 public:
 
-    Game(Player* p1, Player* p2);
+    Game(Player* p1, Player* p2, GAMEMODE gameMode);
     ~Game();
 
     // metode
@@ -71,6 +71,7 @@ private:
     Player          *m_p2;
     GAMESTATE       gameState;
     FIELDSTATE      winner;
+    GAMEMODE        gameMode;
     QString         gameMessage;
     QString         errorMessage;
     bool            millOccured;

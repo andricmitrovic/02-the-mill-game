@@ -14,14 +14,14 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
     if(gameMode==GAMEMODE::LOCAL) {
         Player* p1 = new Player(FIELDSTATE::PLAYER_1, player1_name);
         Player* p2 = new Player(FIELDSTATE::PLAYER_2, player2_name);
-        game = new Game(p1, p2);
+        game = new Game(p1, p2, gameMode);
 
     }
 
     if(gameMode==GAMEMODE::AI) {
         Player* p1 = new Player(FIELDSTATE::PLAYER_1, player1_name);
         Player* p2 = new Player(FIELDSTATE::PLAYER_2, QString("AI"));
-        game = new GameAI(p1, p2);
+        game = new GameAI(p1, p2, gameMode);
     }
 
     if(gameMode==GAMEMODE::SERVER) {
@@ -30,7 +30,7 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
         TcpClient* p2 = new TcpClient(FIELDSTATE::EMPTY, QString(""));
         connect(p1, SIGNAL(upd()), this, SLOT(up_scene()));
 
-        game = new GameServer(this, p1, p2);
+        game = new GameServer(this, p1, p2, gameMode);
 
     }
     m_scene = new MyGraphicsScene();
@@ -48,6 +48,7 @@ Board::Board(QWidget * parent, GAMEMODE gameMode, QString player1_name, QString 
     // povezivanje za ispisivanje poruke
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeGameMessage);
     connect(m_scene, & MyGraphicsScene::signalClickedSomething, this, & Board::writeErrorMessage);
+    connect(this, &Board::sendServerMessage, this, &Board::writeServerMessage);
 
 
     /* treba pokusati da stavimo view da bude fullscreen, prvo sto nece manuelno iz designa da ode skroz desno,
@@ -125,33 +126,44 @@ void Board::writeErrorMessage() {
     game->clearErrorMessage();
 }
 
+void Board::writeServerMessage(QString message)
+{
+    ui->textBrowser->append(message);
+}
+
 void Board::up_scene()
 {
-
     TcpClient *client1 = static_cast<TcpClient *>(this->game->getPlayer1());
     TcpClient *client2 = static_cast<TcpClient *>(this->game->getPlayer2());
 
     if (client1->getMove() == GAMEMOVE::INIT){
-        game->setGameMessage("GAME HAS STARTED! It's your turn to play!");
         game->changeTurn();
     }
     if (client1->getMove() == GAMEMOVE :: PLACE){
         int index = client1->getToIndex();
         game->makeSetupMove(client2, index, m_scene);
+        if (game->getBoardPieces() == 0 && !client1->m_millOccured) {
+            emit sendServerMessage("The game has been set up! Move your pieces around");
+        }
+        else if (!client1->m_millOccured)
+            emit sendServerMessage("It's your turn. Choose a field to place your piece!");
     }
 
     if (client1->getMove() == GAMEMOVE :: REMOVE){
         game->removeOpponentsPiece(client2, client1->getFromIndex());
+        emit sendServerMessage("You lost a piece! It's your turn now");
     }
     if (client1->getMove() == GAMEMOVE :: MOVE){
         game->makePlayMove(client2, client1->getFromIndex(), client1->getToIndex());
+        if (!client1->m_millOccured)
+            emit sendServerMessage("It's your turn. Move one of your pieces");
     }
     if (client1->getMove() == GAMEMOVE :: GAMEOVER){
         if (client1->getFromIndex() != -1 && client1->getToIndex() !=-1)
             game->makePlayMove(client2, client1->getFromIndex(),client2->getToIndex());
         else if (client1->getFromIndex() != -1)
             game->removeOpponentsPiece(client2, client1->getFromIndex());
-        game->setGameMessage("GAME OVER! YOU LOST THIS ONE!");
+        emit sendServerMessage("GAME OVER! YOU LOST! :(");
     }
     if (client1->m_millOccured)
         game->setMillOccured(true);

@@ -5,8 +5,8 @@
 #include <QJsonDocument>
 #include <QJsonValue>
 
-GameServer::GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2)
-        : QWidget(parent), Game(p1, p2) {
+GameServer::GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2, GAMEMODE gameMode)
+        : QWidget(parent), Game(p1, p2, gameMode) {
     connect(this->getPlayer1(), SIGNAL(over(GAMEMOVE)), this, SLOT(readMoveFromServer(GAMEMOVE)), Qt::DirectConnection);
 }
 

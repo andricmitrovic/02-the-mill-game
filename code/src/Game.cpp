@@ -4,9 +4,9 @@
 #include "code/include/MyGraphicsScene.h"
 
 
-Game::Game(Player *p1, Player *p2):
+Game::Game(Player *p1, Player *p2, GAMEMODE gameMode):
     gameMap(new GameMap()), m_p1(p1), m_p2(p2), gameState(GAMESTATE::INIT),
-    winner(FIELDSTATE::EMPTY), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
+    winner(FIELDSTATE::EMPTY), gameMode(gameMode), millOccured(false), moveFrom(-1), boardPieces(2*NUM_OF_PIECES)
 {
 
   if (gameState != GAMESTATE::INIT)
@@ -61,11 +61,13 @@ bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
         setErrorMessage("Error: Occupied field.");
         return false;
     } else {
-        Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
-        setGameMessage(opponent->getName().toStdString() + "'s turn. Choose a field to place your piece.");
+        if (gameMode != GAMEMODE::SERVER) {
+            Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
+            setGameMessage(opponent->getName().toStdString() + "'s turn. Choose a field to place your piece.");
+        }
         gameMap -> getBoardFields()[i].occupy(player->id());
         boardPieces--;
-        if (boardPieces == 0) {
+        if (boardPieces == 0 && gameMode != GAMEMODE::SERVER) {
             setGameMessage("The game has been set up! Move your pieces around");
         }
         player->incNumOfPieces();
@@ -88,18 +90,20 @@ bool Game::makeSetupMove(Player* player, unsigned i, MyGraphicsScene *scene) {
 bool Game::makePlayMove(Player* player, unsigned moveFrom, unsigned moveTo) {
     if (isValidToMove(moveFrom, moveTo)){
         Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
-        setGameMessage(opponent->getName().toStdString() + "'s turn");
+        if (gameMode != GAMEMODE::SERVER) {
+            setGameMessage(opponent->getName().toStdString() + "'s turn");
+        }
         gameMap -> getBoardFields()[moveFrom].deoccupy();
         gameMap -> getBoardFields()[moveTo].occupy(player->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_1 : FIELDSTATE::PLAYER_2);
 
         if (checkMills(moveTo)) {
             millOccured = true;
-            setGameMessage("-- MILL -- Choose an opponent's piece to remove!");
+            if (gameMode != GAMEMODE::SERVER)
+                setGameMessage("-- MILL -- Choose an opponent's piece to remove!");
         }
         return true;
     }
     return false;
-
 }
 
 /*
@@ -119,8 +123,10 @@ bool Game::removeOpponentsPiece(Player* player, unsigned index) {
 
     millOccured = false;
 
-    Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
-    setGameMessage(opponent->getName().toStdString() + " has lost a piece!\n" + opponent->getName().toStdString() + "'s turn");
+    if (gameMode != GAMEMODE::SERVER) {
+        Player* opponent = player->id() == FIELDSTATE::PLAYER_1 ? m_p2 : m_p1;
+        setGameMessage(opponent->getName().toStdString() + " has lost a piece!\n" + opponent->getName().toStdString() + "'s turn");
+    }
     return true;
 }
 /*
@@ -224,7 +230,8 @@ void Game::playMove(Player* player, int index, MyGraphicsScene *scene)
             if (makeSetupMove(player, index, scene)){
                 if (checkMills(index)) {
                     millOccured = true;
-                    setGameMessage("-- MILL -- Choose an opponent's piece to remove!");
+                    if (gameMode != GAMEMODE::SERVER)
+                        setGameMessage("-- MILL -- Choose an opponent's piece to remove!");
                 }
                 else
                     this->changeTurn();

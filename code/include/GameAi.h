@@ -17,7 +17,7 @@ class GameAI: public Game{
 
 public:
 
-    GameAI(Player* p1, Player* p2);
+    GameAI(Player* p1, Player* p2, GAMEMODE gameMode);
     ~GameAI();
 
     void playMove(Player* player, int index, MyGraphicsScene *scene) override;

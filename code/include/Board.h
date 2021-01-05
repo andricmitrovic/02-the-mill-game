@@ -36,11 +36,15 @@ public:
     Game* getGame();
     void resizeEvent(QResizeEvent* event);
 
+signals:
+    void sendServerMessage(QString message);
+
 // slotovi za registrovanje selekcija odnosno klika na kvadrate
 public slots:
     void onFieldSelection(QPointF);
     void writeGameMessage();
     void writeErrorMessage();
+    void writeServerMessage(QString message);
     void up_scene();
     void on_btnHelp_clicked();
     void on_btnBack_clicked();
