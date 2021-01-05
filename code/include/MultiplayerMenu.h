@@ -7,30 +7,28 @@
 #include "TcpServer.h"
 
 namespace Ui {
-class MultiplayerMenu;
+    class MultiplayerMenu;
 }
 
-class MultiplayerMenu : public QMainWindow
-{
+class MultiplayerMenu : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MultiplayerMenu(QWidget *parent = nullptr, GAMEMODE mode=GAMEMODE::AI);
+    explicit MultiplayerMenu(QWidget *parent = nullptr, GAMEMODE mode = GAMEMODE::AI);
+
     ~MultiplayerMenu();
 
 private slots:
     void on_connectBtn_clicked();
     void on_btnBackMultiplayerClicked();
 
-
 private:
     Ui::MultiplayerMenu *ui;
-    GAMEMODE mode;
-    Board *board;
-    TcpServer *server;
+    GAMEMODE            mode;
+    Board               *board;
+    TcpServer           *server;
 
 signals:
     void back();
 };
-
 #endif // MULTIPLAYERMENU_H

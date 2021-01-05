@@ -5,15 +5,15 @@
 #include "Board.h"
 
 namespace Ui {
-class LocalGameMenu;
+    class LocalGameMenu;
 }
 
-class LocalGameMenu : public QMainWindow
-{
+class LocalGameMenu : public QMainWindow {
     Q_OBJECT
 
 public:
     explicit LocalGameMenu(QWidget *parent = nullptr);
+
     ~LocalGameMenu();
 
 private slots:
@@ -21,10 +21,10 @@ private slots:
     void on_btnBackLocalClicked();
 
 private:
-    Ui::LocalGameMenu *ui;
-    Board *board;
+    Ui::LocalGameMenu   *ui;
+    Board               *board;
+
 signals:
     void back();
 };
-
 #endif // LOCALGAMEMENU_H

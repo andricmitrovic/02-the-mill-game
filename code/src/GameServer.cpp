@@ -18,7 +18,7 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
         return;
     }
 
-    if (this->getMillOccured()) {
+    if (this->getMillOccurred()) {
         setGameMessage("MILL! Choose an opponent's piece to remove!");
         if (removeOpponentsPiece(player, index)) {
             if (checkPhase1End() && gameOver()) {
@@ -35,7 +35,7 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
     if (!checkPhase1End()) {
         if (makeSetupMove(player, index, scene)) {
             if (checkMills(index)) {
-                setMillOccured(true);
+                setMillOccurred(true);
                 setGameMessage("MILL! Choose an opponent's piece to remove!");
                 sendMoveToServer(GAMEMOVE::PLACE, -1, index);
             } else {
@@ -47,29 +47,26 @@ void GameServer::playMove(Player *player, int index, MyGraphicsScene *scene) {
         if (getMoveFrom() == -1) {
             if (isValidToSelect(index, player))
                 setMoveFrom(index);
-        } else { // moveFrom != -1
+        } else {
             if (makePlayMove(player, getMoveFrom(), index)) {
-                if (gameOver()){
+                if (gameOver()) {
                     setGameMessage("Game over! YOU WON!");
                     sendMoveToServer(GAMEMOVE::GAMEOVER, getMoveFrom(), index);
-                }else {
-                sendMoveToServer(GAMEMOVE::MOVE, getMoveFrom(), index);
-                setMoveFrom(-1);
-                if (checkMills(index)) {
-                    setMillOccured(true);
-                    setGameMessage("MILL! Choose an opponent's piece to remove!");
-                }
-                else
-                    this->changeTurn();
-            }
                 } else {
+                    sendMoveToServer(GAMEMOVE::MOVE, getMoveFrom(), index);
+                    setMoveFrom(-1);
+                    if (checkMills(index)) {
+                        setMillOccurred(true);
+                        setGameMessage("MILL! Choose an opponent's piece to remove!");
+                    } else
+                        this->changeTurn();
+                }
+            } else {
                 if (getGameMap()->getBoardFields()[index].getPlayerID() == player->id())
                     setMoveFrom(index);
 
             }
-            }
-
-
+        }
     }
 }
 
@@ -79,14 +76,14 @@ void GameServer::sendMoveToServer(GAMEMOVE move, int fromIndex, int toIndex) {
     message1.insert(QString("name"), QJsonValue(client1->getName()));
     message1.insert(QString("toIndex"), QJsonValue(toIndex));
     message1.insert(QString("FromIndex"), QJsonValue(fromIndex));
-    message1.insert(QString("mill_occured"), QJsonValue(getMillOccured()));
+    message1.insert(QString("mill_occured"), QJsonValue(getMillOccurred()));
     message1.insert(QString("game_move"), QJsonValue(static_cast<int>(move)));
     client1->getSocket()->write(QJsonDocument(message1).toJson());
 }
 
 void GameServer::readMoveFromServer(GAMEMOVE move) {
     TcpClient *client1 = static_cast<TcpClient *>(getPlayer1());
-    // ne koristi se za igru, nego samo za pamcenje poteza
+    //Used just for saving moves
     TcpClient *client2 = static_cast<TcpClient *>(getPlayer2());
 
     if (move == GAMEMOVE::INIT) {
@@ -94,6 +91,6 @@ void GameServer::readMoveFromServer(GAMEMOVE move) {
         client2->setId(client1->id() == FIELDSTATE::PLAYER_1 ? FIELDSTATE::PLAYER_2 : FIELDSTATE::PLAYER_1);
         client1->turn() ? client2->setTurn(false) : client2->setTurn(true);
     }
-        emit client1->upd();
-
+    emit
+    client1->upd();
 }

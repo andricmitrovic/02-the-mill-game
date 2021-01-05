@@ -2,16 +2,9 @@
 #define GAMEAI_H
 
 #include "Game.h"
-
 #include "GameMap.h"
 #include "Player.h"
 #include "Lib.h"
-
-/*
- * Klasa Game
- * sadrzi GameMap (mapa koju je Marija pravila koja sadrzi vektor svih polja)
- *        dva igraca (za sada su oba Player)
- */
 
 class GameAI: public Game{
 
@@ -47,8 +40,6 @@ public:
     void makePlayMoveAI(Player* player, int from, int to);
     void revertPlayMoveAI(Player* player, int from, int to);
 
-
-
 private:
     // Max depth for minimax algorithm in each phase, best values for a quick AI play
     int             maxDepthPhase1 = 5;
@@ -56,5 +47,4 @@ private:
 
     FIELDSTATE      playerAI;
 };
-
 #endif // GAMEAI_H

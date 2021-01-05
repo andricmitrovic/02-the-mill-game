@@ -2,13 +2,11 @@
 #include "ui_help.h"
 
 Help::Help(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::Help)
-{
+        QDialog(parent),
+        ui(new Ui::Help) {
     ui->setupUi(this);
 }
 
-Help::~Help()
-{
+Help::~Help() {
     delete ui;
 }

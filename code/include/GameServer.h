@@ -8,17 +8,15 @@
 #include "TcpClient.h"
 #include "Lib.h"
 
-
-
 class GameServer : public QWidget, public Game {
     Q_OBJECT
 public:
 
-     GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2, GAMEMODE gameMode);
+    GameServer(QWidget *parent, TcpClient *p1, TcpClient *p2, GAMEMODE gameMode);
+
     ~GameServer();
 
-    // metode
-    void play(); // ovo je igranje igre, odnosno premestanje vec postavljenih figura
+    void play();
     void playMove(Player *player, int index, MyGraphicsScene *scene);
     void sendMoveToServer(GAMEMOVE move, int fromIndex, int toIndex);
 
@@ -28,5 +26,4 @@ public slots:
 public:
     FIELDSTATE active;
 };
-
 #endif // GAMESERVER_H

@@ -4,17 +4,15 @@
 #include <QWidget>
 #include <QTcpServer>
 
-
-
 class QTcpServer;
 class QTcpSocket;
 
-class TcpServer : public QWidget
-{
+class TcpServer : public QWidget {
     Q_OBJECT
 
 public:
     explicit TcpServer(QWidget *parent = nullptr);
+
     ~TcpServer();
 
 private slots:
@@ -23,9 +21,8 @@ private slots:
     void newMessage();
 
 private:
-    QTcpServer *m_server;
-    QList<QTcpSocket*> m_clients;
-    QHash<QTcpSocket*, QByteArray> m_receivedData;
+    QTcpServer                      *m_server;
+    QList<QTcpSocket *>             m_clients;
+    QHash<QTcpSocket *, QByteArray> m_receivedData;
 };
-
 #endif // TCPSERVER_H
